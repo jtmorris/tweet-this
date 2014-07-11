@@ -1,3 +1,23 @@
+/************************************
+* This file contains the bare minimum CSS to make Tweet This look good!  Its purpose
+* is to setup the layout.  Coloring and what not goes in a theme CSS file!
+*************************************/
+
+/* RESET STYLES */
+div.TT_wrapper, 
+div.TT_wrapper div,
+div.TT_wrapper a,
+div.TT_wrapper p {
+	margin: 0; 
+	padding: 0; 
+	border: 0; 
+	font-size: 1rem; 
+	font: inherit; 
+	vertical-align: baseline;
+	line-height: 1;
+}
+
+/* Layout and some base styles */
 div.TT_wrapper {
 	font-family: sans-serif;
 	padding: 10px;
