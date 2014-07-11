@@ -8,7 +8,7 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Tweet This gives you a method for easily embedding stylish tweetable content in your 
+Tweet This offers easily embedded, stylish tweetable content boxes in your 
 posts and pages. Visitors can click on the content and post your tweet along with a
 link back to you.  Extremely customizable and flexible!
 
@@ -23,9 +23,10 @@ market reach, but your authority and the power of your message explodes
 exponentially.
 
 
-The problem is the standard way of having your content shared is so impersonal 
+The problem is the standard "share" methods are impersonal 
 and difficult for your readers.  Those share buttons at the bottom of your page?
-They don't send anything inspiring!  What you need is Tweet This!
+They don't send anything inspiring!  Just a lifeless message and ugly link.
+What you need is Tweet This!
 
 Tweet This is the perfect tool for encouraging your readers to share.  You get to
 write a short message.  This message gets embedded into your post or page in an
@@ -39,7 +40,7 @@ Tweet This box, and watch your readers spread it to the far corners of the globe
 
 
 = How Does It Work? =
-Tweet This works using shortcodes.  Simply use the shortcode to embed your message
+Tweet This works using shortcodes.  Simply use the shortcode to embed your text
 anywhere you like.  When viewed, the shortcode displays a beautiful box containing
 your message as well as subtle encouragement for your readers to tweet it.  
 
@@ -77,6 +78,12 @@ Tweet This plugin.
 
 
 == Screenshots ==
+1. Shortcode creator for WordPress' TinyMCE editor.
+2. Result of shortcode from first screenshot using default theme.
+3. Result of shortcode from first screenshot using dark theme.
+4. Send tweet popup seen by users when they "Tweet This."
+5. Settings page. Lots of customization options available.
+
 
 
 
