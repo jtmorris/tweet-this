@@ -1,0 +1,119 @@
+#TT_sidebar {
+	position: absolute;
+	top: 30px;
+	right: 30px;
+
+	width: 400px;
+
+	padding-left: 30px;
+	border-left: 2px solid #AAA;
+}
+	#TT_sidebar div.TT_sidebar_box,
+	div.TT_footer_box {
+		margin-bottom: 25px;
+		padding-bottom: 25px;
+
+		border-top: 1px solid #AAA;
+	}
+	#TT_sidebar h3 {
+		font-size: 1.4em;
+
+		text-decoration: underline;
+	}
+	#TT_sidebar h4 {
+		font-size: 1.2em;
+	}
+		#TT_sidebar div.TT_sidebar_box:first-of-type {
+			border: 0;
+		}
+		#TT_sidebar div.TT_sidebar_box.TT_highlight,
+		div.TT_highlight {
+			background-color: #282828;
+			border: 3px solid #FFAA44;
+
+			color: #CCC;
+
+			padding: 10px 20px;
+
+			border-radius: 15px;
+
+			box-shadow: 8px 10px 13px 0 #444;
+		}
+			#TT_sidebar div.TT_sidebar_box.TT_highlight h3,
+			div.TT_highlight h3 {
+				color: #EEE;
+			}
+
+			#TT_sidebar div.TT_sidebar_box.TT_highlight a,
+			#TT_sidebar div.TT_sidebar_box.TT_highlight a:visited,
+			div.TT_highlight a,
+			div.TT_highlight a:visited {
+				color: #99CCFF;
+			}
+
+		#TT_sidebar div.TT_sidebar_box ul {
+			list-style-type: square;
+
+			margin-left: 30px;
+
+			line-height: normal;
+		}
+
+		table.TT_donations td {
+			vertical-align: bottom;
+		}
+
+#TT_content {
+	margin-right: 450px;
+
+	min-height: 1500px;	/*	Keeps absolutely positioned sidebar from running off the page. */
+}
+	#TT_content p.tt_admin_help_text {
+		color: #555;
+		font-size: .9em;
+		font-style: italic;
+	}
+	#TT_content input,
+	#TT_content textarea {
+		border: 1px solid #999;
+	}
+	#TT_content span.tt_admin_example {
+		color: #38f;
+		font-style: normal;
+		margin: 0 5px;
+	}
+	#TT_content img.TT_twitter_icon {
+		max-width: 32px;
+		max-height: 32px;
+	}
+	#TT_content img.TT_theme_preview {
+		max-width: 425px;
+		max-height: 175px;
+	}
+	#TT_content .form-table td {
+		vertical-align: middle;
+	}
+
+/* Responsive changes for narrow screens */
+@media (max-width: 1250px) {
+
+	/* Move sidebar below main content */
+	#TT_sidebar {
+		position: relative;
+
+		width: auto;
+	}
+	#TT_content {
+		margin-right: auto;
+		min-height: 0;
+	}
+}
+
+@media (min-width: 1700px) {
+	#TT_content {
+		margin-right: 530px;
+	}
+	#TT_sidebar {
+		width: 500px;
+	}
+}

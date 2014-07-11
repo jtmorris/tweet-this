@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Create "Tweet This" Shortcode</title>
+		<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/cupertino/jquery-ui.css" />
+		<style type='text/css'>
+			#TT_tinymce_dialog {
+				font-family: "Open Sans", sans-serif;
+				font-size: 13px;
+			}
+			table.form-table {
+				width: 100%;
+			}
+			table.form-table th {
+				vertical-align: top;
+				width: 150px;
+			}
+			table.form-table td,
+			table.form-table th {
+				padding: 10px 0;
+			}
+			#TT_tinymce_dialog_text {
+				height: 45px;
+				font-family: "Open Sans", sans-serif;
+			}
+			input,
+			textarea {
+				width: 95%;
+				
+				font-size: 16px;
+
+				padding: 3px;
+			}
+			input[type="submit"] {
+				width: auto;
+
+				background-color: #3399FF;
+				box-shadow: 2px 2px 3px 0 #444;
+
+				padding: 8px;
+
+				border: none;
+				border-radius: 4px;
+
+				margin-top: 5px;
+				float: right;
+			}
+			input[type="submit"]:hover {
+				background-color: #33CC33;
+				cursor: pointer;
+			}
+			p.tt_admin_help_text {
+				color: #555;
+				font-size: .9em;
+				font-style: italic;
+			}
+			span.tt_admin_example {
+				color: #38f;
+				font-style: normal;
+				margin: 0 5px;
+			}
+			#TT_tinymce_tweet_preview {
+				font-size: 24px;
+				font-weight: 200;
+
+				background-color: #CCC;
+				
+				width: 95%;
+				height: 100px;
+			}
+			#TT_accordion h3 {
+				font-size: 18px;
+				padding-top: 3px;
+				padding-bottom: 3px;
+			}
+			div.TT_tinymce_preview_warning {
+				color: #666;
+				font-size: .93em;
+				margin-bottom: 10px;
+
+				padding: 10px;
+
+				background-color: #FFFBC9;
+				border: 1px solid #730000;
+				border-radius: 8px;
+			}
+		</style>	
+	</head>
+	<body>
+		<div id='TT_tinymce_dialog'>
+			<form>
+				<div id='TT_accordion'>
+					<h3>General</h3>				
+					<div id='TT_section_general'>
+						<table class='form-table'>
+							<tr>
+								<th scope="row">Text To Tweet</th>
+								<td>
+									<textarea id="TT_tinymce_dialog_text"></textarea>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<h3>Advanced Options</h3>
+					<div id='TT_section_advanced'>
+						<table class='form-table'>
+							<tr>
+								<th scope="row">Override Twitter Handles</th>
+								<td>
+									<input id="TT_tinymce_dialog_twitter_handle_override" type="text" />
+									<p class='tt_admin_help_text'>
+										Comma seperated list of "via" Twitter handles you want 
+										added to your tweets.
+										<br />
+										Example: <span class="tt_admin_example">@jt_morris, @DTELinux, @CraigyFerg</span>
+									</p>
+								</td>				
+							</tr>
+							<tr>
+								<th scope="row">Override Post URL</th>
+								<td>
+									<input id="TT_tinymce_dialog_url_override" type="url" />
+									<p class="tt_admin_help_text">
+										The link to include with your tweets.
+									</p>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<input type='submit' value='Insert Shortcode' />
+			</form>
+			<br /><br />
+			<h3>Preview</h3>			
+			<div id="TT_tinymce_preview_warning_placeholder_url" class="TT_tinymce_preview_warning" style="display: none; ">
+				WordPress hasn't generated a shortlink yet. A 
+				placeholder of similar appearance and length has been included in
+				the preview. As soon as one is generated, the correct shortlink
+				will take its place. <a href="" target="_blank">(Click Here For More
+				Info.)</a>
+			</div>
+			<div id="TT_tinymce_character_count">&nbsp;</div>			
+			<textarea readonly="readonly" id="TT_tinymce_tweet_preview"></textarea>
+		</div>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
+		<script type='text/javascript'>
+			$(document).ready(function() {
+				//	Get passed arguments
+				var args = top.tinymce.activeEditor.windowManager.getParams();
+				var post_url = args['post_url'];
+				var post_url_is_placeholder = args['post_url_is_placeholder']
+				var default_twitter_handles = args['default_twitter_handles'];
+				var editor = args['editor'];
+
+				//	Vars for readability
+				var sections = {
+					'general': $('#TT_section_general'),
+					'advanced': $('#TT_section_advanced')
+				};
+				var inputs = {
+					'text': $('#TT_tinymce_dialog_text'),
+					'url': $('#TT_tinymce_dialog_url_override'),
+					'twitter_handles': $('#TT_tinymce_dialog_twitter_handle_override')
+				};
+				var form = $('#TT_tinymce_dialog form');
+				var preview = $('#TT_tinymce_tweet_preview');
+				var characters = $('#TT_tinymce_character_count');
+				var placeholder_url_warning = $('#TT_tinymce_preview_warning_placeholder_url');
+
+
+
+				//	Load defaults into preview
+				preview.val(tt_preview_string());
+
+				//	Display any caveats or warning about the preview
+				if ( post_url_is_placeholder ) {
+					placeholder_url_warning.show();
+				}
+
+
+				
+				//	Accordion the sections
+				$('#TT_accordion').accordion({
+					active: 0,
+					heightStyle: 'content'
+				});				
+
+				
+
+				//	On text change, update preview
+				inputs['text'].on('change keyup paste', function() {
+					preview.val(tt_preview_string()).change();
+				});				
+
+				//	On URL change, update preview and hide any URL warnings
+				inputs['url'].on('change keyup paste', function() {
+					preview.val(tt_preview_string()).change();
+					
+					if( inputs['url'].val() === post_url && post_url_is_placeholder ) {
+						placeholder_url_warning.show();					
+					}
+					else {
+						placeholder_url_warning.hide();
+					}
+				});
+
+				//	On Twitter handles change, update preview
+				inputs['twitter_handles'].on('change keyup paste', function() {
+					preview.val(tt_preview_string()).change();
+				});
+
+				//	Character counter and preview truncate
+				preview.on('change', function() {
+					//	Counter
+					var count = $(this).val().length;
+					if (count > 140) {
+						var wrap = '<span style="color: red; font-size: 1.3em; ">';
+
+						//	Too long, truncate the preview
+						tt_truncate_preview();
+					}
+					else if (count >= 130) {
+						var wrap = '<span style="color: red;">';
+						var warning = '';
+					}
+					else if (count >= 120) {
+						var wrap = '<span style="color: darkred;">';
+						var warning = '';
+					}
+					else {
+						var wrap = '<span>'
+						var warning = '';
+					}
+					characters.html(wrap + (140-count) + '</span> characters left ' + warning);
+				});
+
+
+
+				//	Insert the shortcode when submitted
+				form.submit(function(event) {
+					event.preventDefault();
+
+					var shortcode = '[tweetthis';
+
+					//	Do we have any handle or URL overrides?
+					//	If so, add on parameters for them.
+					if( get_clean_twitter_handles() ) {
+						shortcode += ' twitter_handles="' + (get_clean_twitter_handles()) + '"';
+					}
+					if( get_clean_url() ) {
+						shortcode += ' url="' + (get_clean_url()) + '"';
+					}
+					
+					shortcode += ']' + (get_clean_text()) + '[/tweetthis]';
+
+					editor.selection.setContent(shortcode);
+					editor.windowManager.close();
+				});
+
+
+
+				//	Helper functions
+				function tt_preview_string() {
+					var text = inputs['text'].val();
+
+					//	Was Twitter handles or the URL overriden?
+					//	If so, we want those.  If not, we want the defaults.
+					var twits = default_twitter_handles;
+					var url = post_url;
+					if( get_clean_twitter_handles() ) {
+						twits = get_clean_twitter_handles();
+					}
+					if( get_clean_url() ) {
+						url = get_clean_url();
+					}
+
+					var retval = text;
+					if ( url ) {
+						retval += ' ' + url;
+					}
+					if (twits) {
+						retval +=' via ' + twits;
+					}
+
+					return retval;
+				}
+				function tt_truncate_preview(str) {
+					preview.val(preview.val().substr(0,140));	//	First 140 characters
+				}
+				function get_clean_text() {
+					return inputs['text'].val();
+				}
+				function get_clean_url() {
+					return encodeURI( $.trim(inputs['url'].val()) ).
+						replace(/"/g, '').	//	remove double quotes
+						replace(/'/g, '');	//	remove single quotes;
+				}
+				function get_clean_twitter_handles() {
+					return $.trim(inputs['twitter_handles'].val()).
+						replace(/"/g, '').	//	remove double quotes
+						replace(/'/g, '');	//	remove single quotes
+				}
+			});			
+		</script>
+	</body>
+</html>
