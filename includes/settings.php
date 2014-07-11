@@ -333,7 +333,7 @@ if ( !class_exists( 'TT_Settings' ) ) {
 
 				<div id="TT_hide_byline_dialog" title="Are you sure?" style="display: none;">
 					<h3>When You Save Your Settings, The Byline Will Be Disabled</h3>
-					<img src="<?php echo TT_ROOT_URL; ?>/assets/images/light-switch.png" alt="" style="margin: 0 0 15px 15px; float: right;" />
+					<img src="<?php echo TT_ROOT_URL; ?>assets/images/light-switch.png" alt="" style="margin: 0 0 15px 15px; float: right;" />
 					<p>
 						I completely understand.  As a WordPress user myself, 
 						I have turned off my share of promotions and bylines 
@@ -476,6 +476,23 @@ if ( !class_exists( 'TT_Settings' ) ) {
 						<li>Open a thread on the <a target="_blank" href="http://wordpress.org/support/plugin/tweet-this">plugin support page</a>.</li>
 						<li><a target="_blank" href="http://tweetthis.jtmorris.net/contact/">Contact the developer</a> privately.</li>
 						<li>Open an <a target="_blank" href="https://github.com/jtmorris/tweet-this/issues">"issue" on GitHub</a>.</li>
+					</ul>
+				</div>
+				<div class='TT_sidebar_box'>
+					<h3>Other Plugins By This Developer</h3>
+					<p>
+						If you love this plugin, check out some of the others by
+						the same developer!
+					</p>						
+					<ul>
+						<li>
+							<a target="_blank" href="http://bit.ly/ad-blocking-detector">
+								Ad Blocking Detector
+							</a>
+							: Tired of missed profits because of pesky ad 
+							blocker browser extensions, add-ons, and plugins? Fight
+							back with <em>Ad Blocking Detector</em> today!
+						</li>
 					</ul>
 				</div>
 			</div>
