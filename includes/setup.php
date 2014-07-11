@@ -105,7 +105,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				array( 'TT_Setup', 'hooks_helper_tinymce_button' ) );
 		}
 			public static function hooks_helper_activation() {
-
+				
 			}
 			public static function hooks_helper_deactivation() {
 				
@@ -113,6 +113,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 			public static function hooks_helper_uninstall() {
 				//	Clear the options
 				delete_option( 'tt_plugin_options' );
+				delete_option( 'tt_current_version' );
 			}
 			public static function hooks_helper_admin_init() {
 				TT_Settings::define_settings();
@@ -130,6 +131,9 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				$type = $current_screen->post_type;
 				if ( $type == 'post' || $type == 'page' ) {
 					$id = $post->ID;
+				}
+				else {
+					return;
 				}
 
 				//	post URL
