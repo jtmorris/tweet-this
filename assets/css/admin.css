@@ -58,6 +58,11 @@
 
 			line-height: normal;
 		}
+			#TT_sidebar div.TT_sidebar_box ul img {
+				width: 100px;
+				height: 100px;
+				float: right;
+			}
 
 		table.TT_donations td {
 			vertical-align: bottom;

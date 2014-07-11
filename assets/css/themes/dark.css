@@ -40,6 +40,7 @@ div.TT_wrapper {
 	}
 		div.TT_wrapper div.TT_byline a {
 			color: #666;
+			text-decoration: underline;
 		}
 		div.TT_wrapper div.TT_byline a:hover {
 			text-shadow: none;
