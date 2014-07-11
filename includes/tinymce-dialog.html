@@ -2,6 +2,11 @@
 <html>
 	<head>
 		<title>Create "Tweet This" Shortcode</title>
+		<!-- Disable browser caching of dialog window -->
+		<meta http-equiv="cache-control" content="no-cache" />
+		<meta http-equiv="expires" content="0" />
+		<meta http-equiv="pragma" content="no-cache" />
+
 		<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/cupertino/jquery-ui.css" />
 		<style type='text/css'>
 			#TT_tinymce_dialog {
@@ -30,7 +35,7 @@
 				font-size: 16px;
 
 				padding: 3px;
-			}
+			}			
 			input[type="submit"] {
 				width: auto;
 
@@ -89,7 +94,7 @@
 	<body>
 		<div id='TT_tinymce_dialog'>
 			<form>
-				<div id='TT_accordion'>
+				<div class='TT_accordion'>
 					<h3>General</h3>				
 					<div id='TT_section_general'>
 						<table class='form-table'>
@@ -101,6 +106,8 @@
 							</tr>
 						</table>
 					</div>
+				</div>
+				<div class='TT_accordion'>
 					<h3>Advanced Options</h3>
 					<div id='TT_section_advanced'>
 						<table class='form-table'>
@@ -138,6 +145,9 @@
 				the preview. As soon as one is generated, the correct shortlink
 				will take its place. <a href="" target="_blank">(Click Here For More
 				Info.)</a>
+			</div>
+			<div id="TT_tinymce_preview_warning_validation_errors" class="TT_tinymce_preview_warning" style="display: none; ">
+				Uh oh.  Something isn't right.  Double check your URL!
 			</div>
 			<div id="TT_tinymce_character_count">&nbsp;</div>			
 			<textarea readonly="readonly" id="TT_tinymce_tweet_preview"></textarea>
@@ -181,10 +191,18 @@
 
 				
 				//	Accordion the sections
-				$('#TT_accordion').accordion({
-					active: 0,
+				//	We have multiple accordions for each section because when 
+				//	submitting the form, we want to be able to expand ALL accordion
+				//	sections do validation errors are visible.  Therefore,
+				//	each section is an accordion with only one entry.  It looks
+				//	the same, but allows multiple open sections.
+				$('.TT_accordion').accordion({
+					active: false,
+					collapsible: true,
 					heightStyle: 'content'
-				});				
+				});	
+				//	Open the general content accordion
+				$('.TT_accordion:first').accordion("option", "active", 0);
 
 				
 
@@ -237,9 +255,16 @@
 
 
 
+				//	When submit button is clicked, expand all accordions so any
+				//	HTML5 validation errors are visible.
+				$('input[type="submit"]').click(function() {
+					$('.TT_accordion').accordion("option", "active", 0);
+				});
+
 				//	Insert the shortcode when submitted
 				form.submit(function(event) {
 					event.preventDefault();
+					
 
 					var shortcode = '[tweetthis';
 

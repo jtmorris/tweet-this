@@ -74,12 +74,18 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 			//	We need to generate the URL
 			$url = 'http://twitter.com/intent/tweet?text=';
 			$url .= urlencode( 
-				html_entity_decode(	//	WordPress encodes special characters in posts. Undo that.
-					$this->generate_text() . ' ' .
-					$this->generate_post_url() . ' ' .
-					$this->generate_twitter_handles_for_url() 
-				) 
+				trim(	//	There's a chance there's a trailing space if no URL or Twitter
+						//	handles are input.  Remove that.
+					html_entity_decode(	//	WordPress encodes special characters in posts. Undo that.
+						$this->generate_text() . ' ' .
+						$this->generate_post_url() . ' ' .
+						$this->generate_twitter_handles_for_url() 
+					)
+				)
 			);
+
+			
+			$url = trim( $url );
 
 			return $url;
 		}
@@ -122,7 +128,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 					//	Try getting one
 					$short = wp_get_shortlink( $id );
 
-					if ( !empty( $short ) ) {	//	No shortlink for whatever reason
+					if ( empty( $short ) ) {	//	No shortlink for whatever reason
 						//	Just get the permalink I guess...
 						$short = get_permalink( $id );
 					}
