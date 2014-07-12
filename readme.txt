@@ -9,7 +9,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Tweet This offers easily embedded, stylish tweetable content boxes in your 
-posts and pages. Visitors can click on the content and post your tweet along with a
+posts and pages. Visitors can click on the content and post your message on Twitter, along with a
 link back to you.  Extremely customizable and flexible!
 
 
