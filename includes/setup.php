@@ -45,7 +45,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				wp_enqueue_style( 'tt-admin-css' );
 
 				wp_enqueue_style('tt-admin-jquery-ui-css',
-                	'http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/start/jquery-ui.css',
+                	TT_ROOT_URL . 'assets/js/jquery/cupertino-theme/jquery-ui.min.css',
                 	false
                	 );
 			}
@@ -64,6 +64,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				wp_enqueue_script( 'jquery' );
 				wp_enqueue_script( 'jquery-ui-core' );
 				wp_enqueue_script( 'jquery-ui-dialog' );
+				wp_enqueue_script( 'jquery-ui-accordion' );
 			}
 			public static function enqueue_helper_public_js() {
 				wp_enqueue_script( 'jquery' );
