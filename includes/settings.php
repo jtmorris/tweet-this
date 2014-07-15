@@ -350,7 +350,7 @@ if ( !class_exists( 'TT_Settings' ) ) {
 					</p>
 					<p>
 						If it must go, then instead consider 
-						<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/tweet-this">leaving a postive review</a> for this plugin, 
+						<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/tweetthis">leaving a postive review</a> for this plugin, 
 						<a target="_blank" href="http://tweetthis.jtmorris.net/contact/">offering advice</a> for improving it, 
 						or donating to the developer using the options below.
 					</p><br />
@@ -434,9 +434,9 @@ if ( !class_exists( 'TT_Settings' ) ) {
 						Or, if you are short on funds, there are other ways you can help out:
 					</p>
 					<ul>
-						<li>Leave a positive review on the plugin's <a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/tweet-this">WordPress listing</a></li>
-						<li>Vote "Works" on the plugin's <a target="_blank" href="http://wordpress.org/plugins/tweet-this/#compatibility">WordPress listing</a></li>
-						<li><a target="_blank" href="http://twitter.com/home?status=I%20love%20this%20WordPress%20plugin!%20http://wordpress.org/plugins/tweet-this/">Share your thoughts on Twitter</a> and other social sites</li>
+						<li>Leave a positive review on the plugin's <a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/tweetthis">WordPress listing</a></li>
+						<li>Vote "Works" on the plugin's <a target="_blank" href="http://wordpress.org/plugins/tweetthis/#compatibility">WordPress listing</a></li>
+						<li><a target="_blank" href="http://twitter.com/home?status=I%20love%20this%20WordPress%20plugin!%20http://wordpress.org/plugins/tweetthis/">Share your thoughts on Twitter</a> and other social sites</li>
 						<li>Improve this plugin on <a target="_blank" href='https://github.com/jtmorris/tweet-this'>GitHub</a></li>
 					</ul>						
 				</div>
@@ -473,7 +473,7 @@ if ( !class_exists( 'TT_Settings' ) ) {
 						If you're encountering a problem, have a question, or would like to suggest an improvement, be sure to let me know!
 					</p>						
 					<ul>
-						<li>Open a thread on the <a target="_blank" href="http://wordpress.org/support/plugin/tweet-this">plugin support page</a>.</li>
+						<li>Open a thread on the <a target="_blank" href="http://wordpress.org/support/plugin/tweetthis">plugin support page</a>.</li>
 						<li><a target="_blank" href="http://tweetthis.jtmorris.net/contact/">Contact the developer</a> privately.</li>
 						<li>Open an <a target="_blank" href="https://github.com/jtmorris/tweet-this/issues">"issue" on GitHub</a>.</li>
 					</ul>
