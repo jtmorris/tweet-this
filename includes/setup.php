@@ -10,7 +10,7 @@ require_once( TT_ROOT_PATH . "includes/share-handler.php" );
 
 if ( !class_exists( 'TT_Setup' ) ) {
 	class TT_Setup {
-		protected static $version = '1.0';
+		protected static $version = '1.0.2';
 
 		/**
 		 * Registers and enqueues all CSS and JavaScript.
@@ -45,7 +45,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				wp_enqueue_style( 'tt-admin-css' );
 
 				wp_enqueue_style('tt-admin-jquery-ui-css',
-                	TT_ROOT_URL . 'assets/js/jquery/cupertino-theme/jquery-ui.min.css',
+                	TT_ROOT_URL . 'assets/css/jquery/cupertino-theme/jquery-ui.min.css',
                 	false
                	 );
 			}

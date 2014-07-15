@@ -33,7 +33,8 @@
 						default_twitter_handles: twits,
 						post_url: post_url,
 						post_url_is_placeholder: placeholder,
-						editor: ed
+						editor: ed,
+						jquery: $
 					}
 				);
 			});

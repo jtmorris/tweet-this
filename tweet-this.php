@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Tweet This
  * Plugin URI: http://tweetthis.jtmorris.net
- * Description: Embed "share the given text" boxes in your content quickly and easily.
- * Version: 0.1.0
+ * Description: Tweet This offers easily embedded, stylish tweetable content boxes in your posts and pages. Get your visitors sharing on Twitter today!
+ * Version: 1.0.2
  * Author: John Morris
  * Author URI: http://jtmorris.net
  * License: GPL2
  */
 
-/*  Copyright 2014 - 2015  John Morris  (email : johntylermorris@jtmorris.net)
+/*  Copyright 2014 John Morris  (email : johntylermorris@jtmorris.net)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as 

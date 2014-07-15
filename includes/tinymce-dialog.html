@@ -7,7 +7,7 @@
 		<meta http-equiv="expires" content="0" />
 		<meta http-equiv="pragma" content="no-cache" />
 
-		<link rel="stylesheet" href="../assets/js/jquery/cupertino-theme/jquery-ui.min.css" />
+		<link rel="stylesheet" href="../assets/css/jquery/cupertino-theme/jquery-ui.min.css" />
 		<style type='text/css'>
 			#TT_tinymce_dialog {
 				font-family: "Open Sans", sans-serif;
@@ -152,13 +152,19 @@
 			<div id="TT_tinymce_character_count">&nbsp;</div>			
 			<textarea readonly="readonly" id="TT_tinymce_tweet_preview"></textarea>
 		</div>
-		<script src="../assets/js/jquery/jquery.min.js"></script>
-		<script src="../assets/js/jquery/jquery-ui.min.js"></script>
 
 		<script type='text/javascript'>
-			$(document).ready(function() {
-				//	Get passed arguments
+			(function() {
+				//	Get jQuery
+				//	http://jtmorris.net/?p=1109 for more info
 				var args = top.tinymce.activeEditor.windowManager.getParams();
+				var $ = args['jquery'];
+
+				//	Get the context for jQuery
+				//	http://jtmorris.net/?p=1109 for more info
+				var context = document.getElementsByTagName("body")[0];
+
+				//	Get passed arguments
 				var post_url = args['post_url'];
 				var post_url_is_placeholder = args['post_url_is_placeholder']
 				var default_twitter_handles = args['default_twitter_handles'];
@@ -166,19 +172,19 @@
 
 				//	Vars for readability
 				var sections = {
-					'general': $('#TT_section_general'),
-					'advanced': $('#TT_section_advanced')
+					'general': $('#TT_section_general', context),
+					'advanced': $('#TT_section_advanced', context)
 				};
 				var inputs = {
-					'text': $('#TT_tinymce_dialog_text'),
-					'url': $('#TT_tinymce_dialog_url_override'),
-					'twitter_handles': $('#TT_tinymce_dialog_twitter_handle_override')
+					'text': $('#TT_tinymce_dialog_text', context),
+					'url': $('#TT_tinymce_dialog_url_override', context),
+					'twitter_handles': $('#TT_tinymce_dialog_twitter_handle_override', context)
 				};
-				var form = $('#TT_tinymce_dialog form');
-				var preview = $('#TT_tinymce_tweet_preview');
-				var characters = $('#TT_tinymce_character_count');
-				var placeholder_url_warning = $('#TT_tinymce_preview_warning_placeholder_url');
-
+				var form = $('#TT_tinymce_dialog form', context);
+				var preview = $('#TT_tinymce_tweet_preview', context);
+				var characters = $('#TT_tinymce_character_count', context);
+				var placeholder_url_warning = $('#TT_tinymce_preview_warning_placeholder_url', context);
+				var accordionSections = $('.TT_accordion', context);
 
 
 				//	Load defaults into preview
@@ -197,13 +203,13 @@
 				//	sections do validation errors are visible.  Therefore,
 				//	each section is an accordion with only one entry.  It looks
 				//	the same, but allows multiple open sections.
-				$('.TT_accordion').accordion({
+				accordionSections.accordion({
 					active: false,
 					collapsible: true,
 					heightStyle: 'content'
 				});	
 				//	Open the general content accordion
-				$('.TT_accordion:first').accordion("option", "active", 0);
+				accordionSections.first().accordion("option", "active", 0);
 
 				
 
@@ -259,7 +265,7 @@
 				//	When submit button is clicked, expand all accordions so any
 				//	HTML5 validation errors are visible.
 				$('input[type="submit"]').click(function() {
-					$('.TT_accordion').accordion("option", "active", 0);
+					accordionSections.accordion("option", "active", 0);
 				});
 
 				//	Insert the shortcode when submitted
@@ -327,7 +333,7 @@
 						replace(/"/g, '').	//	remove double quotes
 						replace(/'/g, '');	//	remove single quotes
 				}
-			});			
+			}());
 		</script>
 	</body>
 </html>
