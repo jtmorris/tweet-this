@@ -3,7 +3,7 @@
  * Plugin Name: Tweet This
  * Plugin URI: http://tweetthis.jtmorris.net
  * Description: Tweet This offers easily embedded, stylish tweetable content boxes in your posts and pages. Get your visitors sharing on Twitter today!
- * Version: 1.0.2
+ * Version: 1.0.4
  * Author: John Morris
  * Author URI: http://jtmorris.net
  * License: GPL2
@@ -27,7 +27,7 @@
 
 define ( 'TT_ROOT_PATH', plugin_dir_path( __FILE__ ) );
 define ( 'TT_ROOT_URL', plugin_dir_url( __FILE__ ) );
-define ( 'TT_PLUGIN_FILE', TT_ROOT_PATH . 'tweet-this.php' );
+define ( 'TT_PLUGIN_FILE', TT_ROOT_PATH . 'tweetthis.php' );
 define ( 'TT_SUBDIR_AND_FILE', plugin_basename(__FILE__) );
 define ( 'TT_FILENAME', __FILE__ );
 

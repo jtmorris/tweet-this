@@ -4,7 +4,7 @@ Donate link: http://tweetthis.jtmorris.net/
 Tags: twitter, tweet, social, sharing
 Requires at least: 3.9
 Tested up to: 3.9.1
-Stable tag: 1.0.2
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,11 @@ Tweet This plugin.
 
 
 == Changelog ==
+= 1.0.4 =
+* Fix plugin update errors.
+= 1.0.3 =
+* Fix plugin update errors.
+* Code cleanup.
 = 1.0.2 =
 * Plugin listing improvements.
 = 1.0.0 =
@@ -94,5 +99,7 @@ Tweet This plugin.
 
 
 == Upgrade Notice ==
+= 1.0.4 =
+If plugin update fails for any reason, try manually activating the plugin!
 = 1.0.0 =
 It's the awesome first version!
