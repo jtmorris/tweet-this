@@ -87,6 +87,8 @@ Tweet This plugin.
 
 
 == Changelog ==
+= 1.0.6 =
+* Fix character encoding issues on some versions of PHP.
 = 1.0.5 =
 * Implement workaround for obscure jQuery bug in Firefox.
 = 1.0.4 =
