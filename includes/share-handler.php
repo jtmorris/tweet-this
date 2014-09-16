@@ -61,7 +61,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 							$retval .= 'Tweet This';
 						$retval .= '</a>';
 					$retval .= '</div>';
-					$retval .= '<div style="clear: both; "></div>';		
+					$retval .= '<div style="clear: both; "></div>';
 				$retval .= '</div>';
 			$retval .= '</div>';
 
@@ -73,18 +73,20 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 		protected function generate_share_url() {
 			//	We need to generate the URL
 			$url = 'http://twitter.com/intent/tweet?text=';
-			$url .= urlencode( 
+			$url .= urlencode(
 				trim(	//	There's a chance there's a trailing space if no URL or Twitter
 						//	handles are input.  Remove that.
 					html_entity_decode(	//	WordPress encodes special characters in posts. Undo that.
 						$this->generate_text() . ' ' .
 						$this->generate_post_url() . ' ' .
-						$this->generate_twitter_handles_for_url() 
+						$this->generate_twitter_handles_for_url(),
+						ENT_QUOTES,	//	Both single and double quotes
+						"UTF-8"	//	Specify UTF-8 for older versions of PHP
 					)
 				)
 			);
 
-			
+
 			$url = trim( $url );
 
 			return $url;
@@ -119,7 +121,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 			//	Do we need to generate the URL? If one is already provided, we don't.
 			if( is_null( $this->my_url ) ) {
 				//	Yes, we need ot generate a URL
-				
+
 				//	Okay then, do we need to construct a shortlink
 				$options = get_option('tt_plugin_options');
 				if ( $options['use_shortlink'] ) {
@@ -136,19 +138,19 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 
 					//	Okay. Now, if the post is not yet published, the shortlink
 					//	will be the default WordPress shortlink (the domain and
-					//	post id: http://domain.com/?p=123). Most shortlink 
+					//	post id: http://domain.com/?p=123). Most shortlink
 					//	customization plugins, like JetPack's WP.me module and
 					//	WP Bitly don't generate shortlinks until after the post
 					//	is published.
-					//	
+					//
 					//	This means that the shortlink we just worked out butts
 					//	of to get... might not be correct.  The shortlink
 					//	might not have been constructed yet, and WordPress just
 					//	doesn't know that.
-					//	
+					//
 					//	If this is the case, then we want to return a placeholder
 					//	URL that has similar/same length.
-					//	
+					//
 					//	Fortunately, there's a function for that which determines
 					//	whether the shortlink is accurate or not... sort of.
 					if ( TT_Tools::is_shortlink_accurate( $short ) ) {
@@ -161,19 +163,19 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 						//	Fortunately, there's a function for that...
 						$this->my_url = TT_Tools::placeholder_shortlink();
 						$this->my_url_is_placeholder = true;
-					}					
+					}
 				}
 				else {
 					//	No, no shortlink, just use normal URL
 					$this->my_url = get_permalink( $id );
 					$this->my_url_is_placeholder = false;
-				}			
+				}
 			}
 
 			if ( $placeholder_flag ) {
-				return array( 'shortlink'=>$this->my_url, 
+				return array( 'shortlink'=>$this->my_url,
 					'is_placeholder'=>$this->my_url_is_placeholder );
-			} 
+			}
 
 			return $this->my_url;
 		}
