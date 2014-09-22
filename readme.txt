@@ -4,7 +4,7 @@ Donate link: http://tweetthis.jtmorris.net/
 Tags: twitter, tweet, social, sharing
 Requires at least: 3.9
 Tested up to: 4.0
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,8 @@ Tweet This plugin.
 
 
 == Changelog ==
+= 1.0.7 =
+* Added the ability to remove auto-generated URL from post completely by default, and on a case-by-case basis.
 = 1.0.6 =
 * Fix character encoding issues on some versions of PHP.
 = 1.0.5 =
