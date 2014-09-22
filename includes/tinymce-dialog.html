@@ -31,11 +31,18 @@
 			input,
 			textarea {
 				width: 95%;
-				
+
 				font-size: 16px;
 
 				padding: 3px;
-			}			
+			}
+			input:disabled {
+				background-color: #BBB;
+			}
+			input[type="checkbox"],
+			input[type="radio"] {
+				width: auto;
+			}
 			input[type="submit"] {
 				width: auto;
 
@@ -69,7 +76,7 @@
 				font-weight: 200;
 
 				background-color: #CCC;
-				
+
 				width: 95%;
 				height: 100px;
 			}
@@ -89,13 +96,13 @@
 				border: 1px solid #730000;
 				border-radius: 8px;
 			}
-		</style>	
+		</style>
 	</head>
 	<body>
 		<div id='TT_tinymce_dialog'>
 			<form>
 				<div class='TT_accordion'>
-					<h3>General</h3>				
+					<h3>General</h3>
 					<div id='TT_section_general'>
 						<table class='form-table'>
 							<tr>
@@ -116,12 +123,12 @@
 								<td>
 									<input id="TT_tinymce_dialog_twitter_handle_override" type="text" />
 									<p class='tt_admin_help_text'>
-										Comma seperated list of "via" Twitter handles you want 
+										Comma seperated list of "via" Twitter handles you want
 										added to your tweets.
 										<br />
 										Example: <span class="tt_admin_example">@jt_morris, @DTELinux, @CraigyFerg</span>
 									</p>
-								</td>				
+								</td>
 							</tr>
 							<tr>
 								<th scope="row">Override Post URL</th>
@@ -132,15 +139,33 @@
 									</p>
 								</td>
 							</tr>
+							<tr>
+								<th scope="row">Remove Twitter Handles</th>
+								<td>
+									<input id="TT_tinymce_dialog_remove_twitter_handles" type="checkbox" />
+									<p class='tt_admin_help_text'>
+										Check this to remove Twitter handles from the tweet.
+									</p>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">Remove URL</th>
+								<td>
+									<input id="TT_tinymce_dialog_remove_url" type="checkbox" />
+									<p class='tt_admin_help_text'>
+										Check this to remove the post URL from the tweet.
+									</p>
+								</td>
+							</tr>
 						</table>
 					</div>
 				</div>
 				<input type='submit' value='Insert Shortcode' />
 			</form>
 			<br /><br />
-			<h3>Preview</h3>			
+			<h3>Preview</h3>
 			<div id="TT_tinymce_preview_warning_placeholder_url" class="TT_tinymce_preview_warning" style="display: none; ">
-				WordPress hasn't generated a shortlink yet. A 
+				WordPress hasn't generated a shortlink yet. A
 				placeholder of similar appearance and length has been included in
 				the preview. As soon as one is generated, the correct shortlink
 				will take its place. <a href="" target="_blank">(Click Here For More
@@ -149,7 +174,7 @@
 			<div id="TT_tinymce_preview_warning_validation_errors" class="TT_tinymce_preview_warning" style="display: none; ">
 				Uh oh.  Something isn't right.  Double check your URL!
 			</div>
-			<div id="TT_tinymce_character_count">&nbsp;</div>			
+			<div id="TT_tinymce_character_count">&nbsp;</div>
 			<textarea readonly="readonly" id="TT_tinymce_tweet_preview"></textarea>
 		</div>
 
@@ -178,7 +203,9 @@
 				var inputs = {
 					'text': $('#TT_tinymce_dialog_text', context),
 					'url': $('#TT_tinymce_dialog_url_override', context),
-					'twitter_handles': $('#TT_tinymce_dialog_twitter_handle_override', context)
+					'twitter_handles': $('#TT_tinymce_dialog_twitter_handle_override', context),
+					'remove_twitter_handles': $('#TT_tinymce_dialog_remove_twitter_handles', context),
+					'remove_url': $('#TT_tinymce_dialog_remove_url', context)
 				};
 				var form = $('#TT_tinymce_dialog form', context);
 				var preview = $('#TT_tinymce_tweet_preview', context);
@@ -196,9 +223,9 @@
 				}
 
 
-				
+
 				//	Accordion the sections
-				//	We have multiple accordions for each section because when 
+				//	We have multiple accordions for each section because when
 				//	submitting the form, we want to be able to expand ALL accordion
 				//	sections do validation errors are visible.  Therefore,
 				//	each section is an accordion with only one entry.  It looks
@@ -207,23 +234,23 @@
 					active: false,
 					collapsible: true,
 					heightStyle: 'content'
-				});	
+				});
 				//	Open the general content accordion
 				accordionSections.first().accordion("option", "active", 0);
 
-				
+
 
 				//	On text change, update preview
 				inputs['text'].on('change keyup paste', function() {
 					preview.val(tt_preview_string()).change();
-				});				
+				});
 
 				//	On URL change, update preview and hide any URL warnings
 				inputs['url'].on('change keyup paste', function() {
 					preview.val(tt_preview_string()).change();
-					
+
 					if( inputs['url'].val() === post_url && post_url_is_placeholder ) {
-						placeholder_url_warning.show();					
+						placeholder_url_warning.show();
 					}
 					else {
 						placeholder_url_warning.hide();
@@ -234,6 +261,31 @@
 				inputs['twitter_handles'].on('change keyup paste', function() {
 					preview.val(tt_preview_string()).change();
 				});
+
+				//	On remove checkbox changes, update preview
+				inputs['remove_twitter_handles'].on('change keyup paste', function() {
+					preview.val(tt_preview_string()).change();
+
+					//	Also, disable the override fields for good measure
+					if( inputs['remove_twitter_handles'].prop('checked') ) {
+						inputs['twitter_handles'].prop('disabled', true);
+					}
+					else {
+						inputs['twitter_handles'].prop('disabled', false);
+					}
+				});
+				inputs['remove_url'].on('change keyup paste', function() {
+					preview.val(tt_preview_string()).change();
+
+					//	Also, disable the override fields for good measure
+					if( inputs['remove_url'].prop('checked') ) {
+						inputs['url'].prop('disabled', true);
+					}
+					else {
+						inputs['url'].prop('disabled', false);
+					}
+				});
+
 
 				//	Character counter and preview truncate
 				preview.on('change', function() {
@@ -271,7 +323,7 @@
 				//	Insert the shortcode when submitted
 				form.submit(function(event) {
 					event.preventDefault();
-					
+
 
 					var shortcode = '[tweetthis';
 
@@ -283,7 +335,7 @@
 					if( get_clean_url() ) {
 						shortcode += ' url="' + (get_clean_url()) + '"';
 					}
-					
+
 					shortcode += ']' + (get_clean_text()) + '[/tweetthis]';
 
 					editor.selection.setContent(shortcode);
@@ -300,10 +352,10 @@
 					//	If so, we want those.  If not, we want the defaults.
 					var twits = default_twitter_handles;
 					var url = post_url;
-					if( get_clean_twitter_handles() ) {
+					if( get_clean_twitter_handles() || inputs['remove_twitter_handles'].prop('checked') ) {
 						twits = get_clean_twitter_handles();
 					}
-					if( get_clean_url() ) {
+					if( get_clean_url() || inputs['remove_url'].prop('checked') ) {
 						url = get_clean_url();
 					}
 
@@ -324,11 +376,19 @@
 					return inputs['text'].val();
 				}
 				function get_clean_url() {
+					if(inputs['remove_url'].prop('checked')) {
+						return "";
+					}
+
 					return encodeURI( $.trim(inputs['url'].val()) ).
 						replace(/"/g, '').	//	remove double quotes
 						replace(/'/g, '');	//	remove single quotes;
 				}
 				function get_clean_twitter_handles() {
+					if(inputs['remove_twitter_handles'].prop('checked')) {
+						return "";
+					}
+
 					return $.trim(inputs['twitter_handles'].val()).
 						replace(/"/g, '').	//	remove double quotes
 						replace(/'/g, '');	//	remove single quotes

@@ -20,15 +20,15 @@ if ( !class_exists( 'TT_Settings' ) ) {
 			add_settings_section(
 				'tweet_this_general',		//	Section ID
 				'General',					//	Section Heading
-				array( 'TT_Settings', 
+				array( 'TT_Settings',
 					'section_content_helper_general' ),	//	Content callback
 				TT_FILENAME					//	The page
 			);
 
-			add_settings_section( 
+			add_settings_section(
 				'tweet_this_url',		//	Section ID
 				'URL Settings',					//	Heading for section
-				array( 'TT_Settings', 
+				array( 'TT_Settings',
 					'section_content_helper_url'),	//	Callback to output section content
 				TT_FILENAME						//	The page
 			);
@@ -41,21 +41,21 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				TT_FILENAME						//	The page
 			);
 
-			
 
-			add_settings_field( 
+
+			add_settings_field(
 				'tt_default_twitter_handles',			//	Setting ID
 				'Default Twitter Handles', 			//	Setting Title
-				array( 'TT_Settings', 
+				array( 'TT_Settings',
 					'field_helper_textbox' ),	//	Content Callback
 				TT_FILENAME,				//	The page
 				'tweet_this_general',	//	Settings Section ID
 				//	Arguments for callback
-				array( 
+				array(
 					//	Name in options array:
 					//	tt_plugin_options['<THE VALUE SPECIFIED HERE']
 					'name'=>'default_twitter_handles',
-					
+
 					//	Help text displayed below field
 					'help_text'=>'Comma separated list of "via" Twitter handles you want added to your tweets (leave blank for none). <br />Example: <span class="tt_admin_example">@jt_morris, @DTELinux, @CraigyFerg</span>'
 				)
@@ -65,7 +65,7 @@ if ( !class_exists( 'TT_Settings' ) ) {
 			add_settings_field(
 				'tt_twitter_icon',			//	Setting ID
 				'Twitter Icon',				//	Setting Title
-				array( 'TT_Settings', 
+				array( 'TT_Settings',
 					'field_helper_radio' ),	//	Content Callback
 				TT_FILENAME	,				//	The page
 				'tweet_this_theme',	//	Settings Section ID
@@ -87,18 +87,18 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				'tt_hide_promotional_byline',		//	Setting ID
 				'Hide Promotional Byline?',	//	Setting Title
 
-				array( 'TT_Settings', 
+				array( 'TT_Settings',
 					'field_helper_radio' ),	//	Content Callback
 				TT_FILENAME,				//	The page
 				'tweet_this_general',	//	Settings Section ID
 
 				//	Arguments for callback
-				array( 
+				array(
 					//	Name in options array:
 					//	tt_plugin_options['<THE VALUE SPECIFIED HERE']
 					'name'=>'hide_promotional_byline',
 					'id'=> 'tt_byline_removal',
-					
+
 					//	Array of label=>value pairs for desired buttons
 					'buttons'=>array( array('Yes', true), array('No', false) ),
 
@@ -109,19 +109,19 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				)
 			);
 
-			add_settings_field( 
+			add_settings_field(
 				'tt_use_shortlink',			//	Setting ID
 				'Use Shortlink?', 			//	Setting Title
-				array( 'TT_Settings', 
+				array( 'TT_Settings',
 					'field_helper_radio' ),	//	Content Callback
 				TT_FILENAME,				//	The page
 				'tweet_this_url',	//	Settings Section ID
 				//	Arguments for callback
-				array( 
+				array(
 					//	Name in options array:
 					//	tt_plugin_options['<THE VALUE SPECIFIED HERE']
 					'name'=>'use_shortlink',
-					
+
 					//	Array of arrays of label=>value pairs for desired buttons
 					'buttons'=>array( array('Yes', true), array('No', false) ),
 
@@ -129,7 +129,29 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				)
 			);
 
-			
+			add_settings_field(
+				'tt_disable_url',			//	Setting ID
+				'Disable URLs', 			//	Setting Title
+				array( 'TT_Settings',
+					'field_helper_radio' ),	//	Content Callback
+				TT_FILENAME,				//	The page
+				'tweet_this_url',	//	Settings Section ID
+				//	Arguments for callback
+				array(
+					//	Name in options array:
+					//	tt_plugin_options['<THE VALUE SPECIFIED HERE']
+					'name'=>'disable_url',
+
+					//	Array of arrays of label=>value pairs for desired buttons
+					'buttons'=>array( array('Yes', true), array('No', false) ),
+
+					'help_text'=>'Choose yes to remove your URL from tweets by default.',
+
+					'default'=>false
+				)
+			);
+
+
 			add_settings_field(
 				'tt_theme',							//	Setting ID
 				'Choose Theme',						//	Setting Title
@@ -184,17 +206,17 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				?>
 				<p>
 					If the default shortlinks created by WordPress aren't satisfactory,
-					and you don't use a shortlink generating plugin like 
+					and you don't use a shortlink generating plugin like
 					Jetpack
 					or WP Bitly, the settings below might help.
 				</p>
 				<p>
 					If your shortlink system relies on the WordPress permalink
-					or the post ID, this can work.  Enter your shortlink domain, 
+					or the post ID, this can work.  Enter your shortlink domain,
 					and the permalink structure below.
 				</p>
 				<p>
-					<a href='' target='_blank'>Read this article</a> 
+					<a href='' target='_blank'>Read this article</a>
 					for more information!
 				</p>
 				<?php
@@ -211,16 +233,16 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				$buttons = $args['buttons'];
 
 				//	These $args are optional, so make sure they exist!
-				array_key_exists('help_text', $args) ? 
-					$help_text = $args['help_text'] : $help_text = '';				
-				array_key_exists('default_value', $args) ? 
+				array_key_exists('help_text', $args) ?
+					$help_text = $args['help_text'] : $help_text = '';
+				array_key_exists('default_value', $args) ?
 					$default_value = $args['default_value'] : $default_value = '';
-				array_key_exists('style', $args) ? 
+				array_key_exists('style', $args) ?
 					$style = $args['style'] : $style = '';
 				array_key_exists('id', $args) ?
 					$id = $args['id'] : $id = '';
 
-				
+
 				//	Is there already a stored value in the database?
 				$stored_value = $options[$name];
 
@@ -255,11 +277,11 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				$name = $args['name'];
 
 				//	These $args are optional, so make sure they exist!
-				array_key_exists('help_text', $args) ? 
-					$help_text = $args['help_text'] : $help_text = '';				
-				array_key_exists('default_value', $args) ? 
+				array_key_exists('help_text', $args) ?
+					$help_text = $args['help_text'] : $help_text = '';
+				array_key_exists('default_value', $args) ?
 					$default_value = $args['default_value'] : $default_value = '';
-				array_key_exists('style', $args) ? 
+				array_key_exists('style', $args) ?
 					$style = $args['style'] : $style = '';
 				array_key_exists('id', $args) ?
 					$id = $args['id'] : $id = '';
@@ -287,11 +309,11 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				$name = $args['name'];
 
 				//	These $args are optional, so make sure they exist!
-				array_key_exists('help_text', $args) ? 
-					$help_text = $args['help_text'] : $help_text = '';				
-				array_key_exists('default_value', $args) ? 
+				array_key_exists('help_text', $args) ?
+					$help_text = $args['help_text'] : $help_text = '';
+				array_key_exists('default_value', $args) ?
 					$default_value = $args['default_value'] : $default_value = '';
-				array_key_exists('style', $args) ? 
+				array_key_exists('style', $args) ?
 					$style = $args['style'] : $style = '';
 				array_key_exists('id', $args) ?
 					$id = $args['id'] : $id = '';
@@ -320,7 +342,7 @@ if ( !class_exists( 'TT_Settings' ) ) {
 			<div class="wrap">
 				<div id="TT_content">
 					<div class="icon32" id="icon-options-general"><br /></div>
-					<h2>Tweet This - Settings</h2>					
+					<h2>Tweet This - Settings</h2>
 					<form action="options.php" method="post">
 						<?php settings_fields( 'tweet_this_options' ); ?>
 						<?php do_settings_sections( TT_FILENAME ); ?>
@@ -335,8 +357,8 @@ if ( !class_exists( 'TT_Settings' ) ) {
 					<h3>When You Save Your Settings, The Byline Will Be Disabled</h3>
 					<img src="<?php echo TT_ROOT_URL; ?>assets/images/light-switch.png" alt="" style="margin: 0 0 15px 15px; float: right;" />
 					<p>
-						I completely understand.  As a WordPress user myself, 
-						I have turned off my share of promotions and bylines 
+						I completely understand.  As a WordPress user myself,
+						I have turned off my share of promotions and bylines
 						when given the opportunity.
 					</p><br />
 
@@ -344,18 +366,18 @@ if ( !class_exists( 'TT_Settings' ) ) {
 						However, <span style="font-weight: bold; ">please consider leaving the byline.</span>
 					</p>
 					<p>
-						Just like you are driving traffic to your 
-						site with Tweetable quotes, this plugin gains users with 
+						Just like you are driving traffic to your
+						site with Tweetable quotes, this plugin gains users with
 						the byline exposure.
 					</p>
 					<p>
-						If it must go, then instead consider 
-						<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/tweetthis">leaving a postive review</a> for this plugin, 
-						<a target="_blank" href="http://tweetthis.jtmorris.net/contact/">offering advice</a> for improving it, 
+						If it must go, then instead consider
+						<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/tweetthis">leaving a postive review</a> for this plugin,
+						<a target="_blank" href="http://tweetthis.jtmorris.net/contact/">offering advice</a> for improving it,
 						or donating to the developer using the options below.
 					</p><br />
-					
-					<table class='TT_donations'>							
+
+					<table class='TT_donations'>
 						<tr>
 							<!--Flattr-->
 							<td>
@@ -401,10 +423,10 @@ if ( !class_exists( 'TT_Settings' ) ) {
 					<h3>Support This Plugin</h3>
 					<p>
 						Is this plugin useful for you?  If so, please help
-						support its ongoing development and improvement 
+						support its ongoing development and improvement
 						with a donation.
 					</p>
-					<table class='TT_donations'>							
+					<table class='TT_donations'>
 						<tr>
 							<!--Flattr-->
 							<td>
@@ -438,30 +460,30 @@ if ( !class_exists( 'TT_Settings' ) ) {
 						<li>Vote "Works" on the plugin's <a target="_blank" href="http://wordpress.org/plugins/tweetthis/#compatibility">WordPress listing</a></li>
 						<li><a target="_blank" href="http://twitter.com/home?status=I%20love%20this%20WordPress%20plugin!%20http://wordpress.org/plugins/tweetthis/">Share your thoughts on Twitter</a> and other social sites</li>
 						<li>Improve this plugin on <a target="_blank" href='https://github.com/jtmorris/tweet-this'>GitHub</a></li>
-					</ul>						
+					</ul>
 				</div>
 
 				<div class='TT_sidebar_box'>
 					<h3>Plugin Tips, Guides, and More</h3>
 					<p>
 						If you're having any problems making Tweet This work,
-						or you aren't sure how to use it, check out some of the 
+						or you aren't sure how to use it, check out some of the
 						following articles.
-					</p>						
+					</p>
 					<ul>
 						<li>
 							<a target="_blank" href="http://tweetthis.jtmorris.net/posts/using-tweet-this/">
 								Using Tweet This For the First Time
 							</a>
 							: A basic introduction to Tweet This. Covers how it
-							works, how to use it, and introduces the most 
+							works, how to use it, and introduces the most
 							important settings.
 						</li>
 						<li>
 							<a target="_blank" href="http://tweetthis.jtmorris.net/posts/tweet-settings/">
 								Tweet This Settings
 							</a>
-							: Explains in greater detail the settings availble 
+							: Explains in greater detail the settings availble
 							for Tweet This.
 						</li>
 					</ul>
@@ -471,7 +493,7 @@ if ( !class_exists( 'TT_Settings' ) ) {
 					<h3>Get Help / Report a Bug</h3>
 					<p>
 						If you're encountering a problem, have a question, or would like to suggest an improvement, be sure to let me know!
-					</p>						
+					</p>
 					<ul>
 						<li>Open a thread on the <a target="_blank" href="http://wordpress.org/support/plugin/tweetthis">plugin support page</a>.</li>
 						<li><a target="_blank" href="http://tweetthis.jtmorris.net/contact/">Contact the developer</a> privately.</li>
@@ -483,13 +505,13 @@ if ( !class_exists( 'TT_Settings' ) ) {
 					<p>
 						If you love this plugin, check out some of the others by
 						the same developer!
-					</p>						
+					</p>
 					<ul>
 						<li>
 							<a target="_blank" href="http://bit.ly/ad-blocking-detector">
 								Ad Blocking Detector
 							</a>
-							: Tired of missed profits because of pesky ad 
+							: Tired of missed profits because of pesky ad
 							blocker browser extensions, add-ons, and plugins? Fight
 							back with <em>Ad Blocking Detector</em> today!
 						</li>
@@ -511,7 +533,7 @@ if ( !class_exists( 'TT_Settings' ) ) {
 								buttons: {
 									Close: function() {
 										$(this).dialog("close");
-									}									
+									}
 								},
 								width: 550,
 								position: {
@@ -520,7 +542,7 @@ if ( !class_exists( 'TT_Settings' ) ) {
 							});
 						});
 					});	//	end $(document.ready(function() {
-				}(jQuery))		
+				}(jQuery))
 			</script>
 			<?php
 		}

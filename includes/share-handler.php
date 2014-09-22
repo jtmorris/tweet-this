@@ -118,12 +118,24 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 		}
 
 		public function generate_post_url( $id = 0, $placeholder_flag = false ) {	//	$id = 0 means current post to get_permalink function
-			//	Do we need to generate the URL? If one is already provided, we don't.
+			$options = get_option('tt_plugin_options');
+
+			//	Do we need to generate the URL? If URL is disabled, we don't.
+			//	If one is already provided, we don't.
+			if( $options['disable_url'] ) {
+				if( $placeholder_flag ) {
+					$this->my_url = "";
+					return array('shortlink'=>'', 'is_placeholder'=>false);
+				}
+				else {
+					return "";
+				}
+			}
 			if( is_null( $this->my_url ) ) {
 				//	Yes, we need ot generate a URL
 
 				//	Okay then, do we need to construct a shortlink
-				$options = get_option('tt_plugin_options');
+
 				if ( $options['use_shortlink'] ) {
 					//	Yes, we need a shortlink.
 
