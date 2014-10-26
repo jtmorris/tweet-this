@@ -163,12 +163,12 @@
 				<input type='submit' value='Insert Shortcode' />
 			</form>
 			<br /><br />
-			<h3>Preview</h3>
+			<h3 id="TT_preview_heading">Preview</h3>
 			<div id="TT_tinymce_preview_warning_placeholder_url" class="TT_tinymce_preview_warning" style="display: none; ">
 				WordPress hasn't generated a shortlink yet. A
 				placeholder of similar appearance and length has been included in
 				the preview. As soon as one is generated, the correct shortlink
-				will take its place. <a href="" target="_blank">(Click Here For More
+				will take its place. <a href="http://tweetthis.jtmorris.net/posts/scary-shortlink-warnings/" target="_blank">(Click Here For More
 				Info.)</a>
 			</div>
 			<div id="TT_tinymce_preview_warning_validation_errors" class="TT_tinymce_preview_warning" style="display: none; ">
@@ -194,6 +194,9 @@
 				var post_url_is_placeholder = args['post_url_is_placeholder']
 				var default_twitter_handles = args['default_twitter_handles'];
 				var editor = args['editor'];
+				var disable_preview = args['disable_preview'];
+				var disable_advanced = args['disable_advanced'];
+				var disable_char_count = args['disable_char_count'];
 
 				//	Vars for readability
 				var sections = {
@@ -209,6 +212,7 @@
 				};
 				var form = $('#TT_tinymce_dialog form', context);
 				var preview = $('#TT_tinymce_tweet_preview', context);
+				var preview_heading = $('#TT_preview_heading', context);
 				var characters = $('#TT_tinymce_character_count', context);
 				var placeholder_url_warning = $('#TT_tinymce_preview_warning_placeholder_url', context);
 				var accordionSections = $('.TT_accordion', context);
@@ -218,12 +222,29 @@
 				preview.val(tt_preview_string());
 
 				//	Display any caveats or warning about the preview
-				if ( post_url_is_placeholder ) {
+				if ( post_url_is_placeholder && !disable_preview ) {
 					placeholder_url_warning.show();
 				}
 
 
 
+				//	Setup the layout of the dialog
+				if( disable_preview ) {
+					preview.hide();
+					preview_heading.hide();
+				}
+
+				if( disable_char_count ) {
+					characters.hide();
+				}
+
+				if( disable_advanced ) {
+					sections.advanced.parent('.TT_accordion').remove();
+				}
+
+
+
+				
 				//	Accordion the sections
 				//	We have multiple accordions for each section because when
 				//	submitting the form, we want to be able to expand ALL accordion

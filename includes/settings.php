@@ -34,13 +34,20 @@ if ( !class_exists( 'TT_Settings' ) ) {
 			);
 
 			add_settings_section(
+				'tweet_this_dialog',			//	Section ID
+				'Shortcode Creator Settings',			//	Section Heading
+				array( 'TT_Settings',
+					'section_content_helper_dialog' ),	//	Callback to output section content
+				TT_FILENAME						//	The page
+			);
+
+			add_settings_section(
 				'tweet_this_theme',			//	Section ID
 				'Theme Settings',			//	Section Heading
 				array( 'TT_Settings',
 					'section_content_helper_advanced' ),	//	Callback to output section content
 				TT_FILENAME						//	The page
 			);
-
 
 
 			add_settings_field(
@@ -151,6 +158,62 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				)
 			);
 
+			add_settings_field(
+				'tt_disable_preview',							//	Setting ID
+				'Disable Preview?',						//	Setting Title
+				array( 'TT_Settings',
+					'field_helper_radio' ),			//	Content Callback
+				TT_FILENAME,
+				'tweet_this_dialog',					//	Settings Section ID
+				array(
+					'name' => 'disable_preview',
+
+					'buttons'=>array( array('Yes', true), array('No', false) ),
+
+					'help_text' => 'Disable the preview of your tweet in the shortcode creator?',
+
+					'default' => false
+				)
+			);
+
+
+			add_settings_field(
+				'tt_disable_advanced',							//	Setting ID
+				'Disable Advanced Options?',						//	Setting Title
+				array( 'TT_Settings',
+					'field_helper_radio' ),			//	Content Callback
+				TT_FILENAME,
+				'tweet_this_dialog',					//	Settings Section ID
+				array(
+					'name' => 'disable_advanced',
+
+					'buttons'=>array( array('Yes', true), array('No', false) ),
+
+					'help_text' => 'Disable the advanced options in the shortcode creator?',
+
+					'default' => false
+				)
+			);
+
+
+			add_settings_field(
+				'tt_disable_char_count',							//	Setting ID
+				'Disable Character Counter?',						//	Setting Title
+				array( 'TT_Settings',
+					'field_helper_radio' ),			//	Content Callback
+				TT_FILENAME,
+				'tweet_this_dialog',					//	Settings Section ID
+				array(
+					'name' => 'disable_char_count',
+
+					'buttons'=>array( array('Yes', true), array('No', false) ),
+
+					'help_text' => 'Disable the characters left counter?',
+
+					'default' => false
+				)
+			);
+
 
 			add_settings_field(
 				'tt_theme',							//	Setting ID
@@ -223,6 +286,13 @@ if ( !class_exists( 'TT_Settings' ) ) {
 			}
 			public static function section_content_helper_advanced() {
 
+			}
+			public static function section_content_helper_dialog() {
+				?>
+				<p>
+					Customize the Tweet This Shortcode Creator dialog box.
+				</p>
+				<?php
 			}
 			public static function field_helper_radio( $args ) {
 				//	Get currently stored options

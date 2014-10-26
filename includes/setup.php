@@ -19,7 +19,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 		 */
 		protected static function enqueue() {
 			//	Enqueue admin CSS
-			add_action( 'admin_enqueue_scripts', 
+			add_action( 'admin_enqueue_scripts',
 				array('TT_Setup', 'enqueue_helper_admin_css') );
 
 			//	Enqueue public CSS
@@ -27,7 +27,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				array( 'TT_Setup', 'enqueue_helper_public_css' ) );
 
 			//	Enqueue admin JS
-			add_action( 'admin_enqueue_scripts', 
+			add_action( 'admin_enqueue_scripts',
 				array( 'TT_Setup', 'enqueue_helper_admin_js' ) );
 
 			//	Enqueue public facing JS
@@ -39,7 +39,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				array( 'TT_Ajax_Actions', 'navigate' ) );
 		}
 			public static function enqueue_helper_admin_css() {
-				wp_register_style( 'tt-admin-css', 
+				wp_register_style( 'tt-admin-css',
 					TT_ROOT_URL . 'assets/css/admin.css' );
 
 				wp_enqueue_style( 'tt-admin-css' );
@@ -52,9 +52,9 @@ if ( !class_exists( 'TT_Setup' ) ) {
 			public static function enqueue_helper_public_css() {
 				$options = get_option( 'tt_plugin_options' );
 
-				wp_register_style( 'tt-public-css-main', 
+				wp_register_style( 'tt-public-css-main',
 					TT_ROOT_URL . 'assets/css/public-main.css' );
-				wp_register_style( 'tt-public-css-theme', 
+				wp_register_style( 'tt-public-css-theme',
 					TT_ROOT_URL . 'assets/css/themes/' . $options['base_theme'] . '.css' );
 
 				wp_enqueue_style( 'tt-public-css-main' );
@@ -68,23 +68,23 @@ if ( !class_exists( 'TT_Setup' ) ) {
 			}
 			public static function enqueue_helper_public_js() {
 				wp_enqueue_script( 'jquery' );
-				wp_enqueue_script( 'tt-tweet-this-box-js', 
+				wp_enqueue_script( 'tt-tweet-this-box-js',
 					TT_ROOT_URL . 'assets/js/tweet-this-box.js' );
 			}
 
 		/**
-		 * Registers and defines all WordPress hooks and filters. (e.g. activation / 
+		 * Registers and defines all WordPress hooks and filters. (e.g. activation /
 		 * deactivation)
 		 * @todo If minimum PHP version for WordPress hits 5.3.0, switch to
 		 * anonymous functions in add_action calls: http://goo.gl/pZnUYV
 		 */
 		protected static function hooks() {
 			//	Activation
-			register_activation_hook( TT_PLUGIN_FILE, 
+			register_activation_hook( TT_PLUGIN_FILE,
 				array( 'TT_Setup', 'hooks_helper_activation' ) );
 
 			//	Deactivation
-			register_deactivation_hook( TT_PLUGIN_FILE, 
+			register_deactivation_hook( TT_PLUGIN_FILE,
 				array( 'TT_Setup', 'hooks_helper_deactivation' ) );
 
 			//	Uninstall
@@ -92,11 +92,11 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				array( 'TT_Setup', 'hooks_helper_uninstall' ) );
 
 			//	Admin Init
-			add_action( 'admin_init', 
+			add_action( 'admin_init',
 				array( 'TT_Setup', 'hooks_helper_admin_init' ) );
 
 			//	Admin Heading
-			add_action( 'admin_head', 
+			add_action( 'admin_head',
 				array( 'TT_Setup', 'hooks_helper_admin_head' ) );
 
 			//	TinyMCE Plugin
@@ -106,10 +106,10 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				array( 'TT_Setup', 'hooks_helper_tinymce_button' ) );
 		}
 			public static function hooks_helper_activation() {
-				
+
 			}
 			public static function hooks_helper_deactivation() {
-				
+
 			}
 			public static function hooks_helper_uninstall() {
 				//	Clear the options
@@ -123,7 +123,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				//	We need to save the post ID, post URL, and default Twitter
 				//	handles to a JavaScript variable for the TinyMCE plugin created
 				//	in ../assets/js/tinymce-plugin.js
-				//	
+				//
 				//	Sadly, the editor is a major pain in the ass, and terrible to
 				//	debug with, so getting this information there is not a good idea.
 
@@ -145,6 +145,11 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				$options = get_option( 'tt_plugin_options' );
 				$twits = $options['default_twitter_handles'];
 
+				//	dialog customization options
+				$hide_preview = $options['disable_preview'];
+				$hide_advanced = $options['disable_advanced'];
+				$hide_char_count = $options['disable_char_count'];
+
 
 				//	Output the JavaScript
 				?>
@@ -153,7 +158,10 @@ if ( !class_exists( 'TT_Setup' ) ) {
 						'id': '<?php echo $id; ?>',
 						'post_url': '<?php echo $urlarr["shortlink"]; ?>',
 						'post_url_is_placeholder': <?php  echo (($urlarr["is_placeholder"]) ? 'true' : 'false'); ?>,
-						'default_twitter_handles': '<?php echo $twits; ?>'
+						'default_twitter_handles': '<?php echo $twits; ?>',
+						'disable_preview': <?php echo (($hide_preview) ? 'true' : 'false'); ?>,
+						'disable_advanced': <?php echo (($hide_advanced) ? 'true' : 'false'); ?>,
+						'disable_char_count': <?php echo (($hide_char_count) ? 'true' : 'false'); ?>
 					}
 				</script>
 				<?php
@@ -166,7 +174,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 
 				if ( is_admin() && ($type == 'post' || $type == 'page') ) {
 					//	Yes, we are in the admin editing a post or page
-					$plugin_array['tweetthis'] = TT_ROOT_URL . 'assets/js/tinymce-plugin.js';					
+					$plugin_array['tweetthis'] = TT_ROOT_URL . 'assets/js/tinymce-plugin.js';
 				}
 				return $plugin_array;
 			}
@@ -188,18 +196,18 @@ if ( !class_exists( 'TT_Setup' ) ) {
 		 * Registers and defines all WordPress admin menus.
 		 * @todo If minimum PHP version for WordPress hits 5.3.0, switch to
 		 * anonymous functions in add_action calls: http://goo.gl/pZnUYV
-		 */				
+		 */
 		protected static function menus() {
-			add_action( 'admin_menu', 
-				array( 'TT_Setup', 'menus_helper' ) );	
+			add_action( 'admin_menu',
+				array( 'TT_Setup', 'menus_helper' ) );
 		}
 			public static function menus_helper() {
-				add_options_page( 
+				add_options_page(
 					'Tweet This - Dashboard',	//	Title tag value
 					'Tweet This',		//	Menu Text
 					'administrator',			//	Required privileges/capability
 					'tweet-this',				//	Menu Slug
-					array( 'TT_Settings', 
+					array( 'TT_Settings',
 						'output' )	 			// Content Function
 				);
 			}
@@ -216,7 +224,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				array( 'TT_Setup', 'shortcodes_helper' ) );
 		}
 			public static function shortcodes_helper( $atts, $enc_content = null ) {
-				extract( shortcode_atts( array( 
+				extract( shortcode_atts( array(
 					'text' => '',
 					'url' => false,
 					'twitter_handles' => false
@@ -230,7 +238,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 					$text = $enc_content;
 				}
 
-				$Share = new TT_Share_Handler( $text, $url, 
+				$Share = new TT_Share_Handler( $text, $url,
 					$twitter_handles );
 
 				return $Share->display();
@@ -245,7 +253,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 		public static function plugin_list_links( ) {
 			$plugin_file = TT_SUBDIR_AND_FILE;
 
-			add_filter( "plugin_action_links_{$plugin_file}", 
+			add_filter( "plugin_action_links_{$plugin_file}",
 				array( 'TT_Setup', 'plugin_list_links_helper' ) );
 		}
 			public static function plugin_list_links_helper( $old_links ) {
@@ -266,7 +274,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 		public static function upgrade() {
 			//	Does the stored plugin version equal the current version?
 			//	If so, then we shouldn't need to do anything.
-			//	If not, then we have to run through any upgrade processes.			
+			//	If not, then we have to run through any upgrade processes.
 			if ( get_site_option( 'tt_current_version') != self::$version ) {
 				//	Run upgrade stuff
 				$current_options = get_option( 'tt_plugin_options' );
@@ -280,7 +288,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				);
 
 
-				//	Only use the default options for options that 
+				//	Only use the default options for options that
 				//	aren't already set.
 				if ( gettype( $current_options ) == 'array' ) {
 					$options = array_replace( $options, $current_options );
@@ -304,7 +312,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 			self::menus();
 			self::hooks();
 			self::enqueue();
-			self::shortcodes();	
+			self::shortcodes();
 			self::plugin_list_links();
 		}
 	}	//	end class
