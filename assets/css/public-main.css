@@ -4,16 +4,16 @@
 *************************************/
 
 /* RESET STYLES */
-div.TT_wrapper, 
-div.TT_wrapper div,
-div.TT_wrapper a,
-div.TT_wrapper p,
-div.TT_wrapper img {
-	margin: 0; 
-	padding: 0; 
-	border: 0; 
-	font-size: 1rem; 
-	font: inherit; 
+.TT_wrapper,
+.TT_wrapper div,
+.TT_wrapper a,
+.TT_wrapper p,
+.TT_wrapper img {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 1rem;
+	font: inherit;
 	vertical-align: baseline;
 	line-height: 1;
 }
@@ -26,14 +26,14 @@ div.TT_wrapper {
 	margin: 8px 0;
 }
 	div.TT_wrapper div.TT_text {
-		font-size: 26px;	
+		font-size: 26px;
 	}
 	div.TT_wrapper div.TT_tweet_link_wrapper {
 		text-align: right;
 
 		display: block;
 		max-width: 45%;
-		float: right;		
+		float: right;
 
 		padding: 2px 5px;
 	}
@@ -54,7 +54,17 @@ div.TT_wrapper {
 		padding-top: 7px;
 	}
 
-	div.TT_wrapper div.TT_footer {		
+	div.TT_wrapper div.TT_footer {
 		padding: 4px 0 0 0;
 		margin-top: 8px;
+	}
+
+span.TT_wrapper {
+	font-family: sans-serif;
+}
+	span.TT_wrapper img {
+		max-width: 50px;
+		max-height: 20px;
+
+		margin-right: 2px;
 	}
