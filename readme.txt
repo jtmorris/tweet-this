@@ -4,7 +4,7 @@ Donate link: http://tweetthis.jtmorris.net/
 Tags: twitter, tweet, social, sharing
 Requires at least: 3.9
 Tested up to: 4.0
-Stable tag: 1.0.7
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,11 @@ Tweet This plugin.
 
 
 == Changelog ==
+= 1.1.0 =
+* Added new inline link capability.
+* New shortcode creator dialog box options.
+* Settings page tidying.
+* Three new themes.
 = 1.0.7 =
 * Added the ability to remove auto-generated URL from post completely by default, and on a case-by-case basis.
 = 1.0.6 =
@@ -105,6 +110,8 @@ Tweet This plugin.
 
 
 == Upgrade Notice ==
+= 1.1.0 =
+NEW FEATURES & THEMES: New inline link capability, shortcode creator options, and three new themes.
 = 1.0.4 =
 If plugin update fails for any reason, try manually activating the plugin!
 = 1.0.0 =
