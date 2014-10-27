@@ -1,0 +1,73 @@
+@import url(http://fonts.googleapis.com/css?family=Lato:300,400,600);
+
+div.TT_wrapper {
+	font-family: 'Lato', sans-serif;
+
+	background-image: url('../../images/hero-tile.jpg');
+	background-color: #54ABEE;
+
+	box-shadow: inset 0 0 8px #222;
+}
+	div.TT_wrapper div.TT_text a {
+		color: #FFF;
+		text-decoration: none;
+		font-weight: 600;
+		border: 0 none #EFEFEF;
+		text-shadow: 0 0 4px rgba(0,0,0,0.25);
+	}
+		div.TT_wrapper div.TT_text a:hover {
+			text-shadow: 0 0 4px rgba(0,0,0,0.5);
+			transition: text-shadow 0.2s;
+		}
+
+	div.TT_wrapper div.TT_footer {
+		border-top: 1px solid #117;
+	}
+
+		div.TT_wrapper div.TT_footer a {
+			color: #FFF;
+		}
+			div.TT_wrapper div.TT_footer a:hover {
+
+			}
+
+	div.TT_wrapper div.TT_tweet_link_wrapper {
+		color: #FFF;
+	}
+		div.TT_wrapper div.TT_tweet_link_wrapper a {
+			display: block;
+			padding: 5px 8px 10px 8px;
+
+			text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+			background-color: #faa732;
+			background-image: -webkit-gradient(linear,0 0,0 100%,from(#fbb450),to(#f89406));
+			background-image: -webkit-linear-gradient(top,#fbb450,#f89406);
+			background-image: -webkit-gradient(linear,left top,left bottom,from(#fbb450),to(#f89406));
+			background-image: linear-gradient(to bottom,#fbb450,#f89406);
+			background-repeat: repeat-x;
+			border-color: #f89406 #f89406 #ad6704;
+			border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+			border-radius: 3px;
+			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fffbb450',endColorstr='#fff89406',GradientType=0);
+			filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+
+			text-decoration: none;
+		}
+		div.TT_wrapper div.TT_tweet_link_wrapper a:visited,
+		div.TT_wrapper div.TT_tweet_link_wrapper a:hover {
+			background-color: #f89406;
+			transition: background-position 0.1s linear;
+			background-position: 0 -15px;
+		}
+
+	div.TT_wrapper div.TT_byline {
+		margin-top: 5px;
+		color: #005580;;
+	}
+		div.TT_wrapper div.TT_byline a {
+			color: #005580;;
+			text-decoration: underline;
+		}
+		div.TT_wrapper div.TT_byline a:hover {
+			text-shadow: 0 0 4px #55BBFF;
+		}

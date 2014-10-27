@@ -27,6 +27,7 @@ div.TT_wrapper {
 }
 	div.TT_wrapper div.TT_text {
 		font-size: 26px;
+		line-height: 1.45;
 	}
 	div.TT_wrapper div.TT_tweet_link_wrapper {
 		text-align: right;
@@ -42,6 +43,7 @@ div.TT_wrapper {
 			max-height: 25px;
 
 			margin-right: 2px;
+			margin-bottom: -4px;
 		}
 
 	div.TT_wrapper div.TT_byline {

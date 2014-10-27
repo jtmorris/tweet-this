@@ -1,0 +1,54 @@
+@import url(http://fonts.googleapis.com/css?family=Lato:300,400);
+
+div.TT_wrapper {
+	font-family: 'Lato', sans-serif;
+
+	border: 2px solid #666;
+	border-radius: 3px;
+
+	background-color: #EFEFEF;
+}
+	div.TT_wrapper div.TT_text a {
+		color: #222;
+		text-decoration: none;
+		font-weight: 300;
+		border: 0 none #EFEFEF;
+	}
+		div.TT_wrapper div.TT_text a:hover {
+			text-shadow: 0 0 4px #55BBFF;
+			color: #222;
+		}
+
+	div.TT_wrapper div.TT_footer {
+		border-top: 1px solid #666;
+	}
+
+		div.TT_wrapper div.TT_footer a {
+			color: #222;
+		}
+			div.TT_wrapper div.TT_footer a:hover {
+				text-shadow: 0 0 4px #55BBFF;
+				color: #222;
+			}
+
+	div.TT_wrapper div.TT_tweet_link_wrapper {
+		color: #222;
+	}
+		div.TT_wrapper div.TT_tweet_link_wrapper a {
+
+		}
+		div.TT_wrapper div.TT_tweet_link_wrapper a:visited,
+		div.TT_wrapper div.TT_tweet_link_wrapper a:hover {
+			text-decoration: underline;
+		}
+
+	div.TT_wrapper div.TT_byline {
+		color: #222;
+	}
+		div.TT_wrapper div.TT_byline a {
+			color: #222;
+			text-decoration: underline;
+		}
+		div.TT_wrapper div.TT_byline a:hover {
+			text-shadow: 0 0 4px #55BBFF;			
+		}
