@@ -611,7 +611,7 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				</div>
 
 				<div class='TT_sidebar_box'>
-					<h3>Plugin Tips, Guides, and More</h3>
+					<h3>Tutorials, Tips, &amp; Ideas</h3>
 					<p>
 						If you're having any problems making Tweet This work,
 						or you aren't sure how to use it, check out some of the
@@ -635,7 +635,17 @@ if ( !class_exists( 'TT_Settings' ) ) {
 						</li>
 					</ul>
 				</div>
-
+				<div class='TT_sidebar_box'>
+					<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+					<!-- Tweet This Dashboard -->
+					<ins class="adsbygoogle"
+					     style="display:inline-block;width:336px;height:280px"
+					     data-ad-client="ca-pub-4623469134243566"
+					     data-ad-slot="9769490937"></ins>
+					<script>
+					(adsbygoogle = window.adsbygoogle || []).push({});
+					</script>
+				</div>
 				<div class='TT_sidebar_box'>
 					<h3>Get Help / Report a Bug</h3>
 					<p>
@@ -644,7 +654,6 @@ if ( !class_exists( 'TT_Settings' ) ) {
 					<ul>
 						<li>Open a thread on the <a target="_blank" href="http://wordpress.org/support/plugin/tweetthis">plugin support page</a>.</li>
 						<li><a target="_blank" href="http://tweetthis.jtmorris.net/contact/">Contact the developer</a> privately.</li>
-						<li>Open an <a target="_blank" href="https://github.com/jtmorris/tweet-this/issues">"issue" on GitHub</a>.</li>
 					</ul>
 				</div>
 				<div class='TT_sidebar_box'>
