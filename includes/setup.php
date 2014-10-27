@@ -227,7 +227,8 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				extract( shortcode_atts( array(
 					'text' => '',
 					'url' => false,
-					'twitter_handles' => false
+					'twitter_handles' => false,
+					'display_mode' => false
 				 ), $atts ) );
 
 				//	Is this an enclosing or self-closing shortcode?
@@ -238,10 +239,36 @@ if ( !class_exists( 'TT_Setup' ) ) {
 					$text = $enc_content;
 				}
 
+
 				$Share = new TT_Share_Handler( $text, $url,
 					$twitter_handles );
 
-				return $Share->display();
+				$options = get_option(tt_plugin_options);				
+
+				//	What display mode are we using?
+				if ( $display_mode === false ) {	//	None provided in shortcode
+					if( !$options || !array_key_exists( 'display_mode', $options ) ) {
+						$display_mode = 'box';
+					}
+					else {
+						$display_mode = $options['display_mode'];
+					}
+				}
+
+
+				switch( $display_mode ) {
+					case 'button_link':
+						//	Do we include the icon?
+						if( !array_key_exists( 'simple_link_include_icon', $options ) ||
+							$options['simple_link_include_icon'] ) {
+								return $Share->display_link();
+						}
+						else {
+							return $Share->display_link( false );
+						}
+					default:
+						return $Share->display_box();
+				}
 			}
 
 

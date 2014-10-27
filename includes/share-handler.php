@@ -31,10 +31,22 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 		}
 
 
-		public function display() {
+		public function display_box() {
 			$url = $this->generate_share_url();
 
 			$options = get_option('tt_plugin_options');
+			//	Button Text?
+			if( array_key_exists( 'button_text_override', $options ) &&
+				is_string( $options['button_text_override'] ) &&
+				trim( $options['button_text_override'] ) != '' ) {
+					
+				$btext = $options['button_text_override'];
+			}
+			else {
+				$btext = "Tweet This";
+			}
+
+
 			$retval = '';
 
 			//	Any CSS overrides?
@@ -58,12 +70,43 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 					$retval .= '<div class="TT_tweet_link_wrapper">';
 						$retval .= '<a class="TT_tweet_link" href="' . $url . '" target="_blank">';
 							$retval .= '<img src="' . TT_ROOT_URL . 'assets/images/twitter-icons/' . $options['twitter_icon'] . '.png" />';
-							$retval .= 'Tweet This';
+							$retval .= $btext;
 						$retval .= '</a>';
 					$retval .= '</div>';
 					$retval .= '<div style="clear: both; "></div>';
 				$retval .= '</div>';
 			$retval .= '</div>';
+
+
+			return $retval;
+		}
+
+		public function display_link( $image_too = true ) {
+			$url = $this->generate_share_url();
+
+			$options = get_option('tt_plugin_options');
+			//	Button Text?
+			if( array_key_exists( 'button_text_override', $options ) &&
+				is_string( $options['button_text_override'] ) &&
+				trim( $options['button_text_override'] ) != '' ) {
+
+				$btext = $options['button_text_override'];
+			}
+			else {
+				$btext = "Tweet This";
+			}
+
+			$retval = '';
+
+
+			$retval .= '<span class="TT_wrapper">';
+				$retval .= '<a title="' . htmlentities( $this->generate_text() ) . '" class="TT_tweet_link" href="' . $url . '" target="_blank">';
+					if( $image_too ) {
+						$retval .= '<img src="' . TT_ROOT_URL . 'assets/images/twitter-icons/' . $options['twitter_icon'] . '.png" />';
+					}
+					$retval .= $btext;
+				$retval .= '</a>';
+			$retval .= '</span>';
 
 
 			return $retval;

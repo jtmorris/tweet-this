@@ -17,46 +17,65 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				array ('TT_Settings', 'validation_helper')	//	Validation func
 			);
 
+
+
+			//	Global settings applicable to all display modes
 			add_settings_section(
-				'tweet_this_general',		//	Section ID
-				'General',					//	Section Heading
+				'tweet_this_global',		//	Section ID
+				'Global Settings',					//	Section Heading
 				array( 'TT_Settings',
-					'section_content_helper_general' ),	//	Content callback
+					'section_content_helper_global' ),	//	Content callback
 				TT_FILENAME					//	The page
 			);
 
+			//	Settings applicable only to box display mode.
 			add_settings_section(
-				'tweet_this_url',		//	Section ID
-				'URL Settings',					//	Heading for section
+				'tweet_this_box',		//	Section ID
+				'Box Display Mode Settings',					//	Section Heading
 				array( 'TT_Settings',
-					'section_content_helper_url'),	//	Callback to output section content
-				TT_FILENAME						//	The page
+					'section_content_helper_box' ),	//	Content callback
+				TT_FILENAME					//	The page
 			);
 
+			//	Settings applicable only to button link display mode.
 			add_settings_section(
-				'tweet_this_dialog',			//	Section ID
-				'Shortcode Creator Settings',			//	Section Heading
+				'tweet_this_button_link',		//	Section ID
+				'Button Link Display Mode Settings',					//	Section Heading
 				array( 'TT_Settings',
-					'section_content_helper_dialog' ),	//	Callback to output section content
-				TT_FILENAME						//	The page
+					'section_content_helper_button_link' ),	//	Content callback
+				TT_FILENAME					//	The page
 			);
 
+			//	Settings applicable only to the shortcode creator dialog box.
 			add_settings_section(
-				'tweet_this_theme',			//	Section ID
-				'Theme Settings',			//	Section Heading
+				'tweet_this_scc_dialog',		//	Section ID
+				'Shortcode Creator Dialog Settings',					//	Section Heading
 				array( 'TT_Settings',
-					'section_content_helper_advanced' ),	//	Callback to output section content
-				TT_FILENAME						//	The page
+					'section_content_helper_scc_dialog' ),	//	Content callback
+				TT_FILENAME					//	The page
+			);
+
+			//	Advanced settings / Miscellaneous section
+			add_settings_section(
+				'tweet_this_advanced',		//	Section ID
+				'Advanced Settings',					//	Section Heading
+				array( 'TT_Settings',
+					'section_content_helper_advanced' ),	//	Content callback
+				TT_FILENAME					//	The page
 			);
 
 
+			//////////////////////////////
+			/// Global Settings Fields ///
+			//////////////////////////////
+			//	Default Twitter Handles
 			add_settings_field(
 				'tt_default_twitter_handles',			//	Setting ID
 				'Default Twitter Handles', 			//	Setting Title
 				array( 'TT_Settings',
 					'field_helper_textbox' ),	//	Content Callback
 				TT_FILENAME,				//	The page
-				'tweet_this_general',	//	Settings Section ID
+				'tweet_this_global',	//	Settings Section ID
 				//	Arguments for callback
 				array(
 					//	Name in options array:
@@ -68,14 +87,14 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				)
 			);
 
-
+			//	Twitter Icon
 			add_settings_field(
 				'tt_twitter_icon',			//	Setting ID
 				'Twitter Icon',				//	Setting Title
 				array( 'TT_Settings',
 					'field_helper_radio' ),	//	Content Callback
 				TT_FILENAME	,				//	The page
-				'tweet_this_theme',	//	Settings Section ID
+				'tweet_this_global',	//	Settings Section ID
 				//	Arguments for callback
 				array(
 					//	Name in options array
@@ -90,39 +109,14 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				)
 			);
 
-			add_settings_field(
-				'tt_hide_promotional_byline',		//	Setting ID
-				'Hide Promotional Byline?',	//	Setting Title
-
-				array( 'TT_Settings',
-					'field_helper_radio' ),	//	Content Callback
-				TT_FILENAME,				//	The page
-				'tweet_this_general',	//	Settings Section ID
-
-				//	Arguments for callback
-				array(
-					//	Name in options array:
-					//	tt_plugin_options['<THE VALUE SPECIFIED HERE']
-					'name'=>'hide_promotional_byline',
-					'id'=> 'tt_byline_removal',
-
-					//	Array of label=>value pairs for desired buttons
-					'buttons'=>array( array('Yes', true), array('No', false) ),
-
-					'default'=>false,
-
-					//	Help text displayed below field
-					'help_text'=>'Choose "Yes" to remove the "Powered by Tweet This" byline.'
-				)
-			);
-
+			//	Use Shortlink
 			add_settings_field(
 				'tt_use_shortlink',			//	Setting ID
 				'Use Shortlink?', 			//	Setting Title
 				array( 'TT_Settings',
 					'field_helper_radio' ),	//	Content Callback
 				TT_FILENAME,				//	The page
-				'tweet_this_url',	//	Settings Section ID
+				'tweet_this_global',	//	Settings Section ID
 				//	Arguments for callback
 				array(
 					//	Name in options array:
@@ -136,13 +130,14 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				)
 			);
 
+			//	Disable URLs in Tweet
 			add_settings_field(
 				'tt_disable_url',			//	Setting ID
 				'Disable URLs', 			//	Setting Title
 				array( 'TT_Settings',
 					'field_helper_radio' ),	//	Content Callback
 				TT_FILENAME,				//	The page
-				'tweet_this_url',	//	Settings Section ID
+				'tweet_this_global',	//	Settings Section ID
 				//	Arguments for callback
 				array(
 					//	Name in options array:
@@ -158,70 +153,46 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				)
 			);
 
+
+			//	Display mode
+			$box_text = 'Box' . ' (<em><a style="cursor: pointer; text-decoration: underline;" onclick="window.open(\'' . TT_ROOT_URL . 'assets/images/box.jpg\', \'popup\', \'width=491,height=492,scrollbars=no,toolbar=no,menubar=no\')">Click to See Sample</a></em>)';
+			$blink_text = 'Button Link' . ' (<em><a style="cursor: pointer;  text-decoration: underline;" onclick="window.open(\'' . TT_ROOT_URL . 'assets/images/button_link.jpg\', \'popup\', \'width=530,height=380,scrollbars=no,toolbar=no,menubar=no\')">Click to See Sample</a></em>)';
 			add_settings_field(
-				'tt_disable_preview',							//	Setting ID
-				'Disable Preview?',						//	Setting Title
+				'tt_display_mode',			//	Setting ID
+				'Display Mode', 			//	Setting Title
 				array( 'TT_Settings',
-					'field_helper_radio' ),			//	Content Callback
-				TT_FILENAME,
-				'tweet_this_dialog',					//	Settings Section ID
+					'field_helper_radio' ),	//	Content Callback
+				TT_FILENAME,				//	The page
+				'tweet_this_global',	//	Settings Section ID
+				//	Arguments for callback
 				array(
-					'name' => 'disable_preview',
+					//	Name in options array:
+					//	tt_plugin_options['<THE VALUE SPECIFIED HERE']
+					'name'=>'display_mode',
 
-					'buttons'=>array( array('Yes', true), array('No', false) ),
+					//	Array of arrays of label=>value pairs for desired buttons
+					'buttons'=>array( array($box_text, 'box'), array($blink_text, 'button_link') ),
 
-					'help_text' => 'Disable the preview of your tweet in the shortcode creator?',
+					'help_text'=>'Choose the method for displaying your tweetable content.  Default mode is "Box."',
 
-					'default' => false
+					'default'=>'box'
 				)
 			);
 
 
-			add_settings_field(
-				'tt_disable_advanced',							//	Setting ID
-				'Disable Advanced Options?',						//	Setting Title
-				array( 'TT_Settings',
-					'field_helper_radio' ),			//	Content Callback
-				TT_FILENAME,
-				'tweet_this_dialog',					//	Settings Section ID
-				array(
-					'name' => 'disable_advanced',
-
-					'buttons'=>array( array('Yes', true), array('No', false) ),
-
-					'help_text' => 'Disable the advanced options in the shortcode creator?',
-
-					'default' => false
-				)
-			);
 
 
-			add_settings_field(
-				'tt_disable_char_count',							//	Setting ID
-				'Disable Character Counter?',						//	Setting Title
-				array( 'TT_Settings',
-					'field_helper_radio' ),			//	Content Callback
-				TT_FILENAME,
-				'tweet_this_dialog',					//	Settings Section ID
-				array(
-					'name' => 'disable_char_count',
-
-					'buttons'=>array( array('Yes', true), array('No', false) ),
-
-					'help_text' => 'Disable the characters left counter?',
-
-					'default' => false
-				)
-			);
-
-
+			/////////////////////////
+			/// Box Mode Settings ///
+			/////////////////////////
+			//	Theme
 			add_settings_field(
 				'tt_theme',							//	Setting ID
 				'Choose Theme',						//	Setting Title
 				array( 'TT_Settings',
 					'field_helper_radio' ),			//	Content Callback
 				TT_FILENAME,
-				'tweet_this_theme',					//	Settings Section ID
+				'tweet_this_box',					//	Settings Section ID
 				array(
 					'name' => 'base_theme',
 
@@ -233,6 +204,122 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				)
 			);
 
+
+
+
+			/////////////////////////////
+			/// Button Link Settings ///
+			////////////////////////////
+			//	Include Twitter icon?
+			add_settings_field(
+				'tt_simple_link_include_icon',			//	Setting ID
+				'Include Twitter Icon in Link?', 			//	Setting Title
+				array( 'TT_Settings',
+					'field_helper_radio' ),	//	Content Callback
+				TT_FILENAME,				//	The page
+				'tweet_this_button_link',	//	Settings Section ID
+				//	Arguments for callback
+				array(
+					//	Name in options array:
+					//	tt_plugin_options['<THE VALUE SPECIFIED HERE']
+					'name'=>'simple_link_include_icon',
+
+					//	Array of arrays of label=>value pairs for desired buttons
+					'buttons'=>array( array('Yes', true), array('No', false) ),
+
+					'help_text'=>'Choose yes to include the Twitter icon alongside your link.',
+
+					'default'=>true
+				)
+			);
+
+
+
+			/////////////////////////////////////////
+			/// Shortcode Creator Dialog Settings ///
+			/////////////////////////////////////////
+			//	Disable Preview?
+			add_settings_field(
+				'tt_disable_preview',							//	Setting ID
+				'Disable Preview?',						//	Setting Title
+				array( 'TT_Settings',
+					'field_helper_radio' ),			//	Content Callback
+				TT_FILENAME,
+				'tweet_this_scc_dialog',					//	Settings Section ID
+				array(
+					'name' => 'disable_preview',
+
+					'buttons'=>array( array('Yes', true), array('No', false) ),
+
+					'help_text' => 'Disable the preview of your tweet in the shortcode creator?',
+
+					'default' => false
+				)
+			);
+
+			//	Disable Advanced
+			add_settings_field(
+				'tt_disable_advanced',							//	Setting ID
+				'Disable Advanced Options?',						//	Setting Title
+				array( 'TT_Settings',
+					'field_helper_radio' ),			//	Content Callback
+				TT_FILENAME,
+				'tweet_this_scc_dialog',					//	Settings Section ID
+				array(
+					'name' => 'disable_advanced',
+
+					'buttons'=>array( array('Yes', true), array('No', false) ),
+
+					'help_text' => 'Disable the advanced options in the shortcode creator?',
+
+					'default' => false
+				)
+			);
+
+			//	Disable Character Counter
+			add_settings_field(
+				'tt_disable_char_count',							//	Setting ID
+				'Disable Character Counter?',						//	Setting Title
+				array( 'TT_Settings',
+					'field_helper_radio' ),			//	Content Callback
+				TT_FILENAME,
+				'tweet_this_scc_dialog',					//	Settings Section ID
+				array(
+					'name' => 'disable_char_count',
+
+					'buttons'=>array( array('Yes', true), array('No', false) ),
+
+					'help_text' => 'Disable the "characters left" counter?',
+
+					'default' => false
+				)
+			);
+
+
+
+			///////////////////////
+			/// Advanced / Misc ///
+			///////////////////////
+			//	Button Text
+			add_settings_field(
+				'tt_button_text_override',			//	Setting ID
+				'Override Button Text', 			//	Setting Title
+				array( 'TT_Settings',
+					'field_helper_textbox' ),	//	Content Callback
+				TT_FILENAME,				//	The page
+				'tweet_this_advanced',	//	Settings Section ID
+				//	Arguments for callback
+				array(
+					//	Name in options array:
+					//	tt_plugin_options['<THE VALUE SPECIFIED HERE']
+					'name'=>'button_text_override',
+
+					//	Help text displayed below field
+					'help_text'=>'Override the "Tweet This" text in the call-to-action button/link. Leave blank to use default.'
+				)
+			);
+
+			//	Custom CSS
 			add_settings_field(
 				'tt_css_override',					//	Setting ID
 				'Override CSS',						//	Setting Title
@@ -240,13 +327,13 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				array( 'TT_Settings',
 					'field_helper_textarea' ),		//	Content Callback
 				TT_FILENAME,						//	The page
-				'tweet_this_theme',				//	Settings Section ID
+				'tweet_this_advanced',				//	Settings Section ID
 
 				//	Arguments for callback
 				array(
 					'name'=>'css_override',
 
-					'help_text'=>'Override default CSS rules for "Tweet This" box.',
+					'help_text'=>'Override default CSS rules for "Tweet This".',
 
 					'style'=>'min-width: 500px; min-height: 300px;'
 				)
@@ -255,42 +342,32 @@ if ( !class_exists( 'TT_Settings' ) ) {
 			public static function validation_helper( $input ) {
 				return $input;
 			}
-			public static function section_content_helper_general() {
+			public static function section_content_helper_global() {
 
 			}
-			public static function section_content_helper_url() {
+			public static function section_content_helper_box() {
 				?>
 				<p>
-					Customize the URL automatically generated for each tweet box.
+					These settings only apply to the "Box" display mode.  Other
+					display modes ignore these settings.
 				</p>
 				<?php
 			}
-			public static function section_content_helper_shortlinks() {
+			public static function section_content_helper_button_link() {
 				?>
 				<p>
-					If the default shortlinks created by WordPress aren't satisfactory,
-					and you don't use a shortlink generating plugin like
-					Jetpack
-					or WP Bitly, the settings below might help.
-				</p>
-				<p>
-					If your shortlink system relies on the WordPress permalink
-					or the post ID, this can work.  Enter your shortlink domain,
-					and the permalink structure below.
-				</p>
-				<p>
-					<a href='' target='_blank'>Read this article</a>
-					for more information!
+					These settings only apply to the "Button Link" display mode.  Other
+					display modes will ignore these settings.
 				</p>
 				<?php
 			}
 			public static function section_content_helper_advanced() {
 
 			}
-			public static function section_content_helper_dialog() {
+			public static function section_content_helper_scc_dialog() {
 				?>
 				<p>
-					Customize the Tweet This Shortcode Creator dialog box.
+					Customize the Tweet This Shortcode Creator dialog box. (<em><a style="cursor: pointer;  text-decoration: underline;" onclick="window.open('<?php echo TT_ROOT_URL . 'assets/images/scc.jpg' ?>', 'popup', 'width=646,height=461,scrollbars=no,toolbar=no,menubar=no')">Click here</a></em> to see a picture of it in its default configuration).
 				</p>
 				<?php
 			}
