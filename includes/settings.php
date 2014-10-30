@@ -154,6 +154,34 @@ if ( !class_exists( 'TT_Settings' ) ) {
 			);
 
 
+			//	Hide Byline
+			add_settings_field(
+				'tt_hide_promotional_byline',		//	Setting ID
+				'Hide Promotional Byline?',	//	Setting Title
+
+				array( 'TT_Settings',
+					'field_helper_radio' ),	//	Content Callback
+				TT_FILENAME,				//	The page
+				'tweet_this_global',	//	Settings Section ID
+
+				//	Arguments for callback
+				array(
+					//	Name in options array:
+					//	tt_plugin_options['<THE VALUE SPECIFIED HERE']
+					'name'=>'hide_promotional_byline',
+					'id'=> 'tt_byline_removal',
+
+					//	Array of label=>value pairs for desired buttons
+					'buttons'=>array( array('Yes', true), array('No', false) ),
+
+					'default'=>false,
+
+					//	Help text displayed below field
+					'help_text'=>'Choose "Yes" to remove the "Powered by Tweet This" byline.'
+				)
+			);
+
+
 			//	Display mode
 			$box_text = 'Box' . ' (<em><a style="cursor: pointer; text-decoration: underline;" onclick="window.open(\'' . TT_ROOT_URL . 'assets/images/box.jpg\', \'popup\', \'width=491,height=492,scrollbars=no,toolbar=no,menubar=no\')">Click to See Sample</a></em>)';
 			$blink_text = 'Button Link' . ' (<em><a style="cursor: pointer;  text-decoration: underline;" onclick="window.open(\'' . TT_ROOT_URL . 'assets/images/button_link.jpg\', \'popup\', \'width=530,height=380,scrollbars=no,toolbar=no,menubar=no\')">Click to See Sample</a></em>)';
