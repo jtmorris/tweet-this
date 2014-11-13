@@ -44,6 +44,8 @@ div.TT_wrapper {
 
 			margin-right: 2px;
 			margin-bottom: -4px;
+
+			display: inline;  /* In case themes override default img display */
 		}
 
 	div.TT_wrapper div.TT_byline {
