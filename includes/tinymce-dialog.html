@@ -180,9 +180,23 @@
 
 		<script type='text/javascript'>
 			(function() {
+				//	Get the args... Most of the time, we can use TinyMCE's top
+				//	but sometimes it errors out.  When it does, try parent instead.
+				try {
+					var args = top.tinymce.activeEditor.windowManager.getParams();
+				} catch (e) {
+					console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = top.tinymce.activeEditor.windowManager.getParams();'.  Trying parent instead of top.");
+					try {
+						var args = parent.tinymce.activeEditor.windowManager.getParams();
+						console.log("Tweet This :: Successfully obtained parameters using 'var args = parent.tinymce.activeEditor.windowManager.getParams();'.");
+					}
+					catch (e) {
+						console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = parent.tinymce.activeEditor.windowManager.getParams();'.  Dialog cannot function without this data.");
+					}
+				}
+
 				//	Get jQuery
 				//	http://jtmorris.net/?p=1109 for more info
-				var args = top.tinymce.activeEditor.windowManager.getParams();
 				var $ = args['jquery'];
 
 				//	Get the context for jQuery
@@ -244,7 +258,7 @@
 
 
 
-				
+
 				//	Accordion the sections
 				//	We have multiple accordions for each section because when
 				//	submitting the form, we want to be able to expand ALL accordion
