@@ -4,7 +4,7 @@ Donate link: http://tweetthis.jtmorris.net/
 Tags: twitter, tweet, social, sharing
 Requires at least: 3.9
 Tested up to: 4.1
-Stable tag: 1.1.5
+Stable tag: 1.1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -50,7 +50,7 @@ When they decide to tweet it and click the box/link, the message will automatica
 Check out the [screenshots](./screenshots) to get a better idea of how it works!
 
 
-Tweet This is immensely customizable.  You can customize the look of your Tweet
+Tweet This is immensely customizable.  You can change the look of your Tweet
 This boxes.  Setup the use of shortlinks in place of long URLs.  And much more!
 
 
@@ -88,6 +88,8 @@ Tweet This plugin.
 
 
 == Changelog ==
+= 1.1.6 =
+* Added option for custom alt attribute for Twitter icon (user request).  New setting is located in "Advanced Settings" section in Tweet This settings page.
 = 1.1.5 =
 * Fix plugin update.
 = 1.1.4 =
