@@ -359,7 +359,7 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				array(
 					//	Name in options array:
 					'name' => 'icon_alt_text',
-					'help_text'=>'The value of the alt attribute of the Twitter icon <img> tag. Default is none.'
+					'help_text'=>'The value of the alt attribute of the Twitter icon &lt;img&gt; tag. Default is none.'
 				)
 			);
 
