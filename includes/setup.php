@@ -10,7 +10,7 @@ require_once( TT_ROOT_PATH . "includes/share-handler.php" );
 
 if ( !class_exists( 'TT_Setup' ) ) {
 	class TT_Setup {
-		protected static $version = '1.0.4';
+		protected static $version = '1.1.6';
 
 		/**
 		 * Registers and enqueues all CSS and JavaScript.
@@ -311,7 +311,8 @@ if ( !class_exists( 'TT_Setup' ) ) {
 					'use_shortlink' => false,
 					'css_override' => '',
 					'twitter_icon' => 'bird1',
-					'base_theme' => 'light'
+					'base_theme' => 'light',
+					'icon_alt_text' => ''
 				);
 
 
