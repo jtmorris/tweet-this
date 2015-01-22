@@ -347,6 +347,22 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				)
 			);
 
+			//	Icon Alt Tag
+			add_settings_field(
+				'tt_icon_alt_text',		//	Setting ID
+				'Icon Alt Tag Value',	//	Setting Title
+				array( 'TT_Settings', 
+					'field_helper_textbox' ),	//	Content Callback
+				TT_FILENAME,			//	The page
+				'tweet_this_advanced',	//	Settings Section ID
+				//	Arguments for callback
+				array(
+					//	Name in options array:
+					'name' => 'icon_alt_text',
+					'help_text'=>'The value of the alt attribute of the Twitter icon <img> tag. Default is none.'
+				)
+			);
+
 			//	Custom CSS
 			add_settings_field(
 				'tt_css_override',					//	Setting ID

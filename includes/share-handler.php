@@ -69,7 +69,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 
 					$retval .= '<div class="TT_tweet_link_wrapper">';
 						$retval .= '<a class="TT_tweet_link" href="' . $url . '" target="_blank">';
-							$retval .= '<img src="' . TT_ROOT_URL . 'assets/images/twitter-icons/' . $options['twitter_icon'] . '.png" />';
+							$retval .= '<img src="' . TT_ROOT_URL . 'assets/images/twitter-icons/' . $options['twitter_icon'] . '.png" alt="' . $options['icon_alt_text'] . '" />';
 							$retval .= $btext;
 						$retval .= '</a>';
 					$retval .= '</div>';
