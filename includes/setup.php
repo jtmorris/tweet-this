@@ -10,7 +10,7 @@ require_once( TT_ROOT_PATH . "includes/share-handler.php" );
 
 if ( !class_exists( 'TT_Setup' ) ) {
 	class TT_Setup {
-		protected static $version = '1.1.6';
+		protected static $version = '1.1.7';
 
 		/**
 		 * Registers and enqueues all CSS and JavaScript.
@@ -319,7 +319,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				//	Only use the default options for options that
 				//	aren't already set.
 				if ( gettype( $current_options ) == 'array' ) {
-					$options = array_replace( $options, $current_options );
+					$options = $current_options + $options;
 				}
 
 
