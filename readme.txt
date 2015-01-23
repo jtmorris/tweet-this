@@ -4,7 +4,7 @@ Donate link: http://tweetthis.jtmorris.net/
 Tags: twitter, tweet, social, sharing
 Requires at least: 3.9
 Tested up to: 4.1
-Stable tag: 1.1.6
+Stable tag: 1.1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,6 +88,8 @@ Tweet This plugin.
 
 
 == Changelog ==
+= 1.1.7 =
+* Fix support for older versions of PHP by removing usage of PHP 5.3+ only function array_merge().
 = 1.1.6 =
 * Added option for custom alt attribute for Twitter icon (user request).  New setting is located in "Advanced Settings" section in Tweet This settings page.
 = 1.1.5 =
