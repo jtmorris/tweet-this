@@ -10,7 +10,7 @@ require_once( TT_ROOT_PATH . "includes/share-handler.php" );
 
 if ( !class_exists( 'TT_Setup' ) ) {
 	class TT_Setup {
-		protected static $version = '1.1.7';
+		protected static $version = '1.1.8';
 
 		/**
 		 * Registers and enqueues all CSS and JavaScript.
@@ -141,9 +141,10 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				$SH = new TT_Share_Handler();
 				$urlarr = $SH->generate_post_url( $id, true );
 
-				//	default Twitter handles
+				//	default Twitter handles and hidden hashtags
 				$options = get_option( 'tt_plugin_options' );
 				$twits = $options['default_twitter_handles'];
+				$hashtags = $options['default_hidden_hashtags'];
 
 				//	dialog customization options
 				$hide_preview = $options['disable_preview'];
@@ -159,6 +160,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 						'post_url': '<?php echo $urlarr["shortlink"]; ?>',
 						'post_url_is_placeholder': <?php  echo (($urlarr["is_placeholder"]) ? 'true' : 'false'); ?>,
 						'default_twitter_handles': '<?php echo $twits; ?>',
+						'default_hidden_hashtags': '<?php echo $hashtags; ?>',
 						'disable_preview': <?php echo (($hide_preview) ? 'true' : 'false'); ?>,
 						'disable_advanced': <?php echo (($hide_advanced) ? 'true' : 'false'); ?>,
 						'disable_char_count': <?php echo (($hide_char_count) ? 'true' : 'false'); ?>
@@ -228,7 +230,11 @@ if ( !class_exists( 'TT_Setup' ) ) {
 					'text' => '',
 					'url' => false,
 					'twitter_handles' => false,
-					'display_mode' => false
+					'hidden_hashtags' => false,
+					'display_mode' => false,
+					'remove_twitter_handles' => false,
+					'remove_url' => false,
+					'remove_hidden_hashtags' => false
 				 ), $atts ) );
 
 				//	Is this an enclosing or self-closing shortcode?
@@ -241,7 +247,8 @@ if ( !class_exists( 'TT_Setup' ) ) {
 
 
 				$Share = new TT_Share_Handler( $text, $url,
-					$twitter_handles );
+					$twitter_handles, $hidden_hashtags, $remove_twitter_handles, $remove_url,
+					$remove_hidden_hashtags );
 
 				$options = get_option(tt_plugin_options);
 
@@ -307,6 +314,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				$current_options = get_option( 'tt_plugin_options' );
 				$options = array(
 					'default_twitter_handles' => '',
+					'default_hidden_hashtags' => '',
 					'hide_promotional_byline' => false,
 					'use_shortlink' => false,
 					'css_override' => '',

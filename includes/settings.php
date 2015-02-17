@@ -87,6 +87,25 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				)
 			);
 
+			//	Default Hidden Hash Tags
+			add_settings_field(
+				'tt_default_hidden_hashtags',		//	Setting ID
+				'Default Hidden Hashtags', 			//	Setting Title
+				array( 'TT_Settings',
+					'field_helper_textbox' ),	//	Content Callback
+				TT_FILENAME,				//	The page
+				'tweet_this_global',	//	Settings Section ID
+				//	Arguments for callback
+				array(
+					//	Name in options array:
+					//	tt_plugin_options['<THE VALUE SPECIFIED HERE']
+					'name'=>'default_hidden_hashtags',
+
+					//	Help text displayed below field
+					'help_text'=>'Any hashtags you want added to your message when tweeted, but not displayed in your Tweet This boxes (leave blank for none). <br />Example: <span class="tt_admin_example">#hashtags #rule</span>'
+				)
+			);
+
 			//	Twitter Icon
 			add_settings_field(
 				'tt_twitter_icon',			//	Setting ID

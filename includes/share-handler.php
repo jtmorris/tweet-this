@@ -9,6 +9,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 	class TT_Share_Handler {
 		protected $my_text = null;
 		protected $my_url = null;
+		protected $my_hidden_hashtags = null;
 		protected $my_url_is_placeholder = false;
 		protected $my_twitter_handles = null;
 
@@ -17,8 +18,16 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 		 * @param string  $text                   The text to tweet.
 		 * @param boolean $custom_url             A URL to override the auto-generated one.
 		 * @param boolean $custom_twitter_handles A list of Twitter handles to override the default ones with.
+		 * @param boolean $custom_hidden_hashtags A list of hidden hashtags to override the default ones with.
+		 * @param boolean $remove_twitter_handles Whether to include Twitter handles or not.
+		 * @param boolean $remove_url             Whether to include URL or not.
+		 * @param boolean $remove_hidden_hashtags Whether to include hidden hashtags or not.
 		 */
-		public function __construct( $text='', $custom_url=false, $custom_twitter_handles=false ) {
+		public function __construct( $text='', $custom_url=false, $custom_twitter_handles=false, 
+			$custom_hidden_hashtags=false, $remove_twitter_handles=false, $remove_url=false,
+			$remove_hidden_hashtags=false ) {
+
+			//	Get values
 			$this->my_text = $text;
 
 			if ( $custom_url ) {
@@ -27,6 +36,23 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 
 			if ( $custom_twitter_handles ) {
 				$this->my_twitter_handles = $custom_twitter_handles;
+			}
+
+			if ( $custom_hidden_hashtags ) {
+				$this->my_hidden_hashtags = $custom_hidden_hashtags;
+			}
+
+			//	If we're removing anything, remove it
+			if( $remove_twitter_handles ) {
+				$this->my_twitter_handles = "";
+			}
+
+			if( $remove_url ) {
+				$this->my_url = "";
+			}
+
+			if( $remove_hidden_hashtags ) {
+				$this->my_hidden_hashtags = "";
 			}
 		}
 
@@ -121,6 +147,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 						//	handles are input.  Remove that.
 					html_entity_decode(	//	WordPress encodes special characters in posts. Undo that.
 						$this->generate_text() . ' ' .
+						$this->generate_hidden_hashtags_for_url() . ' ' .
 						$this->generate_post_url() . ' ' .
 						$this->generate_twitter_handles_for_url(),
 						ENT_QUOTES,	//	Both single and double quotes
@@ -155,6 +182,22 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 				else {
 					return $this->my_twitter_handles;
 				}
+			}
+
+			return '';
+		}
+
+		public function generate_hidden_hashtags_for_url( ) {
+			//	Do we need to get the hashtags from the database?
+			if( is_null( $this->my_hidden_hashtags ) ) {
+				//	Yes
+				$options = get_option( 'tt_plugin_options' );
+
+				$this->my_hidden_hashtags = $options['default_hidden_hashtags'];
+			}
+
+			if( !empty( $this->my_hidden_hashtags ) ) {
+				return $this->my_hidden_hashtags;
 			}
 
 			return '';
