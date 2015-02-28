@@ -57,7 +57,7 @@ This boxes.  Setup the use of shortlinks in place of long URLs.  And much more!
 == Installation ==
 = Using WordPress.org's Plugin Repository (recommended) =
 1. Search for "Tweet This" in your WordPress "Add New" plugin section of your dashboard.
-1. Install and activate the "[Tweet This](http://wordpress.org/plugins/tweet-this/)" plugin by John Morris.
+1. Install and activate the "[Tweet This](http://wordpress.org/plugins/tweetthis/)" plugin by John Morris.
 
 
 = Manually =
