@@ -3,7 +3,7 @@
  * Plugin Name: Tweet This
  * Plugin URI: http://tweetthis.jtmorris.net
  * Description: Tweet This offers easily embedded, stylish tweetable content boxes in your posts and pages. Get your visitors sharing on Twitter today!
- * Version: 1.1.8
+ * Version: 1.1.9
  * Author: John Morris
  * Author URI: http://jtmorris.net
  * License: GPL2
