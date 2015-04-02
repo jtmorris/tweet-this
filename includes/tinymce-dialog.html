@@ -201,20 +201,8 @@
 
 		<script type='text/javascript'>
 			(function() {
-				//	Get the args... Most of the time, we can use TinyMCE's top
-				//	but sometimes it errors out.  When it does, try parent instead.
-				try {
-					var args = top.tinymce.activeEditor.windowManager.getParams();
-				} catch (e) {
-					console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = top.tinymce.activeEditor.windowManager.getParams();'.  Trying parent instead of top.");
-					try {
-						var args = parent.tinymce.activeEditor.windowManager.getParams();
-						console.log("Tweet This :: Successfully obtained parameters using 'var args = parent.tinymce.activeEditor.windowManager.getParams();'.");
-					}
-					catch (e) {
-						console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = parent.tinymce.activeEditor.windowManager.getParams();'.  Dialog cannot function without this data.");
-					}
-				}
+				//	Get the args... Sometimes this fails.
+				var args = get_tinymce_params();
 
 				//	Get jQuery
 				//	http://jtmorris.net/?p=1109 for more info
@@ -508,6 +496,25 @@
 					return $.trim(inputs['hidden_hashtags'].val()).
 						replace(/"/g, '').	//	remove double quotes
 						replace(/'/g, '');	//	remove single quotes;
+				}
+				function get_tinymce_params() {
+					//	Get the args... Most of the time, we can use TinyMCE's top
+					//	but sometimes it errors out.  When it does, try parent instead.
+					var args = null;
+					try {
+						var args = top.tinymce.activeEditor.windowManager.getParams();
+					} catch (e) {
+						console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = top.tinymce.activeEditor.windowManager.getParams();'.  Trying parent instead of top.");
+
+						try {
+							var args = parent.tinymce.activeEditor.windowManager.getParams();
+							console.log("Tweet This :: Successfully obtained parameters using 'var args = parent.tinymce.activeEditor.windowManager.getParams();'.");
+						} catch (e) {
+							console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = parent.tinymce.activeEditor.windowManager.getParams();'.  Dialog cannot function without this data.");
+						}
+					}
+
+					return args;
 				}
 			}());
 		</script>
