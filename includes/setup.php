@@ -10,7 +10,7 @@ require_once( TT_ROOT_PATH . "includes/share-handler.php" );
 
 if ( !class_exists( 'TT_Setup' ) ) {
 	class TT_Setup {
-		protected static $version = '1.1.8';
+		protected static $version = '1.2.0';
 
 		/**
 		 * Registers and enqueues all CSS and JavaScript.
@@ -145,10 +145,13 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				$options = get_option( 'tt_plugin_options' );
 				$twits = $options['default_twitter_handles'];
 				$hashtags = $options['default_hidden_hashtags'];
+				$hidden_urls = $options['default_hidden_urls'];
 
 				//	dialog customization options
 				$hide_preview = $options['disable_preview'];
-				$hide_advanced = $options['disable_advanced'];
+				$hide_handles = $options['disable_handles'];
+				$hide_post_url = $options['disable_post_url'];
+				$hide_hidden = $options['disable_hidden'];
 				$hide_char_count = $options['disable_char_count'];
 
 
@@ -161,8 +164,11 @@ if ( !class_exists( 'TT_Setup' ) ) {
 						'post_url_is_placeholder': <?php  echo (($urlarr["is_placeholder"]) ? 'true' : 'false'); ?>,
 						'default_twitter_handles': '<?php echo $twits; ?>',
 						'default_hidden_hashtags': '<?php echo $hashtags; ?>',
+						'default_hidden_urls': '<?php echo $hidden_urls; ?>',
 						'disable_preview': <?php echo (($hide_preview) ? 'true' : 'false'); ?>,
-						'disable_advanced': <?php echo (($hide_advanced) ? 'true' : 'false'); ?>,
+						'disable_handles': <?php echo (($hide_handles) ? 'true' : 'false'); ?>,
+						'disable_post_url': <?php echo (($hide_post_url) ? 'true' : 'false'); ?>,
+						'disable_hidden': <?php echo (($hide_hidden) ? 'true' : 'false'); ?>,
 						'disable_char_count': <?php echo (($hide_char_count) ? 'true' : 'false'); ?>
 					}
 				</script>
@@ -231,10 +237,12 @@ if ( !class_exists( 'TT_Setup' ) ) {
 					'url' => false,
 					'twitter_handles' => false,
 					'hidden_hashtags' => false,
+					'hidden_urls' => false,
 					'display_mode' => false,
 					'remove_twitter_handles' => false,
 					'remove_url' => false,
-					'remove_hidden_hashtags' => false
+					'remove_hidden_hashtags' => false,
+					'remove_hidden_urls' => false
 				 ), $atts ) );
 
 				//	Is this an enclosing or self-closing shortcode?
@@ -247,8 +255,8 @@ if ( !class_exists( 'TT_Setup' ) ) {
 
 
 				$Share = new TT_Share_Handler( $text, $url,
-					$twitter_handles, $hidden_hashtags, $remove_twitter_handles, $remove_url,
-					$remove_hidden_hashtags );
+					$twitter_handles, $hidden_hashtags, $hidden_urls, $remove_twitter_handles, $remove_url,
+					$remove_hidden_hashtags, $remove_hidden_urls );
 
 				$options = get_option(tt_plugin_options);
 
@@ -315,6 +323,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				$options = array(
 					'default_twitter_handles' => '',
 					'default_hidden_hashtags' => '',
+					'default_hidden_urls' => '',
 					'hide_promotional_byline' => false,
 					'use_shortlink' => false,
 					'css_override' => '',

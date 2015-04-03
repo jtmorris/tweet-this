@@ -106,6 +106,25 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				)
 			);
 
+			//	Default Hidden URLs
+			add_settings_field(
+				'tt_default_hidden_urls',		//	Setting ID
+				'Default Hidden URLs', 			//	Setting Title
+				array( 'TT_Settings',
+					'field_helper_textbox' ),	//	Content Callback
+				TT_FILENAME,				//	The page
+				'tweet_this_global',	//	Settings Section ID
+				//	Arguments for callback
+				array(
+					//	Name in options array:
+					//	tt_plugin_options['<THE VALUE SPECIFIED HERE']
+					'name'=>'default_hidden_urls',
+
+					//	Help text displayed below field
+					'help_text'=>'Any URLs you want added to your message when tweeted, but not displayed in your Tweet This boxes (leave blank for none). <br />Example: <span class="tt_admin_example">http://cs.johnmorris.me http://eng.johnmorris.me</span>'
+				)
+			);
+
 			//	Twitter Icon
 			add_settings_field(
 				'tt_twitter_icon',			//	Setting ID
@@ -302,26 +321,7 @@ if ( !class_exists( 'TT_Settings' ) ) {
 
 					'default' => false
 				)
-			);
-
-			//	Disable Advanced
-			add_settings_field(
-				'tt_disable_advanced',							//	Setting ID
-				'Disable Advanced Options?',						//	Setting Title
-				array( 'TT_Settings',
-					'field_helper_radio' ),			//	Content Callback
-				TT_FILENAME,
-				'tweet_this_scc_dialog',					//	Settings Section ID
-				array(
-					'name' => 'disable_advanced',
-
-					'buttons'=>array( array('Yes', true), array('No', false) ),
-
-					'help_text' => 'Disable the advanced options in the shortcode creator?',
-
-					'default' => false
-				)
-			);
+			);			
 
 			//	Disable Character Counter
 			add_settings_field(
@@ -337,6 +337,82 @@ if ( !class_exists( 'TT_Settings' ) ) {
 					'buttons'=>array( array('Yes', true), array('No', false) ),
 
 					'help_text' => 'Disable the "characters left" counter?',
+
+					'default' => false
+				)
+			);
+
+			//	Disable Post URL Options
+			add_settings_field(
+				'tt_disable_post_url',							//	Setting ID
+				'Disable Post URL Options?',						//	Setting Title
+				array( 'TT_Settings',
+					'field_helper_radio' ),			//	Content Callback
+				TT_FILENAME,
+				'tweet_this_scc_dialog',					//	Settings Section ID
+				array(
+					'name' => 'disable_post_url',
+
+					'buttons'=>array( array('Yes', true), array('No', false) ),
+
+					'help_text' => 'Disable the post URL options in the shortcode creator?',
+
+					'default' => false
+				)
+			);
+
+			//	Disable Twitter Handles Options
+			add_settings_field(
+				'tt_disable_handles',							//	Setting ID
+				'Disable Twitter Handle Options?',						//	Setting Title
+				array( 'TT_Settings',
+					'field_helper_radio' ),			//	Content Callback
+				TT_FILENAME,
+				'tweet_this_scc_dialog',					//	Settings Section ID
+				array(
+					'name' => 'disable_handles',
+
+					'buttons'=>array( array('Yes', true), array('No', false) ),
+
+					'help_text' => 'Disable the Twitter handle/user options in the shortcode creator?',
+
+					'default' => false
+				)
+			);
+
+			//	Disable Post URL Options
+			add_settings_field(
+				'tt_disable_post_url',							//	Setting ID
+				'Disable Post URL Options?',						//	Setting Title
+				array( 'TT_Settings',
+					'field_helper_radio' ),			//	Content Callback
+				TT_FILENAME,
+				'tweet_this_scc_dialog',					//	Settings Section ID
+				array(
+					'name' => 'disable_post_url',
+
+					'buttons'=>array( array('Yes', true), array('No', false) ),
+
+					'help_text' => 'Disable the post URL options in the shortcode creator?',
+
+					'default' => false
+				)
+			);
+
+			//	Disable Hidden Content Options
+			add_settings_field(
+				'tt_disable_hidden',							//	Setting ID
+				'Disable Hidden Content Options?',						//	Setting Title
+				array( 'TT_Settings',
+					'field_helper_radio' ),			//	Content Callback
+				TT_FILENAME,
+				'tweet_this_scc_dialog',					//	Settings Section ID
+				array(
+					'name' => 'disable_hidden',
+
+					'buttons'=>array( array('Yes', true), array('No', false) ),
+
+					'help_text' => 'Disable the options for hidden content in the shortcode creator?',
 
 					'default' => false
 				)

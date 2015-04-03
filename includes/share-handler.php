@@ -10,6 +10,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 		protected $my_text = null;
 		protected $my_url = null;
 		protected $my_hidden_hashtags = null;
+		protected $my_hidden_urls = null;
 		protected $my_url_is_placeholder = false;
 		protected $my_twitter_handles = null;
 
@@ -19,13 +20,15 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 		 * @param boolean $custom_url             A URL to override the auto-generated one.
 		 * @param boolean $custom_twitter_handles A list of Twitter handles to override the default ones with.
 		 * @param boolean $custom_hidden_hashtags A list of hidden hashtags to override the default ones with.
+		 * @param boolean $custom_hidden_url      A list of hidden URLs to override the default ones with.
 		 * @param boolean $remove_twitter_handles Whether to include Twitter handles or not.
 		 * @param boolean $remove_url             Whether to include URL or not.
 		 * @param boolean $remove_hidden_hashtags Whether to include hidden hashtags or not.
+		 * @param boolean $remove_hidden_urls     Whether to include hidden URLS or not.
 		 */
 		public function __construct( $text='', $custom_url=false, $custom_twitter_handles=false, 
-			$custom_hidden_hashtags=false, $remove_twitter_handles=false, $remove_url=false,
-			$remove_hidden_hashtags=false ) {
+			$custom_hidden_hashtags=false, $custom_hidden_urls=false, $remove_twitter_handles=false, $remove_url=false,
+			$remove_hidden_hashtags=false, $remove_hidden_urls=false ) {
 
 			//	Get values
 			$this->my_text = $text;
@@ -42,17 +45,25 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 				$this->my_hidden_hashtags = $custom_hidden_hashtags;
 			}
 
+			if ( $custom_hidden_urls ) {
+				$this->my_hidden_urls = $custom_hidden_urls;
+			}
+
 			//	If we're removing anything, remove it
 			if( $remove_twitter_handles ) {
-				$this->my_twitter_handles = "";
+				$this->my_twitter_handles = '';
 			}
 
 			if( $remove_url ) {
-				$this->my_url = "";
+				$this->my_url = '';
 			}
 
 			if( $remove_hidden_hashtags ) {
-				$this->my_hidden_hashtags = "";
+				$this->my_hidden_hashtags = '';
+			}
+
+			if( $remove_custom_hidden_urls ) {
+				$this->my_hidden_urls = '';
 			}
 		}
 
@@ -148,6 +159,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 					html_entity_decode(	//	WordPress encodes special characters in posts. Undo that.
 						$this->generate_text() . ' ' .
 						$this->generate_hidden_hashtags_for_url() . ' ' .
+						$this->generate_hidden_urls_for_url() . ' ' .
 						$this->generate_post_url() . ' ' .
 						$this->generate_twitter_handles_for_url(),
 						ENT_QUOTES,	//	Both single and double quotes
@@ -198,6 +210,21 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 
 			if( !empty( $this->my_hidden_hashtags ) ) {
 				return $this->my_hidden_hashtags;
+			}
+
+			return '';
+		}
+
+		public function generate_hidden_urls_for_url(  ) {
+			//	Do we need to get the hidden urls from the database?
+			if( is_null( $this->my_hidden_urls ) ) {
+				//	Yes
+				$options = get_option( 'tt_plugin_options' );
+				$this->my_hidden_urls = $options['default_hidden_urls'];
+			}
+
+			if( !empty( $this->my_hidden_urls ) ) {
+				return $this->my_hidden_urls;
 			}
 
 			return '';

@@ -102,8 +102,8 @@
 		<div id='TT_tinymce_dialog'>
 			<form>
 				<div class='TT_accordion'>
-					<h3>General</h3>
-					<div id='TT_section_general'>
+					<h3>Content</h3>
+					<div id='TT_section_content'>
 						<table class='form-table'>
 							<tr>
 								<th scope="row">Text To Tweet</th>
@@ -115,8 +115,8 @@
 					</div>
 				</div>
 				<div class='TT_accordion'>
-					<h3>Advanced Options</h3>
-					<div id='TT_section_advanced'>
+					<h3>Twitter Handles Options</h3>
+					<div id='TT_section_handles'>
 						<table class='form-table'>
 							<tr>
 								<th scope="row">Override Twitter Handles</th>
@@ -131,6 +131,22 @@
 								</td>
 							</tr>
 							<tr>
+								<th scope="row">Remove Twitter Handles</th>
+								<td>
+									<input id="TT_tinymce_dialog_remove_twitter_handles" type="checkbox" />
+									<p class='tt_admin_help_text'>
+										Check this to remove Twitter handles from the tweet.
+									</p>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class='TT_accordion'>
+					<h3>Post URL Options</h3>
+					<div id='TT_section_post_url'>
+						<table class='form-table'>
+							<tr>
 								<th scope="row">Override Post URL</th>
 								<td>
 									<input id="TT_tinymce_dialog_url_override" type="url" />
@@ -139,6 +155,23 @@
 									</p>
 								</td>
 							</tr>
+							<tr>
+								<th scope="row">Remove Post URL</th>
+								<td>
+									<input id="TT_tinymce_dialog_remove_url" type="checkbox" />
+									<p class='tt_admin_help_text'>
+										Check this to remove the post URL from the tweet.
+									</p>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class='TT_accordion'>
+					<h3>Hidden Content Options</h3>
+					<div id='TT_section_hidden'>
+						<table class='form-table'>
+							
 							<tr>
 								<th scope="row">Override Hidden Hashtags</th>
 								<td>
@@ -151,30 +184,35 @@
 									</p>
 								</td>
 							</tr>
-							<tr>
-								<th scope="row">Remove Twitter Handles</th>
-								<td>
-									<input id="TT_tinymce_dialog_remove_twitter_handles" type="checkbox" />
-									<p class='tt_admin_help_text'>
-										Check this to remove Twitter handles from the tweet.
-									</p>
-								</td>
-							</tr>
-							<tr>
-								<th scope="row">Remove URL</th>
-								<td>
-									<input id="TT_tinymce_dialog_remove_url" type="checkbox" />
-									<p class='tt_admin_help_text'>
-										Check this to remove the post URL from the tweet.
-									</p>
-								</td>
-							</tr>
+							
 							<tr>
 								<th scope="row">Remove Hidden Hashtags</th>
 								<td>
 									<input id="TT_tinymce_dialog_remove_hidden_hashtags" type="checkbox" />
 									<p class='tt_admin_help_text'>
 										Check this to remove any default hidden hashtags from the tweet.
+									</p>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">Override Hidden URLs</th>
+								<td>
+									<input id="TT_tinymce_dialog_hidden_urls_override" type="text" />
+									<p class="tt_admin_help_text">
+										URLs you want included in the tweet when the user tweets your message, but
+										hidden in the Tweet This box your site visitors see.
+										<br />
+										Example: <span class="tt_admin_example">http://cs.johnmorris.me, http://eng.johnmorris.me</span>
+									</p>
+								</td>
+							</tr>
+
+							<tr>
+								<th scope="row">Remove Hidden URLs</th>
+								<td>
+									<input id="TT_tinymce_dialog_remove_hidden_urls" type="checkbox" />
+									<p class='tt_admin_help_text'>
+										Check this to remove any default hidden URLs from the tweet.
 									</p>
 								</td>
 							</tr>
@@ -217,24 +255,32 @@
 				var post_url_is_placeholder = args['post_url_is_placeholder'];
 				var default_twitter_handles = args['default_twitter_handles'];
 				var default_hidden_hashtags = args['default_hidden_hashtags'];
+				var default_hidden_urls = args['default_hidden_urls'];
 				var editor = args['editor'];
+				
 				var disable_preview = args['disable_preview'];
-				var disable_advanced = args['disable_advanced'];
+				var disable_handles = args['disable_handles'];
+				var disable_post_url = args['disable_post_url'];
+				var disable_hidden = args['disable_hidden'];
 				var disable_char_count = args['disable_char_count'];
 
 				//	Vars for readability
 				var sections = {
 					'general': $('#TT_section_general', context),
-					'advanced': $('#TT_section_advanced', context)
+					'handles': $('#TT_section_handles', context),
+					'post_url': $('#TT_section_post_url', context),
+					'hidden': $('#TT_section_hidden', context),
 				};
 				var inputs = {
 					'text': $('#TT_tinymce_dialog_text', context),
 					'url': $('#TT_tinymce_dialog_url_override', context),
 					'twitter_handles': $('#TT_tinymce_dialog_twitter_handle_override', context),
 					'hidden_hashtags': $('#TT_tinymce_dialog_hidden_hashtags_override', context),
+					'hidden_urls': $('#TT_tinymce_dialog_hidden_urls_override', context),
 					'remove_twitter_handles': $('#TT_tinymce_dialog_remove_twitter_handles', context),
 					'remove_url': $('#TT_tinymce_dialog_remove_url', context),
-					'remove_hidden_hashtags': $('#TT_tinymce_dialog_remove_hidden_hashtags', context)
+					'remove_hidden_hashtags': $('#TT_tinymce_dialog_remove_hidden_hashtags', context),
+					'remove_hidden_urls': $('#TT_tinymce_dialog_remove_hidden_urls', context)
 				};
 				var form = $('#TT_tinymce_dialog form', context);
 				var preview = $('#TT_tinymce_tweet_preview', context);
@@ -263,9 +309,17 @@
 				if( disable_char_count ) {
 					characters.hide();
 				}
+				
+				if( disable_handles ) {
+					sections.handles.parent('.TT_accordion').remove();
+				}
 
-				if( disable_advanced ) {
-					sections.advanced.parent('.TT_accordion').remove();
+				if( disable_post_url ) {
+					sections.post_url.parent('.TT_accordion').remove();
+				}
+
+				if( disable_hidden ) {
+					sections.hidden.parent('.TT_accordion').remove();
 				}
 
 
@@ -312,7 +366,12 @@
 				//	On hidden hashtags change, update preview
 				inputs['hidden_hashtags'].on('change keyup paste', function() {
 					preview.val(tt_preview_string()).change();
-				})
+				});
+
+				//	On hidden URLS change, update preview
+				inputs['hidden_urls'].on('change keyup paste', function() {
+					preview.val(tt_preview_string()).change();
+				});
 
 				//	On remove checkbox changes, update preview
 				inputs['remove_twitter_handles'].on('change keyup paste', function() {
@@ -347,7 +406,18 @@
 					else {
 						inputs['hidden_hashtags'].prop('disabled', false);
 					}
-				})
+				});
+				inputs['remove_hidden_urls'].on('change keyup paste', function() {
+					preview.val(tt_preview_string()).change();
+
+					//	Also, disable the hidden hashtags box for good measure
+					if( inputs['remove_hidden_urls'].prop('checked') ) {
+						inputs['hidden_urls'].prop('disabled', true);
+					}
+					else {
+						inputs['hidden_urls'].prop('disabled', false);
+					}
+				});
 
 
 				//	Character counter and preview truncate
@@ -401,11 +471,15 @@
 					if( get_clean_url() ) {
 						shortcode += ' url="' + (get_clean_url()) + '"';
 					}
+					if( get_clean_hidden_urls() ) {
+						shortcode += ' hidden_urls="' + (get_clean_hidden_urls()) + '"';
+					}
 
 					//	Are we supposed to remove anything from this particular tweet?
 					var remove_twits           = inputs['remove_twitter_handles'].prop('checked');
 					var remove_url             = inputs['remove_url'].prop('checked');
 					var remove_hidden_hashtags = inputs['remove_hidden_hashtags'].prop('checked');
+					var remove_hidden_urls     = inputs['remove_hidden_urls'].prop('checked');
 
 					if( remove_twits ) {
 						shortcode += ' remove_twitter_handles="true"';
@@ -415,6 +489,9 @@
 					}
 					if( remove_hidden_hashtags ) {
 						shortcode += ' remove_hidden_hashtags="true"';
+					}
+					if( remove_hidden_urls ) {
+						shortcode += ' remove_hidden_urls="true"';
 					}
 
 
@@ -435,12 +512,15 @@
 					var remove_twits           = inputs['remove_twitter_handles'].prop('checked');
 					var remove_url             = inputs['remove_url'].prop('checked');
 					var remove_hidden_hashtags = inputs['remove_hidden_hashtags'].prop('checked');
+					var remove_hidden_urls     = inputs['remove_hidden_urls'].prop('checked');
 
 					//	Was Twitter handles, default hashtags, or the URL overriden?
 					//	If so, we want those.  If not, we want the defaults.
 					var twits = default_twitter_handles;
 					var hashtags = default_hidden_hashtags;
+					var hidden_urls = default_hidden_urls;
 					var url = post_url;
+
 					if( get_clean_twitter_handles() || remove_twits ) {
 						twits = get_clean_twitter_handles();
 					}
@@ -450,6 +530,9 @@
 					if( get_clean_hidden_hashtags() || remove_hidden_hashtags ) {
 						hashtags = get_clean_hidden_hashtags();
 					}
+					if( get_clean_hidden_urls() || remove_hidden_urls ) {
+						hidden_urls = get_clean_hidden_urls();
+					}
 
 					var retval = text;
 					if(hashtags) {
@@ -457,6 +540,9 @@
 					}					
 					if ( url ) {
 						retval += ' ' + url;
+					}
+					if ( hidden_urls ) {
+						retval += ' ' + hidden_urls;
 					}
 					if (twits) {
 						retval +=' via ' + twits;
@@ -493,7 +579,42 @@
 						return "";
 					}
 
-					return $.trim(inputs['hidden_hashtags'].val()).
+					//	Do we have any override?
+					if( $.trim(inputs['hidden_hashtags'].val()) ) {
+						var cont = inputs['hidden_hashtags'].val();
+					}
+					//	Do we have any defaults?
+					else if( $.trim(default_hidden_hashtags) ) {
+						var cont = default_hidden_hashtags;
+					}
+					//	Nothing
+					else {
+						var cont = '';
+					}
+
+					return $.trim(cont).
+						replace(/"/g, '').	//	remove double quotes
+						replace(/'/g, '');	//	remove single quotes;
+				}
+				function get_clean_hidden_urls() {
+					if(inputs['remove_hidden_urls'].prop('checked')) {
+						return "";
+					}
+
+					//	Do we have any override?
+					if( $.trim(inputs['hidden_urls'].val()) ) {
+						var cont = inputs['hidden_urls'].val();
+					}
+					//	Do we have any defaults?
+					else if( $.trim(default_hidden_urls) ) {
+						var cont = default_hidden_urls;
+					}
+					//	Nothing
+					else {
+						var cont = '';
+					}
+
+					return encodeURI( $.trim(cont) ).
 						replace(/"/g, '').	//	remove double quotes
 						replace(/'/g, '');	//	remove single quotes;
 				}
