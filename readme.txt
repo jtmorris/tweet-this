@@ -4,7 +4,7 @@ Donate link: http://tweetthis.jtmorris.net/
 Tags: twitter, tweet, social, sharing
 Requires at least: 3.9
 Tested up to: 4.1
-Stable tag: 1.1.9
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,6 +88,10 @@ Tweet This plugin.
 
 
 == Changelog ==
+= 1.2.0 =
+* Adds hidden URL feature. Similar to hidden hashtags, but for URLs.  Now you can specify a link that will be appended to your user's tweets, but does not display in the Tweet This box.
+* Cleans up and reogranizes the shorcode creator dialog box.
+* Code cleanup.
 = 1.1.9 =
 * Fix SSL/HTTPS security errors due to unsecure font imports.
 = 1.1.8 =
