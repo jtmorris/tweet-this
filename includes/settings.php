@@ -714,10 +714,6 @@ if ( !class_exists( 'TT_Settings' ) ) {
 					</p>
 					<table class='TT_donations'>
 						<tr>
-							<!--Flattr-->
-							<td>
-								<script id='fb5x80j'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=jtmorris&title=Tweet%20This&url=http%3A%2F%2Ftweethis.jtmorris.net';f.title='Flattr';f.height=62;f.width=55;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fb5x80j');</script>
-							</td>
 							<!--PayPal-->
 							<td>
 								<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
@@ -771,6 +767,12 @@ if ( !class_exists( 'TT_Settings' ) ) {
 							</a>
 							: Explains in greater detail the settings availble
 							for Tweet This.
+						</li>
+						<li>
+							<a target="_blank" href="http://tweetthis.jtmorris.net/posts/including-graphics-and-images-in-a-tweet/">
+								Including Graphics and Images in a Tweet
+							</a>
+							: Gives a few tips for including graphics inside Tweet This content.
 						</li>
 					</ul>
 				</div>
