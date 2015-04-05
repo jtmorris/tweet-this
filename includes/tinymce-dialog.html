@@ -469,13 +469,13 @@
 					if( get_clean_twitter_handles() ) {
 						shortcode += ' twitter_handles="' + (get_clean_twitter_handles()) + '"';
 					}
-					if( get_clean_hidden_hashtags() ) {
+					if( get_clean_hidden_hashtags(true) ) {
 						shortcode += ' hidden_hashtags="' + (get_clean_hidden_hashtags()) + '"';
 					}
 					if( get_clean_url() ) {
 						shortcode += ' url="' + (get_clean_url()) + '"';
 					}
-					if( get_clean_hidden_urls() ) {
+					if( get_clean_hidden_urls(true) ) {
 						shortcode += ' hidden_urls="' + (get_clean_hidden_urls()) + '"';
 					}
 
@@ -578,7 +578,7 @@
 						replace(/"/g, '').	//	remove double quotes
 						replace(/'/g, '');	//	remove single quotes
 				}
-				function get_clean_hidden_hashtags() {
+				function get_clean_hidden_hashtags(for_output) {					
 					if(inputs['remove_hidden_hashtags'].prop('checked')) {
 						return "";
 					}
@@ -587,8 +587,8 @@
 					if( $.trim(inputs['hidden_hashtags'].val()) ) {
 						var cont = inputs['hidden_hashtags'].val();
 					}
-					//	Do we have any defaults?
-					else if( $.trim(default_hidden_hashtags) ) {
+					//	Do we have any defaults? If so, and this isn't for output, return them.
+					else if( !for_output && $.trim(default_hidden_hashtags) ) {
 						var cont = default_hidden_hashtags;
 					}
 					//	Nothing
@@ -600,7 +600,7 @@
 						replace(/"/g, '').	//	remove double quotes
 						replace(/'/g, '');	//	remove single quotes;
 				}
-				function get_clean_hidden_urls() {
+				function get_clean_hidden_urls(for_output) {
 					if(inputs['remove_hidden_urls'].prop('checked')) {
 						return "";
 					}
@@ -609,8 +609,8 @@
 					if( $.trim(inputs['hidden_urls'].val()) ) {
 						var cont = inputs['hidden_urls'].val();
 					}
-					//	Do we have any defaults?
-					else if( $.trim(default_hidden_urls) ) {
+					//	Do we have any defaults?  If so, and this isn't for output, return them.
+					else if( !for_output && $.trim(default_hidden_urls) ) {
 						var cont = default_hidden_urls;
 					}
 					//	Nothing
