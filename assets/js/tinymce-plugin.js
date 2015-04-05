@@ -1,5 +1,7 @@
 /**
- * Reference: https://gist.github.com/dnaber-de/1658122
+ * Reference: 
+ * 	https://gist.github.com/dnaber-de/1658122
+ *  http://johnmorris.me/computers/software/how-to-create-a-tinymce-editor-dialog-window-in-a-wordpress-plugin/
  */
 
 (function($) {
@@ -18,6 +20,32 @@
 
 	tinymce.create('tinymce.plugins.tweetthis', {
 		init: function(ed, url) {
+
+			//	Let's gather the arguments/parameters we're going to send in an object
+			var args = {
+				assets_url: url + '/..',
+				default_twitter_handles: twits,
+				default_hidden_hashtags: default_hidden_hashtags,
+				default_hidden_urls: default_hidden_urls,
+				post_url: post_url,
+				post_url_is_placeholder: placeholder,
+				disable_preview: disable_preview,
+				disable_handles: disable_handles,
+				disable_post_url: disable_post_url,
+				disable_hidden: disable_hidden,
+				disable_char_count: disable_char_count,
+
+				editor: ed,
+				jquery: $
+			};
+
+			//	Now, in case the normal method for extracting these arguments goes sideways,
+			//	which it has for several people, let's store this damn thing globally (*cringe*)
+			//	so we can access it in a hack-y, brute forced way.
+			window.tweetthis_tinymce_args = args;
+
+
+			//	Now, create the dialog
 			ed.addButton('tweetthis_button', {
 				title: 'Add Tweet This Box',
 				image: url + '/../images/tinymce-button.png',

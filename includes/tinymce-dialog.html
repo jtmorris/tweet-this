@@ -242,6 +242,10 @@
 				//	Get the args... Sometimes this fails.
 				var args = get_tinymce_params();
 
+				if( !args ) {
+					return;
+				}
+
 				//	Get jQuery
 				//	http://jtmorris.net/?p=1109 for more info
 				var $ = args['jquery'];
@@ -624,18 +628,124 @@
 					var args = null;
 					try {
 						var args = top.tinymce.activeEditor.windowManager.getParams();
+						return args;
 					} catch (e) {
-						console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = top.tinymce.activeEditor.windowManager.getParams();'.  Trying parent instead of top.");
-
-						try {
-							var args = parent.tinymce.activeEditor.windowManager.getParams();
-							console.log("Tweet This :: Successfully obtained parameters using 'var args = parent.tinymce.activeEditor.windowManager.getParams();'.");
-						} catch (e) {
-							console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = parent.tinymce.activeEditor.windowManager.getParams();'.  Dialog cannot function without this data.");
-						}
+						console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = top.tinymce.activeEditor.windowManager.getParams();'.  Trying parent instead of top.");						
 					}
 
-					return args;
+					try {
+						var args = parent.tinymce.activeEditor.windowManager.getParams();
+						console.log("Tweet This :: Successfully obtained parameters using 'var args = parent.tinymce.activeEditor.windowManager.getParams();'.");
+						return args;
+					} catch (e) {
+						console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = parent.tinymce.activeEditor.windowManager.getParams();'.  Switching to brute force method.");
+					}
+
+					//	Oh FFS. This is bullcrap. THIS ISN'T SUPPOSED TO HAPPEN. This is the documented
+					//	way to extract arguments from a TinyMCE dialog window.  And yet, it happens
+					//	more often than I can fathom.  I HATE TINYMCE!
+
+					//	Well, let's brute force this thing. The arguments object was written elsewhere for just this occasion.
+					try {
+						var args = window.parent.tweetthis_tinymce_args;
+						console.log("Tweet This :: Successfully obtained parameters using 'var args = window.parent.tweetthis_tinymce_args;'.");
+						return args;
+					} catch (e) {
+						console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = window.parent.tweetthis_tinymce_args;'.  Trying brute force method #2.")
+					}
+
+					try {
+						var args = window.top.tweetthis_tinymce_args;
+						console.log("Tweet This :: Successfully obtained parameters using 'var args = window.top.tweetthis_tinymce_args;'.");
+						return args;
+					} catch (e) {
+						console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = window.top.tweetthis_tinymce_args;'")						
+					}
+
+
+					//	OMFG. I can't access anything?!?!?!?  Well, let's alert the user, and then die.
+					console.log("Tweet This :: Can not access the dialog window's passed arguments.  Dialog can not function without this data.");
+
+
+					//	Answer contextual questions
+					var dbginfo = "Tweet This Error:  Couldn't find TinyMCE arguments/parameters.\n================================\n\n";
+
+					dbginfo += "User Agent\n--------------------------\n";
+					dbginfo += navigator.userAgent;
+
+					dbginfo += "\n\nContextual Information\n--------------------------\n--------------------------\n";
+					dbginfo += "Is this a single or nested iframe?  ";
+					window.parent != window.top ? dbginfo += "Nested" : dbginfo += "Single";
+					dbginfo += "\n";
+
+					dbginfo += "Can we access 'top'?  ";
+					top ? dbginfo += "Yes" : dbginfo += "No";
+					dbginfo += "\n";
+
+					dbginfo += "Can we access 'top.tinymce'?  ";
+					top.tinymce ? dbginfo += "Yes" : dbginfo += "No";
+					dbginfo += "\n";
+
+					dbginfo += "Can we access 'top.tinymce.activeEditor'?  ";
+					top.tinymce.activeEditor ? dbginfo += "Yes" : dbginfo += "No";
+					dbginfo += "\n";
+
+					dbginfo += "Can we access 'top.tinymce.activeEditor.windowManager'?  ";
+					top.tinymce.activeEditor.windowManager ? dbginfo += "Yes" : dbginfo += "No";
+					dbginfo += "\n";
+
+					dbginfo += "Can we access 'parent'?  ";
+					parent ? dbginfo += "Yes" : dbginfo += "No";
+					dbginfo += "\n";
+
+					dbginfo += "Can we access 'parent.tinymce'?  ";
+					parent.tinymce ? dbginfo += "Yes" : dbginfo += "No";
+					dbginfo += "\n";
+
+					dbginfo += "Can we access 'parent.tinymce.activeEditor'?  ";
+					parent.tinymce.activeEditor ? dbginfo += "Yes" : dbginfo += "No";
+					dbginfo += "\n";
+
+					dbginfo += "Can we access 'parent.tinymce.activeEditor.windowManager'?  ";
+					parent.tinymce.activeEditor.windowManager ? dbginfo += "Yes" : dbginfo += "No";
+					dbginfo += "\n";
+
+
+
+					//	Var Dump the top level body's HTML
+					dbginfo += "\n\nwindow.top.document.body HTML\n--------------------------\n--------------------------\n";
+					dbginfo += window.top.document.body.innerHTML;
+
+
+
+
+					var message = "<div style=\"font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif\"><h2>Lucky You!  You've Found an Unrecoverable Error.</h2>";
+					message += "<p>You have just stumbled upon a very rare WordPress editor bug. I have been unable to locate the root cause, but, with your help, I can probably work around it.</p>";
+					message += "<p>Here's the problem:  Your WordPress editor is not providing data to this shortcode creator <a href='http://www.tinymce.com/wiki.php/Tutorials:Creating_custom_dialogs' target='_blank'>like it is supposed to</a>.  This has happened to a few other plugin users, but the circumstances are slightly different in each case, so I can only react when it occurs, not prevent it.</p>";
+					
+					message += "<p>Working around this instance of the problem will require a little bit of contextual information (automatically gathered below). Please send me, Tweet This' developer, an <strong>email</strong>, and copy and paste the <strong>data in the text box below</strong> into your message. You can find a contact form for sending an email on <a href='http://tweetthis.jtmorris.net/contact/' target='_blank'>the plugin's website</a>.</p>";
+					message += "<p>I'm very sorry for the trouble.  As I said, this is a very rare and unpredictable WordPress problem.</p>";
+					message += "<textarea id='tt-dbginfo' style='height: 225px; font-size: 10px;'></textarea></div>";
+					
+					document.body.innerHTML = message;
+									
+
+					//	Insert debug info
+					var dbgbox = document.getElementById('tt-dbginfo');					
+					dbgbox.value = dbginfo;
+
+					//	Highlight text on focus
+					dbgbox.onfocus = function() {
+						dbgbox.select();
+
+						dbgbox.onmouseup = function() {
+							//	Prevent further mouseup intervention
+							dbgbox.onmouseup = null;
+							return false;
+						};
+					}
+
+					return null;
 				}
 			}());
 		</script>
