@@ -4,7 +4,7 @@ Donate link: http://tweetthis.jtmorris.net/
 Tags: twitter, tweet, social, sharing
 Requires at least: 3.9
 Tested up to: 4.1
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,6 +76,22 @@ named 'tweet-this' in your WordPress site's './wp-content/plugins/' directory.
 Tweet This plugin.
 
 
+== Frequently Asked Questions ==
+= I'm not sure how to use this plugin. Where can I get help? =
+Usage guides and information for this plugin are available on the [plugin's website](http://tweetthis.jtmorris.net). 
+I recommend beginning with the [Getting Started Guide](http://tweetthis.jtmorris.net/posts/using-tweet-this/) 
+You can also find links to other helpful articles on the plugin's settings page in your WordPress admin.
+
+I strive to make this plugin easy to use.  But, it is easy for me, as the plugin developer, to miss something.
+Feedback from users if *very* helpful in improving this product.  If something is confusing, difficult, or illogical,
+let me know along with any suggestions for making it better.  You can use the support forum on WordPress.org,
+or you can find other methods for contacting me [here](http://tweetthis.jtmorris.net/contact/).
+
+= Can I include graphical content in tweets? =
+Sort of.  Twitter does not allow the posting of images on behalf of other users, like this
+plugin does for text.  However, there are a few tricks you can use to work around this and
+get graphical content included.  There is a detailed guide for how to do this on the plugin's website:
+[Including Graphics and Images in a Tweet](http://tweetthis.jtmorris.net/posts/including-graphics-and-images-in-a-tweet/)
 
 == Screenshots ==
 1. Shortcode creator for WordPress' TinyMCE editor.
@@ -88,6 +104,11 @@ Tweet This plugin.
 
 
 == Changelog ==
+= 1.2.1 =
+* Add workaround for rare WordPress editor bug where it doesn't provide arguments to dialog box.
+* Improve any error reporting when the aforementioned bug is encoutered and eliminate JavaScript exceptions.
+* Fix unnecessary and undesired hard coding of default shortcode parameters when using shortcode creation dialog box.
+* Code cleanup.
 = 1.2.0 =
 * Adds hidden URL feature. Similar to hidden hashtags, but for URLs.  Now you can specify a link that will be appended to your user's tweets, but does not display in the Tweet This box.
 * Cleans up and reogranizes the shorcode creator dialog box.
