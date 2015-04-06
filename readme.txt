@@ -108,6 +108,7 @@ get graphical content included.  There is a detailed guide for how to do this on
 * Add workaround for rare WordPress editor bug where it doesn't provide arguments to dialog box.
 * Improve any error reporting when the aforementioned bug is encoutered and eliminate JavaScript exceptions.
 * Fix unnecessary and undesired hard coding of default shortcode parameters when using shortcode creation dialog box.
+* Fix Tweet This box mode display problem for some themes.
 * Code cleanup.
 = 1.2.0 =
 * Adds hidden URL feature. Similar to hidden hashtags, but for URLs.  Now you can specify a link that will be appended to your user's tweets, but does not display in the Tweet This box.
