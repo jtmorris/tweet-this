@@ -4,7 +4,7 @@ Donate link: http://tweetthis.jtmorris.net/
 Tags: twitter, tweet, social, sharing
 Requires at least: 3.9
 Tested up to: 4.1
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -104,6 +104,9 @@ get graphical content included.  There is a detailed guide for how to do this on
 
 
 == Changelog ==
+= 1.2.2 =
+* Further refinements to error reporting.
+* Additional workarounds for rare WordPress editor bug.
 = 1.2.1 =
 * Add workaround for rare WordPress editor bug where it doesn't provide arguments to dialog box.
 * Improve any error reporting when the aforementioned bug is encoutered and eliminate JavaScript exceptions.
