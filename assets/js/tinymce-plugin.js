@@ -63,22 +63,7 @@
 						inline: 1
 					},
 					//	Windows Parameters/Arguments
-					{
-						assets_url: url + '/..',
-						default_twitter_handles: twits,
-						default_hidden_hashtags: default_hidden_hashtags,
-						default_hidden_urls: default_hidden_urls,
-						post_url: post_url,
-						post_url_is_placeholder: placeholder,
-						disable_preview: disable_preview,
-						disable_handles: disable_handles,
-						disable_post_url: disable_post_url,
-						disable_hidden: disable_hidden,
-						disable_char_count: disable_char_count,
-
-						editor: ed,
-						jquery: $
-					}
+					args
 				);
 			});
 		}

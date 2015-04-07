@@ -645,13 +645,45 @@
 					//	way to extract arguments from a TinyMCE dialog window.  And yet, it happens
 					//	more often than I can fathom.  I HATE TINYMCE!
 
-					//	Well, let's brute force this thing. The arguments object was written elsewhere for just this occasion.
+					//	Well, let's brute force this thing. 
+					try {
+						var args = parent.parent.tinymce.activeEditor.windowManager.getParams();	//	Two deep iframe
+						console.log("Tweet This :: Successfully obtained parameters using 'var args = parent.parent.tinymce.activeEditor.windowManager.getParams();'.");
+						return args;
+					} catch(e) {
+						console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = parent.parent.tinymce.activeEditor.windowManager.getParams();'  Trying brute force method #2")
+					}
+					try {
+						var args = parent.parent.parent.tinymce.activeEditor.windowManager.getParams(); //	Three deep iframe
+						console.log("Tweet This :: Successfully obtained parameters using 'var args = parent.parent.parent.tinymce.activeEditor.windowManager.getParams();'.");
+						return args;
+					} catch(e) {
+						console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = parent.parent.parent.tinymce.activeEditor.windowManager.getParams();'  Trying brute force method #3")
+					}
+
+					//	Okay, another brute force method... the arguments object was written elsewhere for just this occasion.
 					try {
 						var args = window.parent.tweetthis_tinymce_args;
 						console.log("Tweet This :: Successfully obtained parameters using 'var args = window.parent.tweetthis_tinymce_args;'.");
 						return args;
 					} catch (e) {
-						console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = window.parent.tweetthis_tinymce_args;'.  Trying brute force method #2.")
+						console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = window.parent.tweetthis_tinymce_args;'.  Trying brute force method #4.")
+					}
+
+					try {
+						var args = window.parent.parent.tweetthis_tinymce_args;
+						console.log("Tweet This :: Successfully obtained parameters using 'var args = window.parent.parent.tweetthis_tinymce_args;'.");
+						return args;
+					} catch (e) {
+						console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = window.parent.parent.tweetthis_tinymce_args;'.  Trying brute force method #5.")
+					}
+
+					try {
+						var args = window.parent.parent.parent.tweetthis_tinymce_args;
+						console.log("Tweet This :: Successfully obtained parameters using 'var args = window.parent.parent.parent.tweetthis_tinymce_args;'.");
+						return args;
+					} catch (e) {
+						console.log("Tweet This :: Error getting parameters passed to dialog with 'var args = window.parent.parent.parent.tweetthis_tinymce_args;'.  Trying brute force method #6.")
 					}
 
 					try {
@@ -674,41 +706,115 @@
 					dbginfo += navigator.userAgent;
 
 					dbginfo += "\n\nContextual Information\n--------------------------\n--------------------------\n";
-					dbginfo += "Is this a single or nested iframe?  ";
-					window.parent != window.top ? dbginfo += "Nested" : dbginfo += "Single";
-					dbginfo += "\n";
+					
+					try {
+						dbginfo += "Is this a single or nested iframe?  ";
+						window.parent != window.top ? dbginfo += "Nested" : dbginfo += "Single";
+						dbginfo += "\n";
+					} catch(e) {}
 
-					dbginfo += "Can we access 'top'?  ";
-					top ? dbginfo += "Yes" : dbginfo += "No";
-					dbginfo += "\n";
+					//	Top
+					try {
+						dbginfo += "Can we access 'top'?  ";
+						top ? dbginfo += "Yes" : dbginfo += "No";
+						dbginfo += "\n";
+					} catch(e) {
+						dbginfo += "Can we access 'top'?  No. JavaScript exception was thrown: " + e.message;
+					}
 
-					dbginfo += "Can we access 'top.tinymce'?  ";
-					top.tinymce ? dbginfo += "Yes" : dbginfo += "No";
-					dbginfo += "\n";
+					try {
+						dbginfo += "Can we access 'top.tinymce'?  ";
+						top.tinymce ? dbginfo += "Yes" : dbginfo += "No";
+						dbginfo += "\n";
+					} catch(e) {
+						dbginfo += "Can we access 'top.tinymce'?  No. JavaScript exception was thrown: " + e.message;
+					}
 
-					dbginfo += "Can we access 'top.tinymce.activeEditor'?  ";
-					top.tinymce.activeEditor ? dbginfo += "Yes" : dbginfo += "No";
-					dbginfo += "\n";
+					try {
+						dbginfo += "Can we access 'top.tinymce.activeEditor'?  ";
+						top.tinymce.activeEditor ? dbginfo += "Yes" : dbginfo += "No";
+						dbginfo += "\n";
+					} catch(e) {
+						dbginfo += "Can we access 'top.tinymce.activeEditor'?  No. JavaScript exception was thrown: " + e.message;
+					}
 
-					dbginfo += "Can we access 'top.tinymce.activeEditor.windowManager'?  ";
-					top.tinymce.activeEditor.windowManager ? dbginfo += "Yes" : dbginfo += "No";
-					dbginfo += "\n";
+					try {
+						dbginfo += "Can we access 'top.tinymce.activeEditor.windowManager'?  ";
+						top.tinymce.activeEditor.windowManager ? dbginfo += "Yes" : dbginfo += "No";
+						dbginfo += "\n";
+					} catch(e) {
+						dbginfo += "Can we access 'top.tinymce.activeEditor.windowManager'?  No. JavaScript exception was thrown: " + e.message;
+					}
 
-					dbginfo += "Can we access 'parent'?  ";
-					parent ? dbginfo += "Yes" : dbginfo += "No";
-					dbginfo += "\n";
+					//	Parent
+					try {
+						dbginfo += "\nCan we access 'parent'?  ";
+						parent ? dbginfo += "Yes" : dbginfo += "No";
+						dbginfo += "\n";
+					} catch(e) {
+						dbginfo += "Can we access 'parent'?  No. JavaScript exception was thrown: " + e.message;
+					}
 
-					dbginfo += "Can we access 'parent.tinymce'?  ";
-					parent.tinymce ? dbginfo += "Yes" : dbginfo += "No";
-					dbginfo += "\n";
+					try {
+						dbginfo += "Can we access 'parent.tinymce'?  ";
+						parent.tinymce ? dbginfo += "Yes" : dbginfo += "No";
+						dbginfo += "\n";
+					} catch(e) {
+						dbginfo += "Can we access 'parent.tinymce'?  No. JavaScript exception was thrown: " + e.message;
+					}
 
-					dbginfo += "Can we access 'parent.tinymce.activeEditor'?  ";
-					parent.tinymce.activeEditor ? dbginfo += "Yes" : dbginfo += "No";
-					dbginfo += "\n";
+					try {
+						dbginfo += "Can we access 'parent.tinymce.activeEditor'?  ";
+						parent.tinymce.activeEditor ? dbginfo += "Yes" : dbginfo += "No";
+						dbginfo += "\n";
+					} catch(e) {
+						dbginfo += "Can we access 'parent.tinymce.activeEditor'?  No. JavaScript exception was thrown: " + e.message;
+					}
 
-					dbginfo += "Can we access 'parent.tinymce.activeEditor.windowManager'?  ";
-					parent.tinymce.activeEditor.windowManager ? dbginfo += "Yes" : dbginfo += "No";
-					dbginfo += "\n";
+					try {
+						dbginfo += "Can we access 'parent.tinymce.activeEditor.windowManager'?  ";
+						parent.tinymce.activeEditor.windowManager ? dbginfo += "Yes" : dbginfo += "No";
+						dbginfo += "\n";
+					} catch(e) {
+						dbginfo += "Can we access 'parent.tinymce.activeEditor.windowManager'?  No. JavaScript exception was thrown: " + e.message;
+					}
+
+					//	parent.parent
+					try {
+						dbginfo += "\nCan we access 'parent.parent'?  ";
+						parent.parent ? dbginfo += "Yes" : dbginfo += "No";
+						dbginfo += "\n";
+					} catch(e) {
+						dbginfo += "Can we access 'parent.parent'?  No. JavaScript exception was thrown: " + e.message;
+					}
+
+					try {
+						dbginfo += "Can we access 'parent.parent.tinymce'?  ";
+						parent.parent.tinymce ? dbginfo += "Yes" : dbginfo += "No";
+						dbginfo += "\n";
+					} catch(e) {
+						dbginfo += "Can we access 'parent.parent.tinymce'?  No. JavaScript exception was thrown: " + e.message;
+					}
+
+					try {
+						dbginfo += "Can we access 'parent.parent.tinymce.activeEditor'?  ";
+						parent.parent.tinymce.activeEditor ? dbginfo += "Yes" : dbginfo += "No";
+						dbginfo += "\n";
+					} catch(e) {
+						dbginfo += "Can we access 'parent.parent.tinymce.activeEditor'?  No. JavaScript exception was thrown: " + e.message;
+					}
+
+					try {
+						dbginfo += "Can we access 'parent.parent.tinymce.activeEditor.windowManager'?  ";
+						parent.parent.tinymce.activeEditor.windowManager ? dbginfo += "Yes" : dbginfo += "No";
+						dbginfo += "\n";
+					} catch(e) {
+						dbginfo += "Can we access 'parent.parent.tinymce.activeEditor.windowManager'?  No. JavaScript exception was thrown: " + e.message;
+					}
+
+
+
+
 
 
 
