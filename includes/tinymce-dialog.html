@@ -542,11 +542,11 @@
 					if(hashtags) {
 						retval += ' ' + hashtags;
 					}					
-					if ( url ) {
-						retval += ' ' + url;
-					}
 					if ( hidden_urls ) {
 						retval += ' ' + hidden_urls;
+					}
+					if ( url ) {
+						retval += ' ' + url;
 					}
 					if (twits) {
 						retval +=' via ' + twits;
@@ -820,7 +820,12 @@
 
 					//	Var Dump the top level body's HTML
 					dbginfo += "\n\nwindow.top.document.body HTML\n--------------------------\n--------------------------\n";
-					dbginfo += window.top.document.body.innerHTML;
+					try {
+						dbginfo += window.top.document.body.innerHTML;
+					} catch(e) {
+						dbginfo += "Couldn't access the top frame's innerHTML.  JavaScript exception was thrown: " + e.message;
+					}
+
 
 
 
