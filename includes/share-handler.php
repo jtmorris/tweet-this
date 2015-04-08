@@ -151,17 +151,27 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 
 
 		protected function generate_share_url() {
-			//	We need to generate the URL
+			//	Put all the tweet pieces into an array which we'll implode with a space as glue
+			$ttext = array(
+				$this->generate_text(),
+				$this->generate_hidden_hashtags_for_url(),
+				$this->generate_hidden_urls_for_url(),
+				$this->generate_post_url(),
+				$this->generate_twitter_handles_for_url()
+			);
+			//	Remove any empty array entries
+			$ttext = array_filter( $ttext );
+			//	Implode the tweet array into a string.
+			$ttext = implode( ' ', $ttext );
+
+
+			//	Now, generate the URL
 			$url = 'http://twitter.com/intent/tweet?text=';
 			$url .= urlencode(
 				trim(	//	There's a chance there's a trailing space if no URL or Twitter
 						//	handles are input.  Remove that.
 					html_entity_decode(	//	WordPress encodes special characters in posts. Undo that.
-						$this->generate_text() . ' ' .
-						$this->generate_hidden_hashtags_for_url() . ' ' .
-						$this->generate_hidden_urls_for_url() . ' ' .
-						$this->generate_post_url() . ' ' .
-						$this->generate_twitter_handles_for_url(),
+						$ttext,
 						ENT_QUOTES,	//	Both single and double quotes
 						"UTF-8"	//	Specify UTF-8 for older versions of PHP
 					)
