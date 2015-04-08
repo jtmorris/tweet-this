@@ -4,7 +4,7 @@ Donate link: http://tweetthis.jtmorris.net/
 Tags: twitter, tweet, social, sharing
 Requires at least: 3.9
 Tested up to: 4.1
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -104,6 +104,10 @@ get graphical content included.  There is a detailed guide for how to do this on
 
 
 == Changelog ==
+= 1.2.3 =
+* Further refinements to error reporting and editor bug workarounds from previous updates.
+* Fix excess spaces in resultant Tweets when no defaults set.
+* Fix order of items in shortcode creator dialog box to match resultant tweet.
 = 1.2.2 =
 * Further refinements to error reporting.
 * Additional workarounds for rare WordPress editor bug.
