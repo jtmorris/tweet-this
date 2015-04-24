@@ -60,7 +60,11 @@
 						title: 'Tweet This Shortcode Creator',
 						width: 650,
 						height: 600,
-						inline: 1
+						inline: 1,
+						onSubmit: function(e) {
+							alert("BOO");
+							e.preventDefault();
+						}
 					},
 					//	Windows Parameters/Arguments
 					args

@@ -255,7 +255,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 				}
 			}
 			if( is_null( $this->my_url ) ) {
-				//	Yes, we need ot generate a URL
+				//	Yes, we need to generate a URL
 
 				//	Okay then, do we need to construct a shortlink
 

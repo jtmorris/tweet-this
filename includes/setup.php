@@ -120,8 +120,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				TT_Settings::define_settings();
 			}
 			public static function hooks_helper_admin_head() {
-				//	We need to save the post ID, post URL, and default Twitter
-				//	handles to a JavaScript variable for the TinyMCE plugin created
+				//	We need to save info for the TinyMCE plugin created
 				//	in ../assets/js/tinymce-plugin.js
 				//
 				//	Sadly, the editor is a major pain in the ass, and terrible to
@@ -154,12 +153,14 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				$hide_hidden = $options['disable_hidden'];
 				$hide_char_count = $options['disable_char_count'];
 
+				//	Get WordPress' AJAX handler URL
+				$ajaxurl = admin_url('admin-ajax.php');
+
 
 				//	Output the JavaScript
 				?>
 				<script type='text/javascript'>
 					var TT_Data = {
-						'id': '<?php echo $id; ?>',
 						'post_url': '<?php echo $urlarr["shortlink"]; ?>',
 						'post_url_is_placeholder': <?php  echo (($urlarr["is_placeholder"]) ? 'true' : 'false'); ?>,
 						'default_twitter_handles': '<?php echo $twits; ?>',
@@ -170,7 +171,9 @@ if ( !class_exists( 'TT_Setup' ) ) {
 						'disable_post_url': <?php echo (($hide_post_url) ? 'true' : 'false'); ?>,
 						'disable_hidden': <?php echo (($hide_hidden) ? 'true' : 'false'); ?>,
 						'disable_char_count': <?php echo (($hide_char_count) ? 'true' : 'false'); ?>
-					}
+					};
+
+					var ajaxurl = '<?php echo $ajaxurl; ?>';
 				</script>
 				<?php
 			}

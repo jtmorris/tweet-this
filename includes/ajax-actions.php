@@ -3,24 +3,40 @@
  * This file contains the handlers for all AJAX requests. 
  * IT MUST ONLY OUTPUT JSON STRINGS FOR RECOGNITION DURING AJAX CALLS
  */
-require_once ( TT_ROOT_PATH . 'includes/share-handler.php' );
+
+//	Use WordPress' AJAX handler. The action should be tt_ajax, and the AJAX call
+//	should POST a variable tt_action with the actions available in the navigate()
+//	function.
+
+add_action( 'wp_ajax_tt_ajax', array( 'TT_Ajax_Actions', 'navigate' ) );
+
 if ( !class_exists( 'TT_Ajax_Actions' ) ) {
 	class TT_Ajax_Actions {
+
+
+
 		/**
 		 * Determines which AJAX handler function needs to be called based on
 		 * the tt_action POST parameter passed in the AJAX call.
 		 */
 		public static function navigate() {
-			switch( $_POST['tt_action'] ) {
-				case 'get_default_post_url':
-					self::get_default_post_url();
-					break;
-				case 'get_default_twitter_handles':
-					self::get_default_twitter_handles();
+			if( !empty( $_POST['tt_action'] )  ) {
+				$action = $_POST['tt_action'];
+			}
+			else if( !empty( $_GET['tt_action'] ) ) {
+				$action = $_GET['tt_action'];
+			}
+			else {
+				$action = '';
+			}
+			
+			switch( $action ) {
+				case 'get_tinymce_dialog_params':
+					self::get_tinymce_dialog_params();
 					break;
 			}	//	end switch
 
-			exit;
+			die();
 		}	//	end function navigate( ...
 
 		
@@ -29,28 +45,26 @@ if ( !class_exists( 'TT_Ajax_Actions' ) ) {
 		/// Handler Functions ///
 		/////////////////////////
 
-		//	All functions should output a simple text string.
-		protected static function get_default_post_url() {
-			//	There will only be a post URL if the post is saved (draft, published,
-			//	et cetera). In this case, there should be an ID URL parameter that we'll
-			//	need.  If not, we have no URL to generate, so we should simply
-			//	return a placeholder.
-			if (array_key_exists('post', $_GET)) {
-				$SH = new TT_Share_Handler('');
+		protected static function get_tinymce_dialog_params() {
+			//	Since this crap is done via AJAX, any "requiring" or "including" has to be
+			//	done when the AJAX is called.  Meaning it can't be done at the top of the page,
+			//	it has to be done in the actual function called... Here.  Don't believe me?
+			//	Try moving this to the top of the file and running the plugin.  It will 
+			//	die in stupendous glory.
+			//	
+			//	In addition, because this is an AJAX handler page called from a TinyMCE dialog
+			//	box, there's some missing WordPress contextual information that can cause
+			//	unexpected output when we include/require certain files.
+			//	Therefore, the use of an output buffer is highly recommended, and necessary
+			//	in certain cases.  Buffer any output during includes/requires, then erase
+			//	the buffer.
+			ob_start();
+			require( './tools.php' );
+			ob_end_clean();
 
-				echo $SH->generate_post_url($_GET['post']);	
-			}
-			else {
-				echo "<NO URL YET>";
-			}			
+			$sets = TT_Tools::get_tinymce_dialog_settings();
+
+			echo json_encode( $sets );
 		}
-
-		protected static function get_default_twitter_handles() {
-			$SH = new TT_Share_Handler('');
-
-			echo $SH->generate_twitter_handles_for_url(false);
-		}
-	}	//	end class
+	}	//	end class	
 }	//	end if ( !class_exists( ...
-
-

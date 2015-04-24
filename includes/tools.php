@@ -184,5 +184,64 @@ if ( !class_exists( 'TT_Tools' ) ) {
 
 			return $last_shortlink;
 		}
+
+		/**
+		 * Returns all the plugin settings needed for the dialog box as an associative array.
+		 *
+		 * @return   [array]   Array of plugin settings for dialog box.
+		 */
+		public static function get_tinymce_dialog_settings() {
+			//	Because this function is not necessarily called on the post/page editor screen,
+			//	the post/page URL getting function TT_Share_Handler::generate_post_url()
+			//	won't always work.  So, if and when it fails, we'll need a placeholder link that
+			//	we can get without failure.
+			try {
+				//	post ID
+				global $current_screen, $post;
+				$type = $current_screen->post_type;
+				if ( $type == 'post' || $type == 'page' ) {
+					$id = $post->ID;
+				}
+				else {
+					throw new Exception( 'Unable to retrieve post ID.' );
+				}
+
+				//	post URL
+				$SH = new TT_Share_Handler();
+				$urlarr = $SH->generate_post_url( $id, true );
+			}
+			catch( Exception $e ) {
+				$post_url = TT_Tools::placeholder_shortlink();
+				$urlarr = array( 'is_placeholder' => true );
+			}
+
+			//	default Twitter handles and hidden hashtags
+			$options = get_option( 'tt_plugin_options' );
+			$twits = $options['default_twitter_handles'];
+			$hashtags = $options['default_hidden_hashtags'];
+			$hidden_urls = $options['default_hidden_urls'];
+
+			//	dialog customization options
+			$hide_preview = $options['disable_preview'];
+			$hide_handles = $options['disable_handles'];
+			$hide_post_url = $options['disable_post_url'];
+			$hide_hidden = $options['disable_hidden'];
+			$hide_char_count = $options['disable_char_count'];
+
+			
+
+			return array(
+				'post_url' => $post_url,
+				'post_url_is_placeholder' => $urlarr['is_placeholder'],
+				'default_twitter_handles' => $twits,
+				'default_hidden_hashtags' => $hashtags,
+				'default_hidden_urls' => $hidden_urls,
+				'disable_preview' => $hide_preview,
+				'disable_handles' => $hide_handles,
+				'disable_post_url' => $hide_post_url,
+				'disable_hidden' => $hide_hidden,
+				'disable_char_count' => $hide_char_count
+			);
+		}
 	}	//	end class
 }	//	end if( !class_exists( ...
