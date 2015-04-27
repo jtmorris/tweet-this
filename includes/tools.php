@@ -209,10 +209,19 @@ if ( !class_exists( 'TT_Tools' ) ) {
 				//	post URL
 				$SH = new TT_Share_Handler();
 				$urlarr = $SH->generate_post_url( $id, true );
+
+				if( is_array( $urlarr ) ) {	//	Shortlink w/ qualifying info in array
+					$post_url = $urlarr['shortlink'];
+					$is_placeholder = $url['is_placeholder'];
+				}
+				else {	//	Nothing fancy, just the URL as a string
+					$post_url = $urlarr;
+					$is_placeholder = false;
+				}
 			}
 			catch( Exception $e ) {
 				$post_url = TT_Tools::placeholder_shortlink();
-				$urlarr = array( 'is_placeholder' => true );
+				$is_placeholder = false;
 			}
 
 			//	default Twitter handles and hidden hashtags
@@ -232,7 +241,7 @@ if ( !class_exists( 'TT_Tools' ) ) {
 
 			return array(
 				'post_url' => $post_url,
-				'post_url_is_placeholder' => $urlarr['is_placeholder'],
+				'post_url_is_placeholder' => $is_placeholder,
 				'default_twitter_handles' => $twits,
 				'default_hidden_hashtags' => $hashtags,
 				'default_hidden_urls' => $hidden_urls,

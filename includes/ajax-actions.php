@@ -57,7 +57,7 @@ if ( !class_exists( 'TT_Ajax_Actions' ) ) {
 			//	unexpected output when we include/require certain files.
 			//	Therefore, the use of an output buffer is highly recommended, and necessary
 			//	in certain cases.  Buffer any output during includes/requires, then erase
-			//	the buffer.
+			//	the buffer, then output what you want to output.
 			ob_start();
 			require( './tools.php' );
 			ob_end_clean();

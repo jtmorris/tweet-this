@@ -1,33 +1,7 @@
 (function($) {
-	logMessages = [];
-
-	//	Vars for readability
-	var sections = {
-		'general': $('#TT_section_general'),
-		'handles': $('#TT_section_handles'),
-		'post_url': $('#TT_section_post_url'),
-		'hidden': $('#TT_section_hidden')
-	};
-	var inputs = {
-		'text': $('#TT_tinymce_dialog_text'),
-		'url': $('#TT_tinymce_dialog_url_override'),
-		'twitter_handles': $('#TT_tinymce_dialog_twitter_handle_override'),
-		'hidden_hashtags': $('#TT_tinymce_dialog_hidden_hashtags_override'),
-		'hidden_urls': $('#TT_tinymce_dialog_hidden_urls_override'),
-		'remove_twitter_handles': $('#TT_tinymce_dialog_remove_twitter_handles'),
-		'remove_url': $('#TT_tinymce_dialog_remove_url'),
-		'remove_hidden_hashtags': $('#TT_tinymce_dialog_remove_hidden_hashtags'),
-		'remove_hidden_urls': $('#TT_tinymce_dialog_remove_hidden_urls')
-	};
-	var form = $('#TT_tinymce_dialog form');
-	var preview = $('#TT_tinymce_tweet_preview');
-	var preview_heading = $('#TT_preview_heading');
-	var characters = $('#TT_tinymce_character_count');
-	var placeholder_url_warning = $('#TT_tinymce_preview_warning_placeholder_url');
-	var accordionSections = $('.TT_accordion');
-
-
-	//	Prep passed argument variables so closure scope is correct
+	var logMessages = [];
+		
+	//	Prep variables so closure scope is correct
 	var post_url;
 	var post_url_is_placeholder;
 	var default_twitter_handles;
@@ -40,17 +14,63 @@
 	var disable_hidden;
 	var disable_char_count;
 
+	var sections;
+	var inputs;
+	var form;
+	var preview;
+	var preview_heading;
+	var characters;
+	var placeholder_url_warning;
+	var accordionSections;
 
-	$(document).ready(function() {
+
+	$(window).load(function() {	//	Only execute the following after the entire page has loaded.
+		//	Vars for readability
+		sections = {
+			'general': $('#TT_section_general'),
+			'handles': $('#TT_section_handles'),
+			'post_url': $('#TT_section_post_url'),
+			'hidden': $('#TT_section_hidden')
+		};
+		inputs = {
+			'text': $('#TT_tinymce_dialog_text'),
+			'url': $('#TT_tinymce_dialog_url_override'),
+			'twitter_handles': $('#TT_tinymce_dialog_twitter_handle_override'),
+			'hidden_hashtags': $('#TT_tinymce_dialog_hidden_hashtags_override'),
+			'hidden_urls': $('#TT_tinymce_dialog_hidden_urls_override'),
+			'remove_twitter_handles': $('#TT_tinymce_dialog_remove_twitter_handles'),
+			'remove_url': $('#TT_tinymce_dialog_remove_url'),
+			'remove_hidden_hashtags': $('#TT_tinymce_dialog_remove_hidden_hashtags'),
+			'remove_hidden_urls': $('#TT_tinymce_dialog_remove_hidden_urls')
+		};
+		form = $('#TT-shortcode-creator-dialog form');
+		preview = $('#TT_tinymce_tweet_preview');
+		preview_heading = $('#TT_preview_heading');
+		characters = $('#TT_tinymce_character_count');
+		placeholder_url_warning = $('#TT_tinymce_preview_warning_placeholder_url');
+		accordionSections = $('.TT_accordion');
+
+
 		//	Possibly asynchronous, so provide callback
-		get_tinymce_params(function(args) {
+		get_dialog_data(function(args) {
 			//	Get passed arguments
 			post_url = args['post_url'];
 			post_url_is_placeholder = args['post_url_is_placeholder'];
 			default_twitter_handles = args['default_twitter_handles'];
 			default_hidden_hashtags = args['default_hidden_hashtags'];
 			default_hidden_urls = args['default_hidden_urls'];
-			editor = args['editor'];
+			
+			//	If we're not on an editor page, tinyMCE variable won't be defined, and the
+			//	code below will throw an Uncaught ReferenceError.  So wrap it in a try/catch.
+			try {
+				editor = tinyMCE.activeEditor;
+			} catch(e) {
+				//	If we're here, then there's no tinyMCE and the rest of this function
+				//	is pointless.  Let's, for safety, output this info to the console and then die.
+				logToConsole("Prevented attempt to load dialog box on page without TinyMCE editor.");
+				logToConsole("Page: " + window.location.href);
+				return;
+			}
 			
 			disable_preview = args['disable_preview'];
 			disable_handles = args['disable_handles'];
@@ -60,9 +80,6 @@
 
 			
 
-
-			//	Load defaults into preview
-			preview.val(tt_preview_string());
 
 			//	Display any caveats or warning about the preview
 			if ( post_url_is_placeholder && !disable_preview ) {
@@ -94,22 +111,13 @@
 			}
 
 
+			//	Setup initial form state
+			resetDialog();
 
-
-			//	Accordion the sections
-			//	We have multiple accordions for each section because when
-			//	submitting the form, we want to be able to expand ALL accordion
-			//	sections so that validation errors are visible.  Therefore,
-			//	each section is an accordion with only one entry.  It looks
-			//	the same, but allows multiple open sections.
-			accordionSections.accordion({
-				active: false,
-				collapsible: true,
-				heightStyle: 'content'
-			});
-			//	Open the general content accordion
-			accordionSections.first().accordion("option", "active", 0);
-
+			//	On dialog close, reset the form state
+			$('#TT-shortcode-creator-dialog').bind('dialogclose', function(e) {
+				resetDialog();
+			})
 
 
 			//	On text change, update preview
@@ -194,7 +202,10 @@
 			//	Character counter and preview truncate
 			preview.on('change', function() {
 				//	Counter
-				var count = $(this).val().length;
+				var text = auto_url_shortener_length_equiv($(this).val());
+				var text = $(this).val();
+
+				var count = text.length;
 				if (count > 140) {
 					var wrap = '<span style="color: red; font-size: 1.3em; ">';
 
@@ -225,56 +236,57 @@
 			});
 
 			//	Insert the shortcode when submitted
-			// form.submit(function(event) {
-			// 	event.preventDefault();
+			form.submit(function(event) {
+				event.preventDefault();
 
 
-			// 	var shortcode = '[tweetthis';
+				var shortcode = '[tweetthis';
 
-			// 	//	Do we have any handle, hashtag, or URL overrides?
-			// 	//	If so, add on parameters for them.
-			// 	if( get_clean_twitter_handles() ) {
-			// 		shortcode += ' twitter_handles="' + (get_clean_twitter_handles()) + '"';
-			// 	}
-			// 	if( get_clean_hidden_hashtags(true) ) {
-			// 		shortcode += ' hidden_hashtags="' + (get_clean_hidden_hashtags()) + '"';
-			// 	}
-			// 	if( get_clean_url() ) {
-			// 		shortcode += ' url="' + (get_clean_url()) + '"';
-			// 	}
-			// 	if( get_clean_hidden_urls(true) ) {
-			// 		shortcode += ' hidden_urls="' + (get_clean_hidden_urls()) + '"';
-			// 	}
+				//	Do we have any handle, hashtag, or URL overrides?
+				//	If so, add on parameters for them.
+				if( get_clean_twitter_handles() ) {
+					shortcode += ' twitter_handles="' + (get_clean_twitter_handles()) + '"';
+				}
+				if( get_clean_hidden_hashtags(true) ) {
+					shortcode += ' hidden_hashtags="' + (get_clean_hidden_hashtags()) + '"';
+				}
+				if( get_clean_url() ) {
+					shortcode += ' url="' + (get_clean_url()) + '"';
+				}
+				if( get_clean_hidden_urls(true) ) {
+					shortcode += ' hidden_urls="' + (get_clean_hidden_urls()) + '"';
+				}
 
-			// 	//	Are we supposed to remove anything from this particular tweet?
-			// 	var remove_twits           = inputs['remove_twitter_handles'].prop('checked');
-			// 	var remove_url             = inputs['remove_url'].prop('checked');
-			// 	var remove_hidden_hashtags = inputs['remove_hidden_hashtags'].prop('checked');
-			// 	var remove_hidden_urls     = inputs['remove_hidden_urls'].prop('checked');
+				//	Are we supposed to remove anything from this particular tweet?
+				var remove_twits           = inputs['remove_twitter_handles'].prop('checked');
+				var remove_url             = inputs['remove_url'].prop('checked');
+				var remove_hidden_hashtags = inputs['remove_hidden_hashtags'].prop('checked');
+				var remove_hidden_urls     = inputs['remove_hidden_urls'].prop('checked');
 
-			// 	if( remove_twits ) {
-			// 		shortcode += ' remove_twitter_handles="true"';
-			// 	}
-			// 	if( remove_url ) {
-			// 		shortcode += ' remove_url="true"';
-			// 	}
-			// 	if( remove_hidden_hashtags ) {
-			// 		shortcode += ' remove_hidden_hashtags="true"';
-			// 	}
-			// 	if( remove_hidden_urls ) {
-			// 		shortcode += ' remove_hidden_urls="true"';
-			// 	}
+				if( remove_twits ) {
+					shortcode += ' remove_twitter_handles="true"';
+				}
+				if( remove_url ) {
+					shortcode += ' remove_url="true"';
+				}
+				if( remove_hidden_hashtags ) {
+					shortcode += ' remove_hidden_hashtags="true"';
+				}
+				if( remove_hidden_urls ) {
+					shortcode += ' remove_hidden_urls="true"';
+				}
 
 
 
-			// 	shortcode += ']' + (get_clean_text()) + '[/tweetthis]';
+				shortcode += ']' + (get_clean_text()) + '[/tweetthis]';
 
-			// 	editor.selection.setContent(shortcode);
-			// 	editor.windowManager.close();
-			// });
+				editor.selection.setContent(shortcode);
+
+				//	Close dialog
+				$('#TT-shortcode-creator-dialog').dialog("close");
+			});
 		})
 	});
-
 
 
 	/***********************************************
@@ -439,221 +451,93 @@
 			replace(/'/g, '');	//	remove single quotes;
 	}
 
+	/**
+	 * Replaces detected links with 22 characters.  Twitter automatically shortens links
+	 * using t.co, and the resultant link is 22 characters.  For the character counter, 
+	 * we need to figure that in.
+	 *
+	 * @param    {string}   text   The text to search for URLs in.
+	 *
+	 * @return   {string}          The text with all detected URLs replaced with 22 characters.
+	 */
+	function auto_url_shortener_length_equiv(text) {
+		var shrt = text.replace(/\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/gi, '1234567890123456789012');
+		return shrt;
+	}
 
-	/****************************************
-	* TinyMCE Handling Function Definitions *
-	*****************************************
+
+	/****************************************************************
+	* Dialog Data Population/Setting/Resetting Function Definitions *
+	*****************************************************************
 	*
 	* TinyMCE, the basis for the WordPress WYSIWYG editor, is a major pain-in-the-ass.
 	* One of its bigger pain-in-the-ass-osities is an intermittently functional ability
 	* to pass parameters to a dialog box like this one.  99.9% of the time, it works as
 	* described in the manual, and ad nauseum on the Internet 
 	* (http://johnmorris.me/computers/software/how-to-create-a-tinymce-editor-dialog-window-in-a-wordpress-plugin/),
-	* the rest of the time that fails.  Unfortunately, we need passed parameters... so, what 
-	* should be a simple one-line piece of code, is instead a lengthy exercise in workarounds 
-	* and exception catching.  These functions do that lengthy bullsh... er... stuff so the 
-	* main code up top can look pretty.
+	* the rest of the time that fails.  
+	*
+	* So, in an update done in April, 2015, the TinyMCE created dialog was scrapped in favor
+	* of a jQuery dialog box.  The goal being to reduce the dealings with TinyMCE to the
+	* bare minimum possible.  But, this requries some work to populate and reset the dialog
+	* box each time.  Which is the purpose of the following functions.
 	****************************************/
 
 
-	function get_tinymce_params(callback_func) {
-		/*
-		 * Pain-in-the-ass #1:
-		 * --------------------------
-		 * According to the TinyMCE documentation, the appropriate method for extracting
-		 * parameters/arguments passed to a TinyMCE dialog box is like this:
-		 * 		var args = top.tinymce.activeEditor.windowManager.getParams();
-		 * 	The only problem is, that fails miserably on occasion.
-		 *
-		 * In addition, this requires the user's website and the dialog box to be served
-		 * from the same EXACT domain and subdomain, or security exceptions will be thrown
-		 * by modern web browsers.  Some strange redirection methodologies and God only knows
-		 * what settings lead to subtle differences in the domains (e.g. www.domain.com and domain.com)
-		 * that can't easily be remedied here.
-		 *
-		 * So, we have multiple vectors for failure and we need to workaround them all.  In 
-		 * addition, it would be very nice to have some method of locating the point of failure
-		 * and analyzing what worked and didn't work in case this isn't solved.  This means
-		 * exception checking and error reporting out the ass.  
-		 * 
-		 * So, let's get started.  Begin by cycling through the options.  If one works, run the callback,
-		 * return the passed arguments, and get the hell out of here.  Otherwise, report it and
-		 * try the next.
-		 */
-		
-
-		 var args = null;
-		 var dbginfo = null;
-
-		 var testMethodNum = 9;	//	Used for debugging and testing. Set this to the method# 
-		 						//	you want to test and the methods before it will simulate failure.
-		 						//	Set to 0 when not debugging or testing.
-
-		//	Method #1:  Do it the prescribed way
-		try {
-			if(testMethodNum > 1) {
-				throw "Failing for debugging purposes.";
+	function get_dialog_data(callback_func) {
+		//	Method #1:  Use the global variable declared and stored within WordPress:
+		//	/includes/setup.php: TT_Setup::hooks_helper_admin_header()
+		if(typeof TT_Data != 'undefined') {
+			if(typeof TT_Data != 'object') {
+				//	It's unparsed JSON?
+				TT_Data = JSON && JSON.parse(TT_Data) || $.parseJSON(TT_Data);
 			}
-			
-			var args = top.tinymce.activeEditor.windowManager.getParams();
-			callback_func(args);
-			return args;
-		} catch (e) {
-			logToConsole("Error getting parameters passed to dialog with 'var args = top.tinymce.activeEditor.windowManager.getParams();'.  Trying parent instead of top.");						
+
+			logToConsole("Shortcode creator dialog box data successfully retrieved directly.");
+			callback_func(TT_Data);
+			return TT_Data;
+		}
+		else {
+			logToConsole("Error retrieving dialog box data directly.  Trying fallback AJAX method.")
 		}
 
-
-		//	Method #2:  Try using parent instead of top... That has fixed problems for some
-		try {
-			if(testMethodNum > 2) {
-				throw "Failing for debugging purposes.";
-			}
-			
-			var args = parent.tinymce.activeEditor.windowManager.getParams();
-			logToConsole("Successfully obtained parameters using 'var args = parent.tinymce.activeEditor.windowManager.getParams();'.");
-			callback_func(args);
-			return args;
-		} catch (e) {
-			logToConsole("Error getting parameters passed to dialog with 'var args = parent.tinymce.activeEditor.windowManager.getParams();'.  Switching to brute force method.");
-		}
-
-
-		//	Damnit.  This is bullcrap.  THIS ISN'T SUPPOSED TO HAPPEN!  Well okay, let's try getting
-		//	dirty and brute force the damn thing.
-
-		//	Method #3:  Use parent to access a two-deep iframe
-		try {
-			if(testMethodNum > 3) {
-				throw "Failing for debugging purposes.";
-			}
-			
-			var args = parent.parent.tinymce.activeEditor.windowManager.getParams();
-			logToConsole("Successfully obtained parameters using 'var args = parent.parent.tinymce.activeEditor.windowManager.getParams();'.");
-			callback_func(args);
-			return args;
-		} catch(e) {
-			logToConsole("Error getting parameters passed to dialog with 'var args = parent.parent.tinymce.activeEditor.windowManager.getParams();'  Trying brute force method #2")
-		}
-		
-
-		//	Method #4:  Use parent to access a three-deep iframe		
-		try {
-			if(testMethodNum > 4) {
-				throw "Failing for debugging purposes.";
-			}
-			
-			var args = parent.parent.parent.tinymce.activeEditor.windowManager.getParams();
-			logToConsole("Successfully obtained parameters using 'var args = parent.parent.parent.tinymce.activeEditor.windowManager.getParams();'.");
-			callback_func(args);
-			return args;
-		} catch(e) {
-			logToConsole("Error getting parameters passed to dialog with 'var args = parent.parent.parent.tinymce.activeEditor.windowManager.getParams();'  Trying brute force method #3")
-		}
-
-
-
-		//	OMFG!  I hate TinyMCE.  Have I said that lately?  Okay, the prescribed way,
-		//	the alternative prescribed way, and two unlikely modifications to the alternative
-		//	way failed.  Now, let's cheat.
-		//	
-		//	Being a smart, but very angry programmer, I had the foresight (actually I went
-		//	back and added it later, so it wasn't foresight, but foresight sounds better)
-		//	to build in a backdoor that omits the need for everything TinyMCE related.
-		//	
-		//	All the parameters were written to a variable in the *cringe* global scope in
-		//	an object so all we need to do is bust out of this iframe and get the top window.
-		//	If we can do that, then access that object and we're golden.  No TinyMCE.
-		//	The only way this can go wrong is if somebody overwrites the object or some
-		//	annoying security policy, like the cross-domain blocking discussed above, gets
-		//	in the way.  But what are the odds of that happening right?
-
-		//	Method #5:  Access global parameter object using top
-		try {
-			if(testMethodNum > 5) {
-				throw "Failing for debugging purposes.";
-			}
-			
-			var args = window.top.tweetthis_tinymce_args;
-			logToConsole("Successfully obtained parameters using 'var args = window.top.tweetthis_tinymce_args;'.");
-			callback_func(args);
-			return args;
-		} catch (e) {
-			logToConsole("Error getting parameters passed to dialog with 'var args = window.top.tweetthis_tinymce_args;'.  Trying brute force method #4.'")						
-		}
-
-		//	Oh come on!
-
-		//	Method #6:  Access global parameter object using parent
-		try {
-			if(testMethodNum > 6) {
-				throw "Failing for debugging purposes.";
-			}
-			
-			var args = window.parent.tweetthis_tinymce_args;
-			logToConsole("Successfully obtained parameters using 'var args = window.parent.tweetthis_tinymce_args;'.");
-			callback_func(args);
-			return args;
-		} catch (e) {
-			logToConsole("Error getting parameters passed to dialog with 'var args = window.parent.tweetthis_tinymce_args;'.  Trying brute force method #5.")
-		}
-
-		//	You can't be serious....
-
-		//	Method #7:  Enter desparation mode... try two deep frames?
-		try {
-			if(testMethodNum > 7) {
-				throw "Failing for debugging purposes.";
-			}
-			
-			var args = window.parent.parent.tweetthis_tinymce_args;
-			logToConsole("Successfully obtained parameters using 'var args = window.parent.parent.tweetthis_tinymce_args;'.");
-			callback_func(args);
-			return args;
-		} catch (e) {
-			logToConsole("Error getting parameters passed to dialog with 'var args = window.parent.parent.tweetthis_tinymce_args;'.  Trying brute force method #6.")
-		}
-
-		//	FUCK!
-
-		//	Method #8:  In for a penny, in for a pound.  Engage hyper-desparation mode.  Three deep frames?
-		try {
-			if(testMethodNum > 8) {
-				throw "Failing for debugging purposes.";
-			}
-			
-			var args = window.parent.parent.parent.tweetthis_tinymce_args;
-			logToConsole("Successfully obtained parameters using 'var args = window.parent.parent.parent.tweetthis_tinymce_args;'.");
-			callback_func(args);
-			return args;
-		} catch (e) {
-			logToConsole("Error getting parameters passed to dialog with 'var args = window.parent.parent.parent.tweetthis_tinymce_args;'.  Trying AJAX method.")
-		}
-
-		//	ARGH! *face reddens*
+		//	ARGH! *face reddens*  That should have worked.
 		//	Calm down... *chants* goosfraba, goosfraba, goosfraba
 
-		//	Method #9:  Enter mega-hyper-desparation mode.  Screw this, use AJAX to get it.
+		//	Method #2:  Enter desparation mode.  Screw this, use AJAX to get it.  This is
+		//	a holdover from this plugin's TinyMCE dialog days, where AJAX was sometime the only way
+		//	to get the parameters.  Now, because we don't have any screwy iframes and separations
+		//	between the WordPress page and the dialog page, this shouldn't be necessary.  It
+		//	is here simply as a last ditch fallback and because I don't want to remove the 
+		//	beautiful coding that went into making it work.  All the blood and sweat for nothing?
+		//	Hell no, leave it in!
+			
 		//	Be nice and throw in a loading GIF that is removed upon AJAX completion
 		//	http://stackoverflow.com/a/1964871/2523144
 		$("#tt-frame-body").addClass("loading");
 		$.ajax({
 			type: "post",
-			url: '../../../../wp-admin/admin-ajax.php',
+			url: ajaxurl,
 			dataType: 'json',
 			data: {
 				action: 'tt_ajax',
 				tt_action: 'get_tinymce_dialog_params'
 			},
 			success: function(data, status) {
-				logToConsole("AJAX Data Retrieved: " + JSON.stringify(data));
+				//	TODO: Remove the re-JSON-ing of the data... PHP turns it to JSON, 
+				//	jQuery turns it to a JavaScript var, then I turn it back into JSON.  For shame!
+				logToConsole("Shortcode creator dialog box data successfully retrieved using AJAX");
+				logToConsole("AJAX's received data: " + JSON.stringify(data));
 				callback_func(data);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				logToConsole("Error getting parameters using AJAX. Error message: " + errorThrown + ".  Out of ideas.  Reporting problem to user and dying.");
+				logToConsole("Error getting shortcode creator dialog box data using AJAX.");
+				logToConsole("AJAX error message: " + errorThrown);
+				logToConsole("Unrecoverable error.  Reporting problem to user and dying.");
 
 				informUser(
 					"Could not retrieve necessary dialog box arguments.",
-					"<p>You have just stumbled upon a very rare WordPress editor bug. I have been unable to locate the root cause, but, with your help, I can probably work around it.</p><p>Here's the problem:  Your WordPress editor is not providing data to this shortcode creator <a href='http://www.tinymce.com/wiki.php/Tutorials:Creating_custom_dialogs' target='_blank'>like it is supposed to</a>.  This has happened to a few other plugin users, but the circumstances are slightly different in each case, so I can only react when it occurs, not prevent it.</p><p>Working around this instance of the problem will require a little bit of contextual information (automatically gathered below). Please send me, Tweet This' developer, an <strong>email</strong>, and copy and paste the <strong>data in the text box below</strong> into your message. You can find a contact form for sending an email on <a href='http://tweetthis.jtmorris.net/contact/' target='_blank'>the plugin's website</a>.</p><p>I'm very sorry for the trouble.  As I said, this is a very rare and unpredictable WordPress problem.</p>",
+					"<p>You have just stumbled upon a critical bug! For some reason, this shortcode creator isn't getting the data it is supposed to.  Please contact me, the plugin's developer, and send me the contents in the textbox below.  Hopefully, with that information I'll have this fixed in short order!</p><p>You can find several methods for contacting me on the plugin's website: <a href='http://tweetthis.jtmorris.net/contact/' target='_blank'>http://tweetthis.jtmorris.net/contact/</a>.",
 					logMessages
 				);
 			},
@@ -662,6 +546,39 @@
 				$("#tt-frame-body").removeClass("loading");
 			}
 		});
+
+		return null;
+	}
+
+	function resetDialog() {
+		//	Clear out any old gunk.
+		//	http://stackoverflow.com/a/8937323/2523144
+		form[0].reset();
+
+		//	Disable any form field disabling
+		$.each(inputs, function(index, value) {
+			value.prop('disabled', false);
+		});
+
+		//	Load defaults into preview
+		preview.val(tt_preview_string());
+
+		//	Ensure all change listeners know we changed the preview
+		preview.trigger('change');
+
+		//	Accordion the sections
+		//	We have multiple accordions for each section because when
+		//	submitting the form, we want to be able to expand ALL accordion
+		//	sections so that validation errors are visible.  Therefore,
+		//	each section is an accordion with only one entry.  It looks
+		//	the same, but allows multiple open sections.
+		accordionSections.accordion({
+			active: false,
+			collapsible: true,
+			heightStyle: 'content'
+		});
+		//	Open the general content accordion
+		accordionSections.first().accordion("option", "active", 0);
 	}
 
 
@@ -695,19 +612,22 @@
 			html += "</textarea>";
 		html += "</div>"
 
-		$("body").html(html);
+		$("#TT-shortcode-creator-dialog").html(html);
 
-		//	Highlight text on focus
-		var dbgbox = document.getElementById('TT_critical_error_dbginfo');
-		dbgbox.onfocus = function() {
-			dbgbox.select();
+		//	Highlight text on focus. This can cause some errors in edge cases, so enclose
+		//	it in a try/catch block
+		try {
+			var dbgbox = document.getElementById('TT_critical_error_dbginfo');
+			dbgbox.onfocus = function() {
+				dbgbox.select();
 
-			dbgbox.onmouseup = function() {
-				//	Prevent further mouseup intervention
-				dbgbox.onmouseup = null;
-				return false;
-			};
-		}
+				dbgbox.onmouseup = function() {
+					//	Prevent further mouseup intervention
+					dbgbox.onmouseup = null;
+					return false;
+				};
+			}
+		} catch(e) {}
 	}
 
 	function logToConsole(message) {
@@ -717,4 +637,4 @@
 		//	Write to console.
 		console.log("Tweet This :: " + message);
 	}
-})($);
+})(jQuery);

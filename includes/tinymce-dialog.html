@@ -1,162 +1,136 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Create "Tweet This" Shortcode</title>
-		<!-- Disable browser caching of dialog window -->
-		<meta http-equiv="cache-control" content="no-cache" />
-		<meta http-equiv="expires" content="0" />
-		<meta http-equiv="pragma" content="no-cache" />
-
-		<link rel="stylesheet" href="../assets/css/jquery/cupertino-theme/jquery-ui.min.css" />
-		<link rel="stylesheet" href="../assets/css/tinymce-dialog.css" />		
-	</head>
-	<body id='tt-frame-body'>
-		<div id='TT_tinymce_dialog'>
-			<form>
-				<div class='TT_accordion'>
-					<h3>Content</h3>
-					<div id='TT_section_content'>
-						<table class='form-table'>
-							<tr>
-								<th scope="row">Text To Tweet</th>
-								<td>
-									<textarea id="TT_tinymce_dialog_text"></textarea>
-								</td>
-							</tr>
-						</table>
-					</div>
-				</div>
-				<div class='TT_accordion'>
-					<h3>Twitter Handles Options</h3>
-					<div id='TT_section_handles'>
-						<table class='form-table'>
-							<tr>
-								<th scope="row">Override Twitter Handles</th>
-								<td>
-									<input id="TT_tinymce_dialog_twitter_handle_override" type="text" />
-									<p class='tt_admin_help_text'>
-										Comma seperated list of "via" Twitter handles you want
-										added to your tweets.
-										<br />
-										Example: <span class="tt_admin_example">@jt_morris, @DTELinux, @CraigyFerg</span>
-									</p>
-								</td>
-							</tr>
-							<tr>
-								<th scope="row">Remove Twitter Handles</th>
-								<td>
-									<input id="TT_tinymce_dialog_remove_twitter_handles" type="checkbox" />
-									<p class='tt_admin_help_text'>
-										Check this to remove Twitter handles from the tweet.
-									</p>
-								</td>
-							</tr>
-						</table>
-					</div>
-				</div>
-				<div class='TT_accordion'>
-					<h3>Post URL Options</h3>
-					<div id='TT_section_post_url'>
-						<table class='form-table'>
-							<tr>
-								<th scope="row">Override Post URL</th>
-								<td>
-									<input id="TT_tinymce_dialog_url_override" type="url" />
-									<p class="tt_admin_help_text">
-										The link to include with your tweets.
-									</p>
-								</td>
-							</tr>
-							<tr>
-								<th scope="row">Remove Post URL</th>
-								<td>
-									<input id="TT_tinymce_dialog_remove_url" type="checkbox" />
-									<p class='tt_admin_help_text'>
-										Check this to remove the post URL from the tweet.
-									</p>
-								</td>
-							</tr>
-						</table>
-					</div>
-				</div>
-				<div class='TT_accordion'>
-					<h3>Hidden Content Options</h3>
-					<div id='TT_section_hidden'>
-						<table class='form-table'>
-							
-							<tr>
-								<th scope="row">Override Hidden Hashtags</th>
-								<td>
-									<input id="TT_tinymce_dialog_hidden_hashtags_override" type="text" />
-									<p class="tt_admin_help_text">
-										Hashtags you want included in the tweet when the user tweets your message, but
-										hidden in the Tweet This box your site visitors see.
-										<br />
-										Example: <span class="tt_admin_example">#hashtags #rule</span>
-									</p>
-								</td>
-							</tr>
-							
-							<tr>
-								<th scope="row">Remove Hidden Hashtags</th>
-								<td>
-									<input id="TT_tinymce_dialog_remove_hidden_hashtags" type="checkbox" />
-									<p class='tt_admin_help_text'>
-										Check this to remove any default hidden hashtags from the tweet.
-									</p>
-								</td>
-							</tr>
-							<tr>
-								<th scope="row">Override Hidden URLs</th>
-								<td>
-									<input id="TT_tinymce_dialog_hidden_urls_override" type="text" />
-									<p class="tt_admin_help_text">
-										URLs you want included in the tweet when the user tweets your message, but
-										hidden in the Tweet This box your site visitors see.
-										<br />
-										Example: <span class="tt_admin_example">http://cs.johnmorris.me, http://eng.johnmorris.me</span>
-									</p>
-								</td>
-							</tr>
-
-							<tr>
-								<th scope="row">Remove Hidden URLs</th>
-								<td>
-									<input id="TT_tinymce_dialog_remove_hidden_urls" type="checkbox" />
-									<p class='tt_admin_help_text'>
-										Check this to remove any default hidden URLs from the tweet.
-									</p>
-								</td>
-							</tr>
-						</table>
-					</div>
-				</div>
-				<input type='submit' value='Insert Shortcode' />
-			</form>
-			<br /><br />
-			<h3 id="TT_preview_heading">Preview</h3>
-			<div id="TT_tinymce_preview_warning_placeholder_url" class="TT_tinymce_preview_warning" style="display: none; ">
-				NOTICE:  The shortcode creator can't access the URL for this post or page at this time.
-				A placeholder of similar appearance and length has been included in the preview below.  
-				The correct URL will automatically take its place in the actual page or post.  
-				<a href="http://tweetthis.jtmorris.net/posts/scary-shortlink-warnings/" target="_blank">(Click Here For More
-				Info.)</a>
+<div id='TT-shortcode-creator-dialog' title="Tweet This Shortcode Creator">
+	<form>
+		<div class='TT_accordion'>
+			<h3>Content</h3>
+			<div id='TT_section_content'>
+				<table class='form-table'>
+					<tr>
+						<th scope="row">Text To Tweet</th>
+						<td>
+							<textarea id="TT_tinymce_dialog_text"></textarea>
+						</td>
+					</tr>
+				</table>
 			</div>
-			<div id="TT_tinymce_preview_warning_validation_errors" class="TT_tinymce_preview_warning" style="display: none; ">
-				Uh oh.  Something isn't right.  Double check your URL!
-			</div>
-			<div id="TT_tinymce_character_count">&nbsp;</div>
-			<textarea readonly="readonly" id="TT_tinymce_tweet_preview"></textarea>
 		</div>
-		<div id="TT_loading_modal"></div>
+		<div class='TT_accordion'>
+			<h3>Twitter Handles Options</h3>
+			<div id='TT_section_handles'>
+				<table class='form-table'>
+					<tr>
+						<th scope="row">Override Twitter Handles</th>
+						<td>
+							<input id="TT_tinymce_dialog_twitter_handle_override" type="text" />
+							<p class='tt_admin_help_text'>
+								Comma seperated list of "via" Twitter handles you want
+								added to your tweets.
+								<br />
+								Example: <span class="tt_admin_example">@jt_morris, @DTELinux, @CraigyFerg</span>
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">Remove Twitter Handles</th>
+						<td>
+							<input id="TT_tinymce_dialog_remove_twitter_handles" type="checkbox" />
+							<p class='tt_admin_help_text'>
+								Check this to remove Twitter handles from the tweet.
+							</p>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class='TT_accordion'>
+			<h3>Post URL Options</h3>
+			<div id='TT_section_post_url'>
+				<table class='form-table'>
+					<tr>
+						<th scope="row">Override Post URL</th>
+						<td>
+							<input id="TT_tinymce_dialog_url_override" type="url" />
+							<p class="tt_admin_help_text">
+								The link to include with your tweets.
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">Remove Post URL</th>
+						<td>
+							<input id="TT_tinymce_dialog_remove_url" type="checkbox" />
+							<p class='tt_admin_help_text'>
+								Check this to remove the post URL from the tweet.
+							</p>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class='TT_accordion'>
+			<h3>Hidden Content Options</h3>
+			<div id='TT_section_hidden'>
+				<table class='form-table'>
+					
+					<tr>
+						<th scope="row">Override Hidden Hashtags</th>
+						<td>
+							<input id="TT_tinymce_dialog_hidden_hashtags_override" type="text" />
+							<p class="tt_admin_help_text">
+								Hashtags you want included in the tweet when the user tweets your message, but
+								hidden in the Tweet This box your site visitors see.
+								<br />
+								Example: <span class="tt_admin_example">#hashtags #rule</span>
+							</p>
+						</td>
+					</tr>
+					
+					<tr>
+						<th scope="row">Remove Hidden Hashtags</th>
+						<td>
+							<input id="TT_tinymce_dialog_remove_hidden_hashtags" type="checkbox" />
+							<p class='tt_admin_help_text'>
+								Check this to remove any default hidden hashtags from the tweet.
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">Override Hidden URLs</th>
+						<td>
+							<input id="TT_tinymce_dialog_hidden_urls_override" type="text" />
+							<p class="tt_admin_help_text">
+								URLs you want included in the tweet when the user tweets your message, but
+								hidden in the Tweet This box your site visitors see.
+								<br />
+								Example: <span class="tt_admin_example">http://cs.johnmorris.me, http://eng.johnmorris.me</span>
+							</p>
+						</td>
+					</tr>
 
-
-
-
-
-		<script type="text/javascript" src="../assets/js/jquery-1.11.2.min.js"></script>
-		<script type="text/javascript" src="../assets/js/jquery-ui.min.js"></script>
-		
-		<script type="text/javascript" src="../assets/js/tinymce-dialog.js"></script>
-	</body>
-</html>
+					<tr>
+						<th scope="row">Remove Hidden URLs</th>
+						<td>
+							<input id="TT_tinymce_dialog_remove_hidden_urls" type="checkbox" />
+							<p class='tt_admin_help_text'>
+								Check this to remove any default hidden URLs from the tweet.
+							</p>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<input type='submit' value='Insert Shortcode' />
+	</form>
+	<br /><br />
+	<h3 id="TT_preview_heading">Preview</h3>
+	<div id="TT_tinymce_preview_warning_validation_errors" class="TT_tinymce_preview_warning" style="display: none; ">
+		Uh oh.  Something isn't right.  Double check your URL!
+	</div>
+	<div id="TT_tinymce_character_count">&nbsp;</div>
+	<textarea readonly="readonly" id="TT_tinymce_tweet_preview"></textarea>
+	<div id="TT_tinymce_footer">
+		<ul>
+			<li>Character counter value is only an approximation. Always test your shortcodes!</li>
+			<li id="TT_tinymce_preview_warning_placeholder_url" style="display: none;">The automatically generated post/page URL is a sample placholder. The actual URL will be substituted into the final product. <a href="http://tweetthis.jtmorris.net/posts/scary-shortlink-warnings/" target="_blank">(Click Here For More Info)</a></li>
+		</ul>
+	</div>
+</div>

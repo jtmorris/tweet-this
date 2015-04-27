@@ -41,8 +41,11 @@ if ( !class_exists( 'TT_Setup' ) ) {
 			public static function enqueue_helper_admin_css() {
 				wp_register_style( 'tt-admin-css',
 					TT_ROOT_URL . 'assets/css/admin.css' );
+				wp_register_style( 'tt-shortcode-creator-css',
+					TT_ROOT_URL . 'assets/css/tinymce-dialog.css' );
 
 				wp_enqueue_style( 'tt-admin-css' );
+				wp_enqueue_style( 'tt-shortcode-creator-css' );
 
 				wp_enqueue_style('tt-admin-jquery-ui-css',
                 	TT_ROOT_URL . 'assets/css/jquery/cupertino-theme/jquery-ui.min.css',
@@ -65,6 +68,18 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				wp_enqueue_script( 'jquery-ui-core' );
 				wp_enqueue_script( 'jquery-ui-dialog' );
 				wp_enqueue_script( 'jquery-ui-accordion' );
+
+
+				//	We need to be in the admin, editing a post or page for the dialog box to be
+				//	initialized, so we don't want to add the dialog JS unless the same
+				//	conditions apply.  So are we?
+				global $current_screen;
+				$type = $current_screen->post_type;
+
+				if ( is_admin() && ($type == 'post' || $type == 'page') ) {
+					wp_enqueue_script( 'tt-shortcode-creator-js',
+						TT_ROOT_URL . 'assets/js/tinymce-dialog.js' );
+				}
 			}
 			public static function enqueue_helper_public_js() {
 				wp_enqueue_script( 'jquery' );
@@ -97,7 +112,11 @@ if ( !class_exists( 'TT_Setup' ) ) {
 
 			//	Admin Heading
 			add_action( 'admin_head',
-				array( 'TT_Setup', 'hooks_helper_admin_head' ) );
+				array( 'TT_Setup', 'hooks_helper_admin_header' ) );
+
+			//	Admin Footer
+			add_action( 'admin_footer',
+				array( 'TT_Setup', 'hooks_helper_admin_footer' ) );
 
 			//	TinyMCE Plugin
 			add_filter( 'mce_external_plugins',
@@ -119,64 +138,59 @@ if ( !class_exists( 'TT_Setup' ) ) {
 			public static function hooks_helper_admin_init() {
 				TT_Settings::define_settings();
 			}
-			public static function hooks_helper_admin_head() {
-				//	We need to save info for the TinyMCE plugin created
-				//	in ../assets/js/tinymce-plugin.js
-				//
-				//	Sadly, the editor is a major pain in the ass, and terrible to
-				//	debug with, so getting this information there is not a good idea.
+			public static function hooks_helper_admin_header() {
+				//	Output the information for the dialog box and setup the dialog box.
 
-				//	post ID
-				global $current_screen, $post;
+				//	We need to be in the admin, editing a post or page for the plugin to be
+				//	initialized, so we don't want to add the jQuery dialog unless the same
+				//	conditions apply.  So are we?
+				global $current_screen;
 				$type = $current_screen->post_type;
-				if ( $type == 'post' || $type == 'page' ) {
-					$id = $post->ID;
+
+				if ( is_admin() && ($type == 'post' || $type == 'page') ) {
+					?>
+					<script type='text/javascript'>
+						<?php // Get the URL to the AJAX handler file and save it ?>
+						var ajaxurl = "<?php echo admin_url( 'admin-ajax.php' ); ?>";
+						
+						jQuery(document).ready(function() {
+							<?php // Output the dialog boxes data as a JavaScript variable 
+
+							//	Strategy Cribbed From Here: http://stackoverflow.com/a/4935684/2523144
+							//	
+							//	Encode the PHP variable as JSON.  Use native JavaScript to parse the JSON
+							//	if the necessary fuction is available.  If not, use the slower jQuery
+							//	version.
+							$json = json_encode( TT_Tools::get_tinymce_dialog_settings() );
+							?>
+							window.TT_Data = <?php echo $json; ?>;
+
+
+							<?php // Turn the dialog box code included above into a jQuery dialog ?>						
+							jQuery('#TT-shortcode-creator-dialog').dialog({
+								autoOpen: false,
+								modal: true,
+								height: 600,
+								width: 650
+							});
+						});						
+					</script>
+					<?php
 				}
-				else {
-					return;
-				}
-
-				//	post URL
-				$SH = new TT_Share_Handler();
-				$urlarr = $SH->generate_post_url( $id, true );
-
-				//	default Twitter handles and hidden hashtags
-				$options = get_option( 'tt_plugin_options' );
-				$twits = $options['default_twitter_handles'];
-				$hashtags = $options['default_hidden_hashtags'];
-				$hidden_urls = $options['default_hidden_urls'];
-
-				//	dialog customization options
-				$hide_preview = $options['disable_preview'];
-				$hide_handles = $options['disable_handles'];
-				$hide_post_url = $options['disable_post_url'];
-				$hide_hidden = $options['disable_hidden'];
-				$hide_char_count = $options['disable_char_count'];
-
-				//	Get WordPress' AJAX handler URL
-				$ajaxurl = admin_url('admin-ajax.php');
-
-
-				//	Output the JavaScript
-				?>
-				<script type='text/javascript'>
-					var TT_Data = {
-						'post_url': '<?php echo $urlarr["shortlink"]; ?>',
-						'post_url_is_placeholder': <?php  echo (($urlarr["is_placeholder"]) ? 'true' : 'false'); ?>,
-						'default_twitter_handles': '<?php echo $twits; ?>',
-						'default_hidden_hashtags': '<?php echo $hashtags; ?>',
-						'default_hidden_urls': '<?php echo $hidden_urls; ?>',
-						'disable_preview': <?php echo (($hide_preview) ? 'true' : 'false'); ?>,
-						'disable_handles': <?php echo (($hide_handles) ? 'true' : 'false'); ?>,
-						'disable_post_url': <?php echo (($hide_post_url) ? 'true' : 'false'); ?>,
-						'disable_hidden': <?php echo (($hide_hidden) ? 'true' : 'false'); ?>,
-						'disable_char_count': <?php echo (($hide_char_count) ? 'true' : 'false'); ?>
-					};
-
-					var ajaxurl = '<?php echo $ajaxurl; ?>';
-				</script>
-				<?php
 			}
+			public static function hooks_helper_admin_footer() {
+				//	Output the dialog box code.
+
+				//	We need to be in the admin, editing a post or page for the plugin to be
+				//	initialized, so we don't want to add the jQuery dialog unless the same
+				//	conditions apply.  So are we?
+				global $current_screen;
+				$type = $current_screen->post_type;
+
+				if ( is_admin() && ($type == 'post' || $type == 'page') ) {
+					include( TT_ROOT_PATH . '/includes/tinymce-dialog.html' );
+				}
+			}			
 			public static function hooks_helper_tinymce_plugin( $plugin_array ) {
 				//	We need to be in the admin, editing a post or page to include
 				//	this plugin.  So are we?

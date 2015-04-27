@@ -1,7 +1,19 @@
-#TT_tinymce_dialog {
+#TT-shortcode-creator-dialog {
 	font-family: "Open Sans", sans-serif;
-	font-size: 13px;
+	font-size: 12px;
+
+	display: none;
 }
+#TT-shortcode-creator-dialog ul {
+	list-style-type: disc;
+	margin: auto auto auto 15px;
+}
+
+#TT_tinymce_footer {
+	margin-top: 20px;
+	font-style: italic;
+}
+
 table.form-table {
 	width: 100%;
 }
@@ -13,7 +25,7 @@ table.form-table td,
 table.form-table th {
 	padding: 10px 0;
 }
-#TT_tinymce_dialog_text {
+#TT-shortcode-creator-dialog_text {
 	height: 45px;
 	font-family: "Open Sans", sans-serif;
 }
@@ -55,13 +67,16 @@ p.tt_admin_help_text {
 	font-size: .9em;
 	font-style: italic;
 }
+#TT-shortcode-creator-dialog p.tt_admin_help_text {
+	font-size: .85em;
+}
 span.tt_admin_example {
 	color: #38f;
 	font-style: normal;
 	margin: 0 5px;
 }
 #TT_tinymce_tweet_preview {
-	font-size: 24px;
+	font-size: 18px;
 	font-weight: 200;
 
 	background-color: #CCC;
