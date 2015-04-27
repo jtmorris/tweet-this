@@ -47,8 +47,12 @@ input[type="radio"] {
 input[type="submit"] {
 	width: auto;
 
-	background-color: #3399FF;
+	background-color: #48B0E5;
 	box-shadow: 2px 2px 3px 0 #444;
+
+	color: #FFF;
+	font-size: 1.5em;
+	font-weight: bold;
 
 	padding: 8px;
 
