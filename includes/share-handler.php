@@ -62,7 +62,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 				$this->my_hidden_hashtags = '';
 			}
 
-			if( $remove_custom_hidden_urls ) {
+			if( $remove_hidden_urls ) {
 				$this->my_hidden_urls = '';
 			}
 		}
