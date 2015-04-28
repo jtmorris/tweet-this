@@ -1,3 +1,18 @@
+/**
+ * JQuery UI Dialog Display Fixes
+ * https://wordpress.org/support/topic/plugin-not-workinggrey-page
+ * http://stackoverflow.com/a/13055664/2523144
+ * http://stackoverflow.com/a/29654944/2523144
+ * http://stackoverflow.com/a/16186970/2523144
+ */
+ .ui-widget-overlay {
+ 	z-index: 10000 !important;
+ 	position: fixed !important;
+ }
+ .ui-dialog {
+ 	z-index: 100001 !important;
+ }
+
 #TT-shortcode-creator-dialog {
 	font-family: "Open Sans", sans-serif;
 	font-size: 12px;
