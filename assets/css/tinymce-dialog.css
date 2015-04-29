@@ -29,37 +29,37 @@
 	font-style: italic;
 }
 
-table.form-table {
+#TT-shortcode-creator-dialog table.form-table {
 	width: 100%;
 }
-table.form-table th {
+#TT-shortcode-creator-dialog table.form-table th {
 	vertical-align: top;
 	width: 150px;
 }
-table.form-table td,
-table.form-table th {
+#TT-shortcode-creator-dialog table.form-table td,
+#TT-shortcode-creator-dialog table.form-table th {
 	padding: 10px 0;
 }
 #TT-shortcode-creator-dialog_text {
 	height: 45px;
 	font-family: "Open Sans", sans-serif;
 }
-input,
-textarea {
+#TT-shortcode-creator-dialog input,
+#TT-shortcode-creator-dialog textarea {
 	width: 95%;
 
 	font-size: 16px;
 
 	padding: 3px;
 }
-input:disabled {
+#TT-shortcode-creator-dialog input:disabled {
 	background-color: #BBB;
 }
-input[type="checkbox"],
-input[type="radio"] {
+#TT-shortcode-creator-dialog input[type="checkbox"],
+#TT-shortcode-creator-dialog input[type="radio"] {
 	width: auto;
 }
-input[type="submit"] {
+#TT-shortcode-creator-dialog input[type="submit"] {
 	width: auto;
 
 	background-color: #48B0E5;
@@ -77,11 +77,11 @@ input[type="submit"] {
 	margin-top: 5px;
 	float: right;
 }
-input[type="submit"]:hover {
+#TT-shortcode-creator-dialog input[type="submit"]:hover {
 	background-color: #33CC33;
 	cursor: pointer;
 }
-p.tt_admin_help_text {
+#TT-shortcode-creator-dialog p.tt_admin_help_text {
 	color: #555;
 	font-size: .9em;
 	font-style: italic;
@@ -89,7 +89,7 @@ p.tt_admin_help_text {
 #TT-shortcode-creator-dialog p.tt_admin_help_text {
 	font-size: .85em;
 }
-span.tt_admin_example {
+#TT-shortcode-creator-dialog span.tt_admin_example {
 	color: #38f;
 	font-style: normal;
 	margin: 0 5px;
@@ -108,7 +108,7 @@ span.tt_admin_example {
 	padding-top: 3px;
 	padding-bottom: 3px;
 }
-div.TT_tinymce_preview_warning {
+#TT-shortcode-creator-dialog div.TT_tinymce_preview_warning {
 	color: #666;
 	font-size: .93em;
 	margin-bottom: 10px;
