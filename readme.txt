@@ -4,7 +4,7 @@ Donate link: http://tweetthis.jtmorris.net/
 Tags: twitter, tweet, social, sharing
 Requires at least: 3.9
 Tested up to: 4.2.2
-Stable tag: 1.3.3
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -104,6 +104,11 @@ get graphical content included.  There is a detailed guide for how to do this on
 
 
 == Changelog ==
+= 1.4.0 =
+* Added editor button placement options to advanced settings.
+* Preliminary fix for editor==null exception.
+* Manual fallback if automatic shortcode insertion from the shortcode creator fails.
+* Bug & typo fixes.
 = 1.3.3 =
 * Fix detection and usage of shortlinks created by the Shortn.It plugin.
 = 1.3.2 =
@@ -176,6 +181,8 @@ get graphical content included.  There is a detailed guide for how to do this on
 
 
 == Upgrade Notice ==
+= 1.4.0 =
+If you've experienced issues with the shortcode creator dialog box, for example, nothing happens when the button is clicked, be sure to update!
 = 1.1.0 =
 NEW FEATURES & THEMES: New inline link capability, shortcode creator options, and three new themes.
 = 1.0.4 =
