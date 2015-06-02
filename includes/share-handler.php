@@ -262,12 +262,21 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 				if ( $options['use_shortlink'] ) {
 					//	Yes, we need a shortlink.
 
-					//	Try getting one
+					//	Try getting one the default way
 					$short = wp_get_shortlink( $id );
 
+
+
 					if ( empty( $short ) ) {	//	No shortlink for whatever reason
-						//	Just get the permalink I guess...
-						$short = get_permalink( $id );
+						//	Try using custom functions provided by popular shortlink pluings
+						//	Shortn.it: https://wordpress.org/plugins/shortnit/
+						if( function_exists( 'the_full_shortn_url' ) ) {
+						}
+
+						//	Out of ideas... just use permalink I guess
+						else {
+							$short = get_permalink( $id );
+						}
 					}
 
 
@@ -278,8 +287,8 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 					//	WP Bitly don't generate shortlinks until after the post
 					//	is published.
 					//
-					//	This means that the shortlink we just worked out butts
-					//	of to get... might not be correct.  The shortlink
+					//	This means that the shortlink we just worked our butts
+					//	off to get... might not be correct.  The shortlink
 					//	might not have been constructed yet, and WordPress just
 					//	doesn't know that.
 					//
