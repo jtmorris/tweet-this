@@ -54,14 +54,7 @@
 		//	Possibly asynchronous, so provide callback
 		var recurseDepth = 0;
 		get_dialog_data(function setupShortcodeCreator(args) {
-			//	Get passed arguments
-			post_url = args['post_url'];
-			post_url_is_placeholder = args['post_url_is_placeholder'];
-			default_twitter_handles = args['default_twitter_handles'];
-			default_hidden_hashtags = args['default_hidden_hashtags'];
-			default_hidden_urls = args['default_hidden_urls'];
-			
-			//	If we're not on an editor page, tinyMCE variable won't be defined, and the
+			//	If we're not on an editor page, or editor isn't available tinyMCE.activeEditor variable won't be defined, and the
 			//	code below will throw an Uncaught ReferenceError.  So wrap it in a try/catch.
 			try {
 				logToConsole("Searching for current TinyMCE editor...")
@@ -74,18 +67,20 @@
 				//	be done.  Don't remove this unless you really know what you're doing.
 				//	
 				//	Don't let this go on forever
-				if(!editor && recurseDepth < 5) {
-					setTimeout(function() {
-						recurseDepth++;
-						logToConsole("No editor found. Retrying after delay. Retry attempt #" + recurseDepth);
-						setupShortcodeCreator(args);
-					}, 1000);
+				if(!editor) {
+					if(recurseDepth < 5) {
+						setTimeout(function() {
+							recurseDepth++;
+							logToConsole("No editor found. Retrying after delay. Retry attempt #" + recurseDepth);
+							setupShortcodeCreator(args);
+						}, 1000);
 
-					return;
-				}
-				else {
-					//	Couldn't get TinyMCE editor... throw an exception
-					throw "No editor found. Tried 5 times over 5 seconds.";
+						return;
+					}
+					else {
+						//	Couldn't get TinyMCE editor... throw an exception
+						throw "No editor found. Tried 5 times over 5 seconds.";
+					}
 				}
 
 				logToConsole("TinyMCE editor found.")
@@ -95,7 +90,15 @@
 				logToConsole("Loading dialog box without access to TinyMCE editor.");
 				logToConsole("Page: " + window.location.href);
 			}
+
+			//	Get passed arguments
+			post_url = args['post_url'];
+			post_url_is_placeholder = args['post_url_is_placeholder'];
+			default_twitter_handles = args['default_twitter_handles'];
+			default_hidden_hashtags = args['default_hidden_hashtags'];
+			default_hidden_urls = args['default_hidden_urls'];
 			
+						
 			disable_preview = args['disable_preview'];
 			disable_handles = args['disable_handles'];
 			disable_post_url = args['disable_post_url'];
@@ -315,11 +318,13 @@
 				$('#TT-shortcode-creator-dialog').dialog("close");
 
 				try {
-					editor.selection.setContent(shortcode);					
+					editor.selection.setContent(shortcode);
+					logToConsole("Successfully inserted shortcode: " + shortcode);
 				} catch(e) {
 					//	Yep... editor wasn't found right... damnit!
 					//	The fallback is going to be replacing the dialog content with a 
 					//	copy & paste the shortcode style thingy.
+					logToConsole("Failed to insert shortcode. JavaScript Exception: " + e.message);
 					var html = "<div id='TT_critical_error_wrapper'>";
 						html += "<h2>Lucky you! You've stumbled upon a rare problem.</h2>";
 						
