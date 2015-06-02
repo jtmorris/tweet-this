@@ -812,6 +812,14 @@ if ( !class_exists( 'TT_Settings' ) ) {
 							blocker browser extensions, add-ons, and plugins? Fight
 							back with <em>Ad Blocking Detector</em> today!
 						</li>
+						<li>
+							<a target="_blank" href="http://bit.ly/longer-login">
+								Longer Login ("Remember Me" Extension)
+							</a>
+							: <em>Longer Login</em> allows customizing the length of 
+							WordPress' "Remember Me" length. No more automatic logouts 
+							every few days!
+						</li>
 					</ul>
 				</div>
 			</div>
