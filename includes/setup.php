@@ -10,7 +10,7 @@ require_once( TT_ROOT_PATH . "includes/share-handler.php" );
 
 if ( !class_exists( 'TT_Setup' ) ) {
 	class TT_Setup {
-		protected static $version = '1.2.0';
+		protected static $version = '1.4.0';
 
 		/**
 		 * Registers and enqueues all CSS and JavaScript.
@@ -121,8 +121,23 @@ if ( !class_exists( 'TT_Setup' ) ) {
 			//	TinyMCE Plugin
 			add_filter( 'mce_external_plugins',
 				array( 'TT_Setup', 'hooks_helper_tinymce_plugin' ) );
-			add_filter( 'mce_buttons',
-				array( 'TT_Setup', 'hooks_helper_tinymce_button' ) );
+
+			//	Shortcode Creator Button
+			$current_options = get_option( 'tt_plugin_options' );
+			array_key_exists( 'button_location', $current_options ) ? $bl = $current_options['button_location'] : $bl = 'row1';
+			
+			if( $bl == 'media' ) {	//	Media Button Row
+				add_action( 'media_buttons', 
+					array( 'TT_Setup', 'hooks_helper_media_button' ), 101 );
+			}
+			else if ( $bl == 'row2' ) {	//	Advanced Editor Row (Row #2)
+				add_filter( 'mce_buttons_2',
+					array( 'TT_Setup', 'hooks_helper_tinymce_button' ) );
+			}
+			else {	//	Normal Editor Row
+				add_filter( 'mce_buttons',
+					array( 'TT_Setup', 'hooks_helper_tinymce_button' ) );
+			}
 		}
 			public static function hooks_helper_activation() {
 
@@ -173,6 +188,11 @@ if ( !class_exists( 'TT_Setup' ) ) {
 								height: 600,
 								width: 650
 							});
+
+							jQuery('#tt-dialog-launcher').click(function(event) {
+								event.preventDefault();
+								jQuery('#TT-shortcode-creator-dialog').dialog("open");
+							});
 						});						
 					</script>
 					<?php
@@ -214,6 +234,14 @@ if ( !class_exists( 'TT_Setup' ) ) {
 					array_push( $buttons, 'tweetthis_button' );
 				}
 				return $buttons;
+			}
+			public static function hooks_helper_media_button() {
+				?>
+				<a href="#" id="tt-dialog-launcher" class="button">
+					<img src="<?php echo TT_ROOT_URL; ?>assets/images/tinymce-button.png" alt="Launch Tweet This Shortcode Creator" style="height: 18px;" />
+					Add Tweet This Shotcode
+				</a>
+				<?php
 			}
 
 
@@ -275,7 +303,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 					$twitter_handles, $hidden_hashtags, $hidden_urls, $remove_twitter_handles, $remove_url,
 					$remove_hidden_hashtags, $remove_hidden_urls );
 
-				$options = get_option(tt_plugin_options);
+				$options = get_option('tt_plugin_options');
 
 				//	What display mode are we using?
 				if ( $display_mode === false ) {	//	None provided in shortcode
@@ -346,7 +374,8 @@ if ( !class_exists( 'TT_Setup' ) ) {
 					'css_override' => '',
 					'twitter_icon' => 'bird1',
 					'base_theme' => 'light',
-					'icon_alt_text' => ''
+					'icon_alt_text' => '',
+					'button_location' => 'row1'
 				);
 
 

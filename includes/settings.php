@@ -458,6 +458,25 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				)
 			);
 
+			//	Alternative Button Placement
+			add_settings_field(
+				'tt_button_location',							//	Setting ID
+				'Editor Button Location',						//	Setting Title
+				array( 'TT_Settings',
+					'field_helper_radio' ),			//	Content Callback
+				TT_FILENAME,
+				'tweet_this_advanced',					//	Settings Section ID
+				array(
+					'name' => 'button_location',
+
+					'buttons'=>array( array('Editor Toolbar, Row #1', 'row1'), array('Editor Toolbar, Row #2', 'row2'), array('Next to Add Media Button', 'media') ),
+
+					'help_text' => 'By default, this plugin places the shortcode creator dialog button on the top row of the WordPress editor toolbar. Move the button to a different location here.',
+
+					'default' => 'row1'
+				)
+			);
+
 			//	Custom CSS
 			add_settings_field(
 				'tt_css_override',					//	Setting ID
