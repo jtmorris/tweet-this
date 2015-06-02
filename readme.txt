@@ -4,7 +4,7 @@ Donate link: http://tweetthis.jtmorris.net/
 Tags: twitter, tweet, social, sharing
 Requires at least: 3.9
 Tested up to: 4.2.1
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -104,6 +104,8 @@ get graphical content included.  There is a detailed guide for how to do this on
 
 
 == Changelog ==
+= 1.3.3 =
+* Fix detection and usage of shortlinks created by the Shortn.It plugin.
 = 1.3.2 =
 * Fix wide button bug in WordPress editor's Text tab. (https://wordpress.org/support/topic/this-plug-in-has-messed-up-my-websites-edit-functions-after-the-last-update?replies=4)
 = 1.3.1 =
