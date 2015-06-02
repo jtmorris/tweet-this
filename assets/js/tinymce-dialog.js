@@ -52,7 +52,8 @@
 
 
 		//	Possibly asynchronous, so provide callback
-		get_dialog_data(function(args) {
+		var recurseDepth = 0;
+		get_dialog_data(function setupShortcodeCreator(args) {
 			//	Get passed arguments
 			post_url = args['post_url'];
 			post_url_is_placeholder = args['post_url_is_placeholder'];
@@ -63,13 +64,36 @@
 			//	If we're not on an editor page, tinyMCE variable won't be defined, and the
 			//	code below will throw an Uncaught ReferenceError.  So wrap it in a try/catch.
 			try {
+				logToConsole("Searching for current TinyMCE editor...")
 				editor = tinyMCE.activeEditor;
+
+				//	If editor is null, it may have not loaded completely yet... Let's try
+				//	sleeping for a few seconds, then trying again. I know this is a terrible
+				//	idea. But this is a potential fix for the most obscure bug on the planet
+				//	that I cannot think of any better way to fix.  I hate it, but this must
+				//	be done.  Don't remove this unless you really know what you're doing.
+				//	
+				//	Don't let this go on forever
+				if(!editor && recurseDepth < 5) {
+					setTimeout(function() {
+						recurseDepth++;
+						logToConsole("No editor found. Retrying after delay. Retry attempt #" + recurseDepth);
+						setupShortcodeCreator(args);
+					}, 1000);
+
+					return;
+				}
+				else {
+					//	Couldn't get TinyMCE editor... throw an exception
+					throw "No editor found. Tried 5 times over 5 seconds.";
+				}
+
+				logToConsole("TinyMCE editor found.")
 			} catch(e) {
 				//	If we're here, then there's no tinyMCE and the rest of this function
 				//	is pointless.  Let's, for safety, output this info to the console and then die.
-				logToConsole("Prevented attempt to load dialog box on page without TinyMCE editor.");
+				logToConsole("Loading dialog box without access to TinyMCE editor.");
 				logToConsole("Page: " + window.location.href);
-				return;
 			}
 			
 			disable_preview = args['disable_preview'];
@@ -280,10 +304,90 @@
 
 				shortcode += ']' + (get_clean_text()) + '[/tweetthis]';
 
-				editor.selection.setContent(shortcode);
+				
+				//	Insert the shortcode into the editor.  This shouldn't but still does fail
+				//	for every one in a billion users (I may be exaggerating).  It is a problem
+				//	that has plauged me since the dawn of this plugin.  Sometimes the TinyMCE
+				//	editor is not accessible.  So, in those cases, let's provide a fallback.
 
-				//	Close dialog
+
+				//	Close shortcode creator dialog
 				$('#TT-shortcode-creator-dialog').dialog("close");
+
+				try {
+					editor.selection.setContent(shortcode);					
+				} catch(e) {
+					//	Yep... editor wasn't found right... damnit!
+					//	The fallback is going to be replacing the dialog content with a 
+					//	copy & paste the shortcode style thingy.
+					var html = "<div id='TT_critical_error_wrapper'>";
+						html += "<h2>Lucky you! You've stumbled upon a rare problem.</h2>";
+						
+						html += "<p>In a very small number of cases, WordPress doesn't provide crucial data to facilitate automatic insertion of your shortcode.";
+						html += "This problem has plagued <em>Tweet This</em> from the beginning. Every fix, and there have been many, solves it for some users. But it invariably reappears for someone else.</p>";
+						html += "<p>This problem is being actively researched by Tweet This' developer. It will hopefully be resolved soon.</p>";
+						html += "<p>If you are willing, please send the developer an email with the contents of the DEBUG INFO textbox below. More information is always helpful in tracking down issues. His email address is <a href='mailto:johntylermorris@jtmorris.net?subject=Tweet This Bug Report -- TinyMCE%20activeEditor%20NULL%20Bug'>johntylermorris@jtmorris.net</a>.</p>"
+						
+						html += "<br /><p><strong>In the meantime</strong>, you can <strong>manually copy the shortcode</strong> in the text field below, close this dialog box, and <strong>paste the shortcode into your editor</strong>. Sincerest apologies for the inconvenience.</p>"
+
+						html += "<br /><span style='font-size: 1.3em;'><strong>Created Shortcode:</strong> <input type='text' id='TT_manual_shortcode_field' style='width: 350px;' /></span><br /><br />";
+
+						html += "<br /><br /><strong>DEBUG INFO:</strong><br />"
+						html += "<textarea id='TT_critical_error_dbginfo' style='width: 550px'>";
+						html += "Tweet This Error Report\n================================\n\n";
+						html += "Reported Error:\n----------\ntinyMCE.activeEditor is null. Repeated access attempts over the course of 5 seconds yielded the same null value.";
+						html += "\n\n\nUser's Web Browser:\n----------\n" + navigator.userAgent;
+
+						html += "\n\n\nOutput Console Data:\n----------\n";
+
+						$.each(logMessages, function(index, val) {
+							html += index+1 + ' :: ' + val + '\n\n';
+						});
+
+					$("<div />").html(html).dialog({
+						modal: true,
+						closeText: "Close Shortcode Creator",
+						width: 650,
+						buttons: [
+							{
+								text: "Close Shortcode Creator",
+								icons: {primary: 'ui-icon-closethick'},
+								click: function() {
+									$(this).dialog("destroy");
+								}
+							}
+						]
+					});
+
+					$("#TT_manual_shortcode_field").val(shortcode);
+					
+					//	Highlight text on focus. This can cause some errors in edge cases, so enclose
+					//	it in a try/catch block
+					try {
+						var dbgbox = document.getElementById('TT_critical_error_dbginfo');
+						dbgbox.onfocus = function() {
+							dbgbox.select();
+
+							dbgbox.onmouseup = function() {
+								//	Prevent further mouseup intervention
+								dbgbox.onmouseup = null;
+								return false;
+							};
+						}
+					} catch(e) {}
+					try {
+						var sfbox = document.getElementById('TT_manual_shortcode_field');
+						sfbox.onfocus = function() {
+							sfbox.select();
+
+							sfbox.onmouseup = function() {
+								//	Prevent further mouseup intervention
+								sfbox.onmouseup = null;
+								return false;
+							};
+						}
+					} catch(e) {}
+				}
 			});
 		})
 	});
@@ -514,7 +618,7 @@
 			
 		//	Be nice and throw in a loading GIF that is removed upon AJAX completion
 		//	http://stackoverflow.com/a/1964871/2523144
-		$("#tt-frame-body").addClass("loading");
+		$("#TT-shortcode_creator-dialog").addClass("loading");
 		$.ajax({
 			type: "post",
 			url: ajaxurl,
@@ -543,7 +647,7 @@
 			},
 			complete: function() {
 				//	Remove loading GIF
-				$("#tt-frame-body").removeClass("loading");
+				$("#TT-shortcode_creator-dialog").removeClass("loading");
 			}
 		});
 
