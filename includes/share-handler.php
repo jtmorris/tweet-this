@@ -271,6 +271,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 						//	Try using custom functions provided by popular shortlink pluings
 						//	Shortn.it: https://wordpress.org/plugins/shortnit/
 						if( function_exists( 'the_full_shortn_url' ) ) {
+							$short = get_the_full_shortn_url();
 						}
 
 						//	Out of ideas... just use permalink I guess
