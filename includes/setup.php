@@ -49,14 +49,10 @@ if ( !class_exists( 'TT_Setup' ) ) {
 
 
 				//	jQuery UI theme.
-				//	To place nice with other plugins, let's only load this when we're on
-				//	Ad Blocking Detector's page in the admin.
-				if( is_admin() && $_GET['page'] == 'tweet-this' ) {
-					wp_enqueue_style('tt-admin-jquery-ui-css',
-	                	TT_ROOT_URL . 'assets/css/jquery/cupertino-theme/jquery-ui.min.css',
-	                	false
-	               	 );
-				}
+				wp_enqueue_style('tt-admin-jquery-ui-css',
+	               	TT_ROOT_URL . 'assets/css/jquery/cupertino-theme/jquery-ui.min.css',
+	               	false
+	            );
 			}
 			public static function enqueue_helper_public_css() {
 				$options = get_option( 'tt_plugin_options' );
@@ -188,12 +184,13 @@ if ( !class_exists( 'TT_Setup' ) ) {
 
 
 							<?php // Turn the dialog box code included above into a jQuery dialog ?>						
-							jQuery('#TT-shortcode-creator-dialog').dialog({
+							var scDialog = jQuery('#TT-shortcode-creator-dialog').dialog({
 								autoOpen: false,
 								modal: true,
 								height: 600,
 								width: 650
 							});
+							scDialog.parent('.ui-dialog').addClass( 'tt-jqui' );	//	jQuery UI Theme Scope
 
 							jQuery('#tt-dialog-launcher').click(function(event) {
 								event.preventDefault();

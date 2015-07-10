@@ -852,7 +852,7 @@ if ( !class_exists( 'TT_Settings' ) ) {
 					$(document).ready(function() {
 						//	Beg users disabling byline
 						$('#tt_byline_removal input:radio[value=1]').click(function() {
-							$("#TT_hide_byline_dialog").dialog({
+							var br_dialog = $("#TT_hide_byline_dialog").dialog({
 								modal: true,
 								buttons: {
 									Close: function() {
@@ -864,6 +864,7 @@ if ( !class_exists( 'TT_Settings' ) ) {
 									my: "top", at: "top", of: "#TT_content"
 								}
 							});
+							br_dialog.parent('.ui-dialog').addClass('tt-jqui');	//	jQuery UI Theme Scope
 						});
 					});	//	end $(document.ready(function() {
 				}(jQuery))
