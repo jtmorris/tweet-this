@@ -47,10 +47,16 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				wp_enqueue_style( 'tt-admin-css' );
 				wp_enqueue_style( 'tt-shortcode-creator-css' );
 
-				wp_enqueue_style('tt-admin-jquery-ui-css',
-                	TT_ROOT_URL . 'assets/css/jquery/cupertino-theme/jquery-ui.min.css',
-                	false
-               	 );
+
+				//	jQuery UI theme.
+				//	To place nice with other plugins, let's only load this when we're on
+				//	Ad Blocking Detector's page in the admin.
+				if( is_admin() && $_GET['page'] == 'tweet-this' ) {
+					wp_enqueue_style('tt-admin-jquery-ui-css',
+	                	TT_ROOT_URL . 'assets/css/jquery/cupertino-theme/jquery-ui.min.css',
+	                	false
+	               	 );
+				}
 			}
 			public static function enqueue_helper_public_css() {
 				$options = get_option( 'tt_plugin_options' );
@@ -124,7 +130,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 
 			//	Shortcode Creator Button
 			$current_options = get_option( 'tt_plugin_options' );
-			array_key_exists( 'button_location', $current_options ) ? $bl = $current_options['button_location'] : $bl = 'row1';
+			is_array( $current_options ) && array_key_exists( 'button_location', $current_options ) ? $bl = $current_options['button_location'] : $bl = 'row1';
 			
 			if( $bl == 'media' ) {	//	Media Button Row
 				add_action( 'media_buttons', 
