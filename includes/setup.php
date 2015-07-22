@@ -10,7 +10,7 @@ require_once( TT_ROOT_PATH . "includes/share-handler.php" );
 
 if ( !class_exists( 'TT_Setup' ) ) {
 	class TT_Setup {
-		protected static $version = '1.4.0';
+		protected static $version = '1.5.1';
 
 		/**
 		 * Registers and enqueues all CSS and JavaScript.

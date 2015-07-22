@@ -245,7 +245,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 
 			//	Do we need to generate the URL? If URL is disabled, we don't.
 			//	If one is already provided, we don't.
-			if( $options['disable_url'] ) {
+			if( $options['disable_url'] && is_null( $this->my_url ) ) {
 				if( $placeholder_flag ) {
 					$this->my_url = "";
 					return array('shortlink'=>'', 'is_placeholder'=>false);

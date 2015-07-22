@@ -185,7 +185,7 @@ if ( !class_exists( 'TT_Settings' ) ) {
 					//	Array of arrays of label=>value pairs for desired buttons
 					'buttons'=>array( array('Yes', true), array('No', false) ),
 
-					'help_text'=>'Choose yes to remove your URL from tweets by default.',
+					'help_text'=>'Choose yes to remove automatically generated URLS from your tweets by default (overridden URLs will still show up).',
 
 					'default'=>false
 				)
