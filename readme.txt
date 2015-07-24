@@ -4,7 +4,7 @@ Donate link: http://tweetthis.jtmorris.net/
 Tags: twitter, tweet, social, sharing
 Requires at least: 3.9
 Tested up to: 4.2.2
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -104,6 +104,9 @@ get graphical content included.  There is a detailed guide for how to do this on
 
 
 == Changelog ==
+= 1.5.2 =
+* Fix jQuery UI theme scope issues introduced in last update.
+* Added "Insert Shortcode Behavior" setting which allows users to choose to copy and paste resultant shortcode from Shortcode Creator dialog rather than have it automatically inserted. Serves as a last resort fallback for users reporting plugin conflicts (notably with OptimizePress), and those with the dreaded tinyMCE == undefined bug that keeps persisting.
 = 1.5.1 =
 * Changed behavior of "Disable URLs?" setting.  This now only stops automatic URLs.  Overridden URLs will still display.
 * Restricted jQuery UI theme scope to Tweet This content instead of globally in dashboard.

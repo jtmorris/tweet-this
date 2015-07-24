@@ -98,7 +98,7 @@
 			default_hidden_hashtags = args['default_hidden_hashtags'];
 			default_hidden_urls = args['default_hidden_urls'];
 			
-						
+			insert_sc_behavior = args['insert_shortcode_behavior'];
 			disable_preview = args['disable_preview'];
 			disable_handles = args['disable_handles'];
 			disable_post_url = args['disable_post_url'];
@@ -308,91 +308,132 @@
 				shortcode += ']' + (get_clean_text()) + '[/tweetthis]';
 
 				
-				//	Insert the shortcode into the editor.  This shouldn't but still does fail
-				//	for every one in a billion users (I may be exaggerating).  It is a problem
-				//	that has plauged me since the dawn of this plugin.  Sometimes the TinyMCE
-				//	editor is not accessible.  So, in those cases, let's provide a fallback.
-
-
+				//	Insert the shortcode into the editor. 
 				//	Close shortcode creator dialog
-				$('#TT-shortcode-creator-dialog').dialog("close");
+				$('#TT-shortcode-creator-dialog').dialog("close");				
 
-				try {
-					editor.selection.setContent(shortcode);
-					logToConsole("Successfully inserted shortcode: " + shortcode);
-				} catch(e) {
-					//	Yep... editor wasn't found right... damnit!
-					//	The fallback is going to be replacing the dialog content with a 
-					//	copy & paste the shortcode style thingy.
-					logToConsole("Failed to insert shortcode. JavaScript Exception: " + e.message);
-					var html = "<div id='TT_critical_error_wrapper'>";
-						html += "<h2>Lucky you! You've stumbled upon a rare problem.</h2>";
-						
-						html += "<p>In a very small number of cases, WordPress doesn't provide crucial data to facilitate automatic insertion of your shortcode.";
-						html += "This problem has plagued <em>Tweet This</em> from the beginning. Every fix, and there have been many, solves it for some users. But it invariably reappears for someone else.</p>";
-						html += "<p>This problem is being actively researched by Tweet This' developer. It will hopefully be resolved soon.</p>";
-						html += "<p>If you are willing, please send the developer an email with the contents of the DEBUG INFO textbox below. More information is always helpful in tracking down issues. His email address is <a href='mailto:johntylermorris@jtmorris.net?subject=Tweet This Bug Report -- TinyMCE%20activeEditor%20NULL%20Bug'>johntylermorris@jtmorris.net</a>.</p>"
-						
-						html += "<br /><p><strong>In the meantime</strong>, you can <strong>manually copy the shortcode</strong> in the text field below, close this dialog box, and <strong>paste the shortcode into your editor</strong>. Sincerest apologies for the inconvenience.</p>"
+				//	Manual Mode:
+				if( insert_sc_behavior == 'manual' ) {
+					logToConsole("Insert Shortcode Behavior set to manual.");
+					//	Set dialog content to shortcode
+					var html = "<p>Copy the shortcode below to your clipboard, and paste into your WordPress editor.</p><span style='font-size: 1.3em;'><strong>Created Shortcode:</strong> <input type='text' id='TT_manual_shortcode_field' style='width: 350px;' /></span>";
 
-						html += "<br /><span style='font-size: 1.3em;'><strong>Created Shortcode:</strong> <input type='text' id='TT_manual_shortcode_field' style='width: 350px;' /></span><br /><br />";
-
-						html += "<br /><br /><strong>DEBUG INFO:</strong><br />"
-						html += "<textarea id='TT_critical_error_dbginfo' style='width: 550px'>";
-						html += "Tweet This Error Report\n================================\n\n";
-						html += "Reported Error:\n----------\ntinyMCE.activeEditor is null. Repeated access attempts over the course of 5 seconds yielded the same null value.";
-						html += "\n\n\nUser's Web Browser:\n----------\n" + navigator.userAgent;
-
-						html += "\n\n\nOutput Console Data:\n----------\n";
-
-						$.each(logMessages, function(index, val) {
-							html += index+1 + ' :: ' + val + '\n\n';
-						});
-
-					$("<div />").html(html).dialog({
+					var secondaryDialog = $("<div />").html(html).dialog({
 						modal: true,
-						closeText: "Close Shortcode Creator",
+						title: 'Copy & Paste Your Shortcode...',
+						closeText: "Close",
 						width: 650,
 						buttons: [
 							{
-								text: "Close Shortcode Creator",
+								text: "Close",
 								icons: {primary: 'ui-icon-closethick'},
 								click: function() {
 									$(this).dialog("destroy");
 								}
 							}
-						]
+						],
+						open: function() {
+							//	Fix Random jQuery UI CSS Scoping Issues	//
+							$('div.ui-widget-overlay, div.ui-dialog').wrap('<div class="tt-jqui" />');
+						}
 					});
+					secondaryDialog.parent('.ui-dialog').addClass('tt-jqui');	//	jQuery UI theme scope
 
 					$("#TT_manual_shortcode_field").val(shortcode);
-					
-					//	Highlight text on focus. This can cause some errors in edge cases, so enclose
-					//	it in a try/catch block
-					try {
-						var dbgbox = document.getElementById('TT_critical_error_dbginfo');
-						dbgbox.onfocus = function() {
-							dbgbox.select();
-
-							dbgbox.onmouseup = function() {
-								//	Prevent further mouseup intervention
-								dbgbox.onmouseup = null;
-								return false;
-							};
-						}
-					} catch(e) {}
-					try {
-						var sfbox = document.getElementById('TT_manual_shortcode_field');
-						sfbox.onfocus = function() {
-							sfbox.select();
-
-							sfbox.onmouseup = function() {
-								//	Prevent further mouseup intervention
-								sfbox.onmouseup = null;
-								return false;
-							};
-						}
-					} catch(e) {}
 				}
+				else {
+					//  Automatic Mode:  This shouldn't but still does fail
+					//	for every one in a billion users (I may be exaggerating).  It is a problem
+					//	that has plauged me since the dawn of this plugin.  Sometimes the TinyMCE
+					//	editor is not accessible.  So, in those cases, let's provide a fallback.
+					logToConsole("Insert Shortcode Behavior set to automatic.");
+					
+					try {
+						editor.selection.setContent(shortcode);
+						logToConsole("Successfully inserted shortcode: " + shortcode);
+					} catch(e) {
+						//	Yep... editor wasn't found right... damnit!
+						//	The fallback is going to be replacing the dialog content with a 
+						//	copy & paste the shortcode style thingy.
+						logToConsole("Failed to insert shortcode. JavaScript Exception: " + e.message);
+						var html = "<div id='TT_critical_error_wrapper'>";
+							html += "<h2>Lucky you! You've stumbled upon a rare problem.</h2>";
+							
+							html += "<p>In a very small number of cases, WordPress doesn't provide crucial data to facilitate automatic insertion of your shortcode.";
+							html += "This problem has plagued <em>Tweet This</em> from the beginning. Every fix, and there have been many, solves it for some users. But it invariably reappears for someone else.</p>";
+							html += "<p>This problem is being actively researched by Tweet This' developer. It will hopefully be resolved soon.</p>";
+							html += "<p>If you are willing, please send the developer an email with the contents of the DEBUG INFO textbox below. More information is always helpful in tracking down issues. His email address is <a href='mailto:johntylermorris@jtmorris.net?subject=Tweet This Bug Report -- TinyMCE%20activeEditor%20NULL%20Bug'>johntylermorris@jtmorris.net</a>.</p>"
+							
+							html += "<br /><p><strong>In the meantime</strong>, you can <strong>manually copy the shortcode</strong> in the text field below, close this dialog box, and <strong>paste the shortcode into your editor</strong>. Sincerest apologies for the inconvenience.</p>"
+
+							html += "<br /><span style='font-size: 1.3em;'><strong>Created Shortcode:</strong> <input type='text' id='TT_manual_shortcode_field' style='width: 350px;' /></span><br /><br />";
+
+							html += "<br /><br /><strong>DEBUG INFO:</strong><br />"
+							html += "<textarea id='TT_critical_error_dbginfo' style='width: 550px'>";
+							html += "Tweet This Error Report\n================================\n\n";
+							html += "Reported Error:\n----------\ntinyMCE.activeEditor is null. Repeated access attempts over the course of 5 seconds yielded the same null value.";
+							html += "\n\n\nUser's Web Browser:\n----------\n" + navigator.userAgent;
+
+							html += "\n\n\nOutput Console Data:\n----------\n";
+
+							$.each(logMessages, function(index, val) {
+								html += index+1 + ' :: ' + val + '\n\n';
+							});
+
+						var secondaryDialog = $("<div />").html(html).dialog({
+							modal: true,
+							closeText: "Close Shortcode Creator",
+							width: 650,
+							buttons: [
+								{
+									text: "Close Shortcode Creator",
+									icons: {primary: 'ui-icon-closethick'},
+									click: function() {
+										$(this).dialog("destroy");
+									}
+								}
+							],
+							open: function() {
+								//	Fix Random jQuery UI CSS Scoping Issues	//
+								$('div.ui-widget-overlay, div.ui-dialog').wrap('<div class="tt-jqui" />');
+							}
+						});
+						secondaryDialog.parent('.ui-dialog').addClass('tt-jqui');	//	jQuery UI theme scope
+
+						$("#TT_manual_shortcode_field").val(shortcode);
+						
+						//	Highlight text on focus. This can cause some errors in edge cases, so enclose
+						//	it in a try/catch block
+						try {
+							var dbgbox = document.getElementById('TT_critical_error_dbginfo');
+							dbgbox.onfocus = function() {
+								dbgbox.select();
+
+								dbgbox.onmouseup = function() {
+									//	Prevent further mouseup intervention
+									dbgbox.onmouseup = null;
+									return false;
+								};
+							}
+						} catch(e) {}						
+					}
+				}
+
+				//	Highlight text on focus. This can cause some errors in edge cases, so enclose
+				//	it in a try/catch block
+				try {
+					var sfbox = document.getElementById('TT_manual_shortcode_field');
+					sfbox.select();
+					sfbox.onfocus = function() {
+						sfbox.select();
+
+						sfbox.onmouseup = function() {
+							//	Prevent further mouseup intervention
+							sfbox.onmouseup = null;
+							return false;
+						};
+					}
+				} catch(e) {}
 			});
 		})
 	});

@@ -231,6 +231,7 @@ if ( !class_exists( 'TT_Tools' ) ) {
 			$hidden_urls = $options['default_hidden_urls'];
 
 			//	dialog customization options
+			$insert_sc_behavior = $options['insert_shortcode_behavior'];
 			$hide_preview = $options['disable_preview'];
 			$hide_handles = $options['disable_handles'];
 			$hide_post_url = $options['disable_post_url'];
@@ -249,7 +250,8 @@ if ( !class_exists( 'TT_Tools' ) ) {
 				'disable_handles' => $hide_handles,
 				'disable_post_url' => $hide_post_url,
 				'disable_hidden' => $hide_hidden,
-				'disable_char_count' => $hide_char_count
+				'disable_char_count' => $hide_char_count,
+				'insert_shortcode_behavior' => $insert_sc_behavior
 			);
 		}
 	}	//	end class

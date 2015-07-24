@@ -304,6 +304,25 @@ if ( !class_exists( 'TT_Settings' ) ) {
 			/////////////////////////////////////////
 			/// Shortcode Creator Dialog Settings ///
 			/////////////////////////////////////////
+			//	Insert Shortcode Behavior
+			add_settings_field(
+				'tt_insert_shortcode_behavior',			//	Setting ID
+				'"Insert Shortcode" Button Behavior',	//	Setting Title
+				array( 'TT_Settings',
+					'field_helper_radio' ),				//	Content Callback
+				TT_FILENAME,
+				'tweet_this_scc_dialog',				//	Settings Section ID
+				array(
+					'name' => 'insert_shortcode_behavior',
+
+					'buttons'=>array( array('Automatically insert it into WordPress editor', 'auto'), array('Display shortcode for copy and paste', 'manual' ) ),
+
+					'help_text' => 'Certain WordPress configurations and plugins interfere with automatic shortcode insertion into your editor. If you receive an error message when clicking "Insert Shortcode" button in Shortcode Creator Dialog, or nothing happens, you will need to switch to copy and paste mode.',
+
+					'default' => 'auto'
+				)
+			);
+
 			//	Disable Preview?
 			add_settings_field(
 				'tt_disable_preview',							//	Setting ID

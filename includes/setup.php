@@ -10,7 +10,7 @@ require_once( TT_ROOT_PATH . "includes/share-handler.php" );
 
 if ( !class_exists( 'TT_Setup' ) ) {
 	class TT_Setup {
-		protected static $version = '1.5.1';
+		protected static $version = '1.5.2';
 
 		/**
 		 * Registers and enqueues all CSS and JavaScript.
@@ -187,8 +187,14 @@ if ( !class_exists( 'TT_Setup' ) ) {
 							var scDialog = jQuery('#TT-shortcode-creator-dialog').dialog({
 								autoOpen: false,
 								modal: true,
-								height: 600,
-								width: 650
+								minHeight: 600,
+								maxHeight: 900,
+								resizable: false,
+								width: 650,
+								open: function() {
+									//	Fix Random jQuery UI CSS Scoping Issues	//
+									jQuery('div.ui-widget-overlay, div.ui-dialog').wrap('<div class="tt-jqui" />');
+								}
 							});
 							scDialog.parent('.ui-dialog').addClass( 'tt-jqui' );	//	jQuery UI Theme Scope
 
@@ -378,7 +384,9 @@ if ( !class_exists( 'TT_Setup' ) ) {
 					'twitter_icon' => 'bird1',
 					'base_theme' => 'light',
 					'icon_alt_text' => '',
-					'button_location' => 'row1'
+					'button_location' => 'row1',
+					'insert_shortcode_behavior' => 'auto',
+					'display_mode' => 'box'
 				);
 
 
@@ -389,14 +397,66 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				}
 
 
+
+				//	Upgrade notices
+				$last_update_notice_ver = get_option( 'tt_last_update_notice_version', '1.5.1' );
+				if( version_compare( self::$version, $last_update_notice_ver ) > 0 ) {
+					//	Eligible for upgrade notices
+
+					//	1.5.2 message regarding OptimizePress and manual Insert Shortcode button setting
+					if( self::$version == '1.5.2' ) {
+						add_action( 'admin_notices', 
+							array( 'TT_Setup', 'upgrade_notices_1_5_2_helper' ) );
+					}
+				}
+
+
 				//	Now store the options
 				update_site_option( 'tt_plugin_options', $options );
 
 				//	And we update the option in the database to reflect new
 				//	db version
 				update_site_option( 'tt_current_version', self::$version );
+				update_option( 'tt_last_update_notice_version', self::$version );
 			}
 		}
+			public static function upgrade_notices_1_5_2_helper() {
+				?>
+				<div class="updated tt-update-notice" style="border-color: #49BAFF; border-left-width: 6px;">
+					<h2>Tweet This Update News</h2>
+					<img src="<?php echo TT_ROOT_URL; ?>assets/images/logo.png" style="float: left; width: 175px; margin: 15px 15px 0 0" />
+					<p>
+						Numerous Tweet This users are having issues with the Shortcode 
+						Creator dialog box's "Insert Shortcode" button.
+					</p>
+					<p>
+						There are two known causes of "Insert Shortcode" button failure. First is a plugin conflict
+						with the OptimizePress plugin. OptimizePress users see the dialog box
+						close, but no shortcode gets inserted.  Second is a rare WordPress 
+						problem where the WordPress post/page editor does not initialize
+						properly. This yields an error message.
+					</p>
+					<p style="font-size: 1.3em;">
+						<strong>If you are</strong> one of the user's <strong>experiencing this problem</strong>, you can now
+						go to Tweet This' settings page and <strong>change the <em>"Insert Shortcode" Button
+						Behavior</em> setting to <em>Display shortcode for copy and paste</em></strong>.
+					</p>
+					<p>
+						This will present the created shortcode to you, after clicking the "Insert Shortcode"
+						button, and you can then copy and paste that shortcode into your editor. Both problems
+						will continue to be worked on, but, in the meantime, this will allow everyone to continue
+						using Tweet This' Shortcode Creator dialog.
+					</p>
+					<p>
+						Apologies for the inconvenience!
+					</p><br />
+					<p>
+						John Morris<br />
+						<em>Tweet This' Developer</em>
+					</p>
+				</div>
+				<?php
+			}
 
 		public static function initialize() {
 			//	Upgrade function runs every time plugin loads. It determines

@@ -105,6 +105,11 @@
 		vertical-align: middle;
 	}
 
+.tt-update-notice,
+.tt-update-notice p {
+	font-size: 1.05em;
+}
+
 /* Responsive changes for narrow screens */
 @media (max-width: 1250px) {
 
@@ -128,3 +133,15 @@
 		width: 500px;
 	}
 }
+
+
+/********************
+ * jQuery UI Fixes
+ ********************/
+ /* Dialog overlay not over certain elements */
+ .ui-front {
+ 	z-index: 10001 !important;
+ }
+ .ui-dialog {
+ 	z-index: 10002 !important;
+ }
