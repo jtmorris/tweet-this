@@ -333,7 +333,6 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 				//	Okay then, do we need to construct a shortlink
 
 				if ( $options['use_shortlink'] ) {
-					echo "HERE";
 					//	Yes, we need a shortlink.
 
 					//	Try getting one the default way
