@@ -5,12 +5,12 @@
  * http://stackoverflow.com/a/29654944/2523144
  * http://stackoverflow.com/a/16186970/2523144
  */
- .ui-widget-overlay {
- 	z-index: 10000 !important;
+ .tt-jqui .ui-widget-overlay {
+ 	z-index: 100000 !important;
  	position: fixed !important;
  }
- .ui-dialog {
- 	z-index: 100001 !important;
+ .tt-jqui .ui-dialog {
+ 	z-index: 100099 !important;
  }
 
 #TT-shortcode-creator-dialog {
