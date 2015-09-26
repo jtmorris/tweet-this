@@ -4,7 +4,7 @@ Donate link: http://tweetthis.jtmorris.net/
 Tags: twitter, tweet, social, sharing
 Requires at least: 3.9
 Tested up to: 4.3.1
-Stable tag: 1.6.0
+Stable tag: 1.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -104,6 +104,8 @@ get graphical content included.  There is a detailed guide for how to do this on
 
 
 == Changelog ==
+= 1.6.1 =
+* Remove temporary debugging code used to test last update.
 = 1.6.0 =
 * Added tweet templating capability. Read more about this here: [http://tweetthis.jtmorris.net/posts/introducing-the-tweet-element-template/](http://tweetthis.jtmorris.net/posts/introducing-the-tweet-element-template/).
 * Circumvented jQuery UI interference from Express Curate plugin.
