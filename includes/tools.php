@@ -7,6 +7,27 @@
 if ( !class_exists( 'TT_Tools' ) ) {
 	class TT_Tools {
 		/**
+		 * If variable is empty (checked using PHP empty()), returns boolean false. Otherwise
+		 * returns variable content. Iterates across all elements if $var is array and changes
+		 * empty values to boolean false.
+		 * @param  mixed $var The variable to check. If array, it is checked element-wise.
+		 * @return mixed      Either boolean false if single $var is empty, $var with empty elements
+		 * set to false if array, or $var itself.
+		 */
+		public static function empty_to_false( $var ) {
+			if( empty( $var ) ) {
+				$var = false;
+			}
+			else if( is_array( $var ) ) {
+				foreach( $var as $key=>$v ) {
+					$var[$key] = self::empty_to_false( $v );
+				}
+			}
+
+			return $var;
+		}
+
+		/**
 		 * Parses the ./tweet-this/assets/images/twitter-icons directory for
 		 * Twitter logos in PNG format. Then constructs an array of values
 		 * for the TT_Settings::define_settings function.
@@ -211,8 +232,8 @@ if ( !class_exists( 'TT_Tools' ) ) {
 				$urlarr = $SH->generate_post_url( $id, true );
 
 				if( is_array( $urlarr ) ) {	//	Shortlink w/ qualifying info in array
-					$post_url = $urlarr['shortlink'];
-					$is_placeholder = $url['is_placeholder'];
+					$post_url = self::get_arr_value( 'shortlink', $urlarr, '' );
+					$is_placeholder = self::get_arr_value( 'is_placeholder', $urlarr, false );
 				}
 				else {	//	Nothing fancy, just the URL as a string
 					$post_url = $urlarr;
@@ -220,27 +241,27 @@ if ( !class_exists( 'TT_Tools' ) ) {
 				}
 			}
 			catch( Exception $e ) {
+				$id = 0;
 				$post_url = TT_Tools::placeholder_shortlink();
 				$is_placeholder = false;
 			}
 
 			//	default Twitter handles and hidden hashtags
 			$options = get_option( 'tt_plugin_options' );
-			$twits = $options['default_twitter_handles'];
-			$hashtags = $options['default_hidden_hashtags'];
-			$hidden_urls = $options['default_hidden_urls'];
+			$twits = self::get_arr_value( 'default_twitter_handles', $options, '' );
+			$hashtags = self::get_arr_value( 'default_hidden_hashtags', $options, '' );
+			$hidden_urls = self::get_arr_value( 'default_hidden_urls', $options, '' );
 
 			//	dialog customization options
-			$insert_sc_behavior = $options['insert_shortcode_behavior'];
-			$hide_preview = $options['disable_preview'];
-			$hide_handles = $options['disable_handles'];
-			$hide_post_url = $options['disable_post_url'];
-			$hide_hidden = $options['disable_hidden'];
-			$hide_char_count = $options['disable_char_count'];
-
-			
+			$insert_sc_behavior = self::get_arr_value( 'insert_shortcode_behavior', $options, '' );
+			$hide_preview = self::get_arr_value( 'disable_preview', $options, '' );
+			$hide_handles = self::get_arr_value( 'disable_handles', $options, '' );
+			$hide_post_url = self::get_arr_value( 'disable_post_url', $options, '' );
+			$hide_hidden = self::get_arr_value( 'disable_hidden', $options, '' );
+			$hide_char_count = self::get_arr_value( 'disable_char_count', $options, '' );
 
 			return array(
+				'post_id'  => $id,
 				'post_url' => $post_url,
 				'post_url_is_placeholder' => $is_placeholder,
 				'default_twitter_handles' => $twits,
@@ -253,6 +274,24 @@ if ( !class_exists( 'TT_Tools' ) ) {
 				'disable_char_count' => $hide_char_count,
 				'insert_shortcode_behavior' => $insert_sc_behavior
 			);
+		}
+
+		/**
+		 * Returns the value in the given array with the given key. If no such
+		 * array entry, $default is returned. Essentially, this automates the
+		 * array_key_exists( $key, $arr ) ? $arr[$key] : 'foobar' type checks
+		 * @param  string $key     The array key.
+		 * @param  array  $arr     The array.
+		 * @param  mixed  $default The value to return if array key doesn't exist. Defaults to null.
+		 * @return mixed           The array value or $default if array key doesn't exist.
+		 */
+		public static function get_arr_value( $key, $arr, $default = null ) {
+			if( array_key_exists( $key, $arr) ) {
+				return $arr[$key];
+			}
+			else {
+				return $default;
+			}
 		}
 	}	//	end class
 }	//	end if( !class_exists( ...
