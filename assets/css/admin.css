@@ -73,6 +73,10 @@
 		table.TT_donations td {
 			vertical-align: bottom;
 		}
+		#TT_sidebar div.TT_tweetdis_ad {
+			text-align: center;
+			margin-top: 30px;
+		}
 
 #TT_content {
 	margin-right: 450px;
@@ -110,6 +114,12 @@
 	font-size: 1.05em;
 }
 
+#TT-shortcode-creator-dialog .loading {
+	background: #CCC url( '../images/ajax-loader.gif' ) no-repeat 50% 50%;
+	-webkit-transition: background-color 0;
+	transition: background-color 0;
+}
+
 /* Responsive changes for narrow screens */
 @media (max-width: 1250px) {
 
@@ -122,6 +132,24 @@
 	#TT_content {
 		margin-right: auto;
 		min-height: 0;
+	}
+
+	/* TweetDis ad switch */
+	#TT_tweetdis_square {
+		display: none;
+	}
+	#TT_tweetdis_wide {
+		display: inline;
+	}
+}
+
+@media (min-width: 1250px) {
+	/* TweetDis ad switch */
+	#TT_tweetdis_square {
+		display: inline;
+	}
+	#TT_tweetdis_wide {
+		display: none;
 	}
 }
 

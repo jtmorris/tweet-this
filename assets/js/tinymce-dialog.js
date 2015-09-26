@@ -23,6 +23,8 @@
 	var placeholder_url_warning;
 	var accordionSections;
 
+	var previewTimeout = false;
+
 
 	$(window).load(function() {	//	Only execute the following after the entire page has loaded.
 		//	Vars for readability
@@ -34,6 +36,7 @@
 		};
 		inputs = {
 			'text': $('#TT_tinymce_dialog_text'),
+			'display_mode': $('#TT_tinymce_dialog_display_mode'),
 			'url': $('#TT_tinymce_dialog_url_override'),
 			'twitter_handles': $('#TT_tinymce_dialog_twitter_handle_override'),
 			'hidden_hashtags': $('#TT_tinymce_dialog_hidden_hashtags_override'),
@@ -92,6 +95,7 @@
 			}
 
 			//	Get passed arguments
+			post_id = args['post_id'];
 			post_url = args['post_url'];
 			post_url_is_placeholder = args['post_url_is_placeholder'];
 			default_twitter_handles = args['default_twitter_handles'];
@@ -148,13 +152,17 @@
 
 
 			//	On text change, update preview
-			inputs['text'].on('change keyup paste', function() {
-				preview.val(tt_preview_string()).change();
+			inputs['text'].on('input keyup paste', function() {
+				tt_preview_string(function(text) {
+					preview.val(text).change();
+				});
 			});
 
 			//	On URL change, update preview and hide any URL warnings
-			inputs['url'].on('change keyup paste', function() {
-				preview.val(tt_preview_string()).change();
+			inputs['url'].on('input keyup paste', function() {
+				tt_preview_string(function(text) {
+					preview.val(text).change();
+				});
 
 				if( inputs['url'].val() === post_url && post_url_is_placeholder ) {
 					placeholder_url_warning.show();
@@ -165,23 +173,31 @@
 			});
 
 			//	On Twitter handles change, update preview
-			inputs['twitter_handles'].on('change keyup paste', function() {
-				preview.val(tt_preview_string()).change();
+			inputs['twitter_handles'].on('input keyup paste', function() {
+				tt_preview_string(function(text) {
+					preview.val(text).change();
+				});
 			});
 
 			//	On hidden hashtags change, update preview
-			inputs['hidden_hashtags'].on('change keyup paste', function() {
-				preview.val(tt_preview_string()).change();
+			inputs['hidden_hashtags'].on('input keyup paste', function() {
+				tt_preview_string(function(text) {
+					preview.val(text).change();
+				});
 			});
 
 			//	On hidden URLS change, update preview
-			inputs['hidden_urls'].on('change keyup paste', function() {
-				preview.val(tt_preview_string()).change();
+			inputs['hidden_urls'].on('input keyup paste', function() {
+				tt_preview_string(function(text) {
+					preview.val(text).change();
+				});
 			});
 
 			//	On remove checkbox changes, update preview
 			inputs['remove_twitter_handles'].on('change keyup paste', function() {
-				preview.val(tt_preview_string()).change();
+				tt_preview_string(function(text) {
+					preview.val(text).change();
+				});
 
 				//	Also, disable the override fields for good measure
 				if( inputs['remove_twitter_handles'].prop('checked') ) {
@@ -192,7 +208,9 @@
 				}
 			});
 			inputs['remove_url'].on('change keyup paste', function() {
-				preview.val(tt_preview_string()).change();
+				tt_preview_string(function(text) {
+					preview.val(text).change();
+				});
 
 				//	Also, disable the override fields for good measure
 				if( inputs['remove_url'].prop('checked') ) {
@@ -203,7 +221,9 @@
 				}
 			});
 			inputs['remove_hidden_hashtags'].on('change keyup paste', function() {
-				preview.val(tt_preview_string()).change();
+				tt_preview_string(function(text) {
+					preview.val(text).change();
+				});
 
 				//	Also, disable the hidden hashtags box for good measure
 				if( inputs['remove_hidden_hashtags'].prop('checked') ) {
@@ -214,7 +234,9 @@
 				}
 			});
 			inputs['remove_hidden_urls'].on('change keyup paste', function() {
-				preview.val(tt_preview_string()).change();
+				tt_preview_string(function(text) {
+					preview.val(text).change();
+				});
 
 				//	Also, disable the hidden hashtags box for good measure
 				if( inputs['remove_hidden_urls'].prop('checked') ) {
@@ -230,11 +252,12 @@
 			preview.on('change', function() {
 				//	Counter
 				var text = auto_url_shortener_length_equiv($(this).val());
-				var text = $(this).val();
+				//var text = $(this).val();
 
 				var count = text.length;
 				if (count > 140) {
 					var wrap = '<span style="color: red; font-size: 1.3em; ">';
+					var warning = '';
 
 					//	Too long, truncate the preview
 					tt_truncate_preview();
@@ -242,6 +265,9 @@
 				else if (count >= 130) {
 					var wrap = '<span style="color: red;">';
 					var warning = '';
+
+					//	Nearing too long, truncate the preview so URLs are shortened
+					tt_truncate_preview();
 				}
 				else if (count >= 120) {
 					var wrap = '<span style="color: darkred;">';
@@ -282,6 +308,9 @@
 				}
 				if( get_clean_hidden_urls(true) ) {
 					shortcode += ' hidden_urls="' + (get_clean_hidden_urls()) + '"';
+				}
+				if( get_clean_display_mode() !== false ) {
+					shortcode += ' display_mode="' + (get_clean_display_mode()) + '"';
 				}
 
 				//	Are we supposed to remove anything from this particular tweet?
@@ -443,62 +472,94 @@
 	* Data Cleanup/Management Function Definitions *
 	***********************************************/
 	/**
-	 * Generates and returns a string representation of what the user's Tweet This box
+	 * Generates and inserts into preview a string representation of what the user's Tweet This box
 	 * will tweet out.
-	 *
-	 * @return   {string}   String representation of the resultant tweet.
 	 */
-	function tt_preview_string() {
-		var text = inputs['text'].val();
-
-		//	Are we supposed to remove anything from the tweet?
-		var remove_twits           = inputs['remove_twitter_handles'].prop('checked');
-		var remove_url             = inputs['remove_url'].prop('checked');
-		var remove_hidden_hashtags = inputs['remove_hidden_hashtags'].prop('checked');
-		var remove_hidden_urls     = inputs['remove_hidden_urls'].prop('checked');
-
-		//	Was Twitter handles, default hashtags, or the URL overriden?
-		//	If so, we want those.  If not, we want the defaults.
-		var twits = default_twitter_handles;
-		var hashtags = default_hidden_hashtags;
-		var hidden_urls = default_hidden_urls;
-		var url = post_url;
-
-		if( get_clean_twitter_handles() || remove_twits ) {
-			twits = get_clean_twitter_handles();
-		}
-		if( get_clean_url() || remove_url ) {
-			url = get_clean_url();
-		}
-		if( get_clean_hidden_hashtags() || remove_hidden_hashtags ) {
-			hashtags = get_clean_hidden_hashtags();
-		}
-		if( get_clean_hidden_urls() || remove_hidden_urls ) {
-			hidden_urls = get_clean_hidden_urls();
+	function tt_preview_string( funcToRun ) {
+		//	Reset our AJAX timeout countdown by clearing the old one, then 
+		//	creating a new one.
+		if( previewTimeout ) {
+			clearTimeout( previewTimeout );
 		}
 
-		var retval = text;
-		if(hashtags) {
-			retval += ' ' + hashtags;
-		}					
-		if ( hidden_urls ) {
-			retval += ' ' + hidden_urls;
-		}
-		if ( url ) {
-			retval += ' ' + url;
-		}
-		if (twits) {
-			retval +=' via ' + twits;
-		}
-
-		return retval;
+		$("#TT_tinymce_tweet_preview").addClass("loading");
+		previewTimeout = setTimeout(function() {
+			tt_preview_string_helper( funcToRun );
+		}, 1500);
 	}
+		function tt_preview_string_helper( funcToRun ) {
+			var data = {};
+			data.text = get_clean_text();
+			data.post_id = post_id;
+
+			//	Are we supposed to remove anything from the tweet?
+			data.remove_twitter_handles = inputs['remove_twitter_handles'].prop('checked');
+			data.remove_url             = inputs['remove_url'].prop('checked');
+			data.remove_hidden_hashtags = inputs['remove_hidden_hashtags'].prop('checked');
+			data.remove_hidden_urls     = inputs['remove_hidden_urls'].prop('checked');
+
+			//	Was Twitter handles, default hashtags, or the URL overriden?
+			//	If so, we want those.  If not, we want the defaults.
+			data.custom_twitter_handles = default_twitter_handles;
+			data.custom_hidden_hashtags = default_hidden_hashtags;
+			data.custom_hidden_urls     = default_hidden_urls;
+			data.custom_url             = '';
+
+			if( get_clean_twitter_handles() || data.remove_twitter_handles ) {
+				data.custom_twitter_handles = get_clean_twitter_handles();
+			}
+			if( get_clean_url() || data.remove_url ) {
+				data.custom_url = get_clean_url();
+			}
+			if( get_clean_hidden_hashtags() || data.remove_hidden_hashtags ) {
+				data.custom_hidden_hashtags = get_clean_hidden_hashtags();
+			}
+			if( get_clean_hidden_urls() || data.remove_hidden_urls ) {
+				data.custom_hidden_urls = get_clean_hidden_urls();
+			}
+
+			//	Define actions
+			data.action = 'tt_ajax';
+			data.tt_action = 'get_tweet_content';
+
+			//	Use AJAX to generate text as it will be generated in the final product
+			$.ajax({
+				type: "post",
+				url: ajaxurl,
+				dataType: 'json',
+				//dataType: 'text',	//	Uncomment this and look at JS Console output to debug PHP errors
+				data: data,
+				success: function(retval, status) {
+					logToConsole("Tweet preview content retrieved successfully.");
+					logToConsole("AJAX data: " + JSON.stringify(retval));
+					funcToRun(retval.data);
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					logToConsole("Error getting preview content using AJAX.");
+					logToConsole("AJAX error message: " + errorThrown);
+				},
+				complete: function() {
+					//	Remove loading GIF
+					$("#TT_tinymce_tweet_preview").removeClass("loading");
+				}
+			});
+		}
 
 	/**
 	 * Truncates the text in the preview textbox to 140 characters in length.
 	 */
 	function tt_truncate_preview() {
-		preview.val(preview.val().substr(0,140));	//	First 140 characters
+		var text = preview.val();
+
+		if( text.length > 130 ) {
+			//	We're nearing a full tweet. Let's shorten the URLs visually now.
+			//	Shorten URLS
+			text = auto_url_shortener_length_equiv(text);
+			logToConsole( text );
+		}
+
+		//	Truncate
+		preview.val(text.substr(0,140));	//	First 140 characters
 	}
 
 	/**
@@ -601,6 +662,17 @@
 			replace(/'/g, '');	//	remove single quotes;
 	}
 
+	function get_clean_display_mode() {
+		dm = inputs['display_mode'].val();
+
+		if( dm == 'box' || dm == 'button_link' ) {
+			return dm;
+		}
+		else {
+			return false;
+		}
+	}
+
 	/**
 	 * Replaces detected links with 22 characters.  Twitter automatically shortens links
 	 * using t.co, and the resultant link is 22 characters.  For the character counter, 
@@ -611,8 +683,15 @@
 	 * @return   {string}          The text with all detected URLs replaced with 22 characters.
 	 */
 	function auto_url_shortener_length_equiv(text) {
-		var shrt = text.replace(/\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/gi, '1234567890123456789012');
-		return shrt;
+		var matches = text.match(/\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/gi);
+		if( matches ) {
+			for( var index in matches ) {
+				var m = matches[index];
+				text = text.replace(m, m.substr(0,18) + ' ...');
+			}
+		}
+
+		return text;
 	}
 
 
@@ -711,7 +790,9 @@
 		});
 
 		//	Load defaults into preview
-		preview.val(tt_preview_string());
+		tt_preview_string(function(text) {
+			preview.val(text);
+		});
 
 		//	Ensure all change listeners know we changed the preview
 		preview.trigger('change');

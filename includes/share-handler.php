@@ -13,6 +13,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 		protected $my_hidden_urls = null;
 		protected $my_url_is_placeholder = false;
 		protected $my_twitter_handles = null;
+		protected $my_post_id = 0;
 
 		/**
 		 * Share Handler constructor
@@ -25,44 +26,50 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 		 * @param boolean $remove_url             Whether to include URL or not.
 		 * @param boolean $remove_hidden_hashtags Whether to include hidden hashtags or not.
 		 * @param boolean $remove_hidden_urls     Whether to include hidden URLS or not.
+		 * @param int     $post_id                The ID# of the post. Defaults to zero, which to WordPress means 
+		 *                                        the current post. When using AJAX, post ID must be specified as there
+		 *                                        is no current post context.
 		 */
 		public function __construct( $text='', $custom_url=false, $custom_twitter_handles=false, 
 			$custom_hidden_hashtags=false, $custom_hidden_urls=false, $remove_twitter_handles=false, $remove_url=false,
-			$remove_hidden_hashtags=false, $remove_hidden_urls=false ) {
+			$remove_hidden_hashtags=false, $remove_hidden_urls=false, $post_id=0 ) {
 
 			//	Get values
-			$this->my_text = $text;
+			$this->my_text    = $text;
+			$this->my_post_id = $post_id;
 
-			if ( $custom_url ) {
+			if ( !empty( $custom_url ) ) {
 				$this->my_url = $custom_url;
 			}
 
-			if ( $custom_twitter_handles ) {
+			if ( !empty( $custom_twitter_handles ) ) {
 				$this->my_twitter_handles = $custom_twitter_handles;
 			}
 
-			if ( $custom_hidden_hashtags ) {
+			if ( !empty( $custom_hidden_hashtags ) ) {
 				$this->my_hidden_hashtags = $custom_hidden_hashtags;
 			}
 
-			if ( $custom_hidden_urls ) {
+			if ( !empty( $custom_hidden_urls ) ) {
 				$this->my_hidden_urls = $custom_hidden_urls;
 			}
 
 			//	If we're removing anything, remove it
-			if( $remove_twitter_handles ) {
+			//	The variable may contain string representation of booleans (e.g. "false"),
+			//	so filter the variable.
+			if( filter_var( $remove_twitter_handles, FILTER_VALIDATE_BOOLEAN ) ) {
 				$this->my_twitter_handles = '';
 			}
 
-			if( $remove_url ) {
+			if( filter_var( $remove_url, FILTER_VALIDATE_BOOLEAN ) ) {
 				$this->my_url = '';
 			}
 
-			if( $remove_hidden_hashtags ) {
+			if( filter_var( $remove_hidden_hashtags, FILTER_VALIDATE_BOOLEAN ) ) {
 				$this->my_hidden_hashtags = '';
 			}
 
-			if( $remove_hidden_urls ) {
+			if( filter_var( $remove_hidden_urls, FILTER_VALIDATE_BOOLEAN ) ) {
 				$this->my_hidden_urls = '';
 			}
 		}
@@ -93,7 +100,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 			$retval .= '<div class="TT_wrapper">';
 				$retval .= '<div class="TT_text">';
 					$retval .= '<a class="TT_tweet_link" href="' . $url . '" target="_blank">';
-						$retval .= $this->generate_text();
+						$retval .= $this->generate_visible_text();
 					$retval .= '</a>';
 				$retval .= '</div>';
 
@@ -137,7 +144,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 
 
 			$retval .= '<span class="TT_wrapper">';
-				$retval .= '<a title="' . htmlentities( $this->generate_text() ) . '" class="TT_tweet_link" href="' . $url . '" target="_blank">';
+				$retval .= '<a title="' . htmlentities( $this->generate_visible_text() ) . '" class="TT_tweet_link" href="' . $url . '" target="_blank">';
 					if( $image_too ) {
 						$retval .= '<img src="' . TT_ROOT_URL . 'assets/images/twitter-icons/' . $options['twitter_icon'] . '.png" />';
 					}
@@ -151,19 +158,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 
 
 		protected function generate_share_url() {
-			//	Put all the tweet pieces into an array which we'll implode with a space as glue
-			$ttext = array(
-				$this->generate_text(),
-				$this->generate_hidden_hashtags_for_url(),
-				$this->generate_hidden_urls_for_url(),
-				$this->generate_post_url(),
-				$this->generate_twitter_handles_for_url()
-			);
-			//	Remove any empty array entries
-			$ttext = array_filter( $ttext );
-			//	Implode the tweet array into a string.
-			$ttext = implode( ' ', $ttext );
-
+			$ttext = self::generate_actual_text();
 
 			//	Now, generate the URL
 			$url = 'http://twitter.com/intent/tweet?text=';
@@ -184,7 +179,85 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 			return $url;
 		}
 
-		protected function generate_text() {
+		public function generate_actual_text() {
+			//	Get tweet template
+			$options = get_option( 'tt_plugin_options' );
+
+			$template = null;
+			if( array_key_exists( 'template', $options ) ) {
+				$template = $options['template'];
+			}
+			if( empty( $template ) ) {	//	Use default value
+				$template = '{{{text}}}{{ {hidden_hashtags}}}{{ {hidden_urls}}}{{ {post_url}}}{{ via {twitter_handles}}}';
+			}
+
+			//	Substitute values in place of template tags
+			$telem_names = array(
+				'{text}',
+				'{hidden_hashtags}',
+				'{hidden_urls}',
+				'{post_url}',
+				'{twitter_handles}'
+			);
+			$telem_vals = array(
+				$this->generate_visible_text(),
+				$this->generate_hidden_hashtags_for_url(),
+				$this->generate_hidden_urls_for_url(),
+				$this->generate_post_url( $this->my_post_id ),
+				$this->generate_twitter_handles_for_url()
+			);
+
+			$re = "/[{{].*?.*?}}{2,2}/";
+			preg_match_all( $re, $template, $split_t );	//	Split by template tag
+			$split_t = $split_t[0];
+			//	$split_t should have array like this:
+			//		array(
+			//			{{{text}}},
+			//			{{ {hidden_hashtags}}},
+			//			{{ {hidden_urls}}},
+			//			{{ {post_url}}},
+			//			{{ via {twitter_handles}}}
+			//		)
+			foreach( $split_t as $tkey=>$t ) {
+				foreach( $telem_names as $nkey=>$name ) {
+					//	Does $t even contain this name?
+					if( strpos( $t, $name ) !== false ) {
+						//	Yes, this name is in our $t... process it.
+						$value = $telem_vals[$nkey];
+						if( !empty( $value ) ) {
+							//	Replace template tag with this value
+							$split_t[$tkey] = str_replace( $name, $value, $t );
+						}
+						else {
+							//	No value to put in... delete this entry altogether
+							unset( $split_t[$tkey] );
+						}
+					}
+				}
+			}
+
+			//	Delete template tag openers and closers, and remove altogether if nothing is left
+			foreach( $split_t as $i=>$v ) {
+				$nv = str_replace( '{{', '', $v );
+				$nv = str_replace( '}}', '', $nv );
+
+				if( empty( $nv ) ) {
+					//	This thing is empty... delete it
+					unset( $split_t[$i] );
+				}
+				else {
+					//	Replace with this new value
+					$split_t[$i] = $nv;
+				}
+			}
+
+			//	Implode the string
+			$end_result = implode( '', $split_t );
+
+			return $end_result;
+		}
+
+		protected function generate_visible_text() {
 			return $this->my_text;
 		}
 
@@ -199,7 +272,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 
 			if ( !empty($this->my_twitter_handles) ) {
 				if ( $include_via ) {
-					return "via " . $this->my_twitter_handles;
+					return $this->my_twitter_handles;
 				}
 				else {
 					return $this->my_twitter_handles;
@@ -260,6 +333,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 				//	Okay then, do we need to construct a shortlink
 
 				if ( $options['use_shortlink'] ) {
+					echo "HERE";
 					//	Yes, we need a shortlink.
 
 					//	Try getting one the default way

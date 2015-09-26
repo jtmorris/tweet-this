@@ -225,7 +225,7 @@ if ( !class_exists( 'TT_Settings' ) ) {
 			$blink_text = 'Button Link' . ' (<em><a style="cursor: pointer;  text-decoration: underline;" onclick="window.open(\'' . TT_ROOT_URL . 'assets/images/button_link.jpg\', \'popup\', \'width=530,height=380,scrollbars=no,toolbar=no,menubar=no\')">Click to See Sample</a></em>)';
 			add_settings_field(
 				'tt_display_mode',			//	Setting ID
-				'Display Mode', 			//	Setting Title
+				'Default Display Mode', 	//	Setting Title
 				array( 'TT_Settings',
 					'field_helper_radio' ),	//	Content Callback
 				TT_FILENAME,				//	The page
@@ -496,6 +496,26 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				)
 			);
 
+			//	Template
+			add_settings_field(
+				'tt_template',
+				'Tweet Element Template',
+
+				array( 'TT_Settings',
+					'field_helper_textarea' ),
+
+				TT_FILENAME,
+				'tweet_this_advanced',
+
+				array(
+					'name' => 'template',
+
+					'help_text' => 'Customize the order of elements, and their separators, in resulting tweets. Template tags (in the following format "{{ separator {tag_name}}}") are replaced with the corresponding content. Leave blank to use default. Default: "{{{text}}}{{ {hidden_hashtags}}}{{ {hidden_urls}}}{{ {post_url}}}{{ via {twitter_handles}}}"<br /><a href="http://tweetthis.jtmorris.net/posts/introducing-the-tweet-element-template/" target="_blank">Read this article</a> for more detail and examples.',
+
+					'style'=>'min-width: 600px;'
+				)
+			);
+
 			//	Custom CSS
 			add_settings_field(
 				'tt_css_override',					//	Setting ID
@@ -512,7 +532,7 @@ if ( !class_exists( 'TT_Settings' ) ) {
 
 					'help_text'=>'Override default CSS rules for "Tweet This".',
 
-					'style'=>'min-width: 500px; min-height: 300px;'
+					'style'=>'min-width: 600px; min-height: 300px;',
 				)
 			);
 		}
@@ -784,6 +804,15 @@ if ( !class_exists( 'TT_Settings' ) ) {
 				</div>
 
 				<div class='TT_sidebar_box'>
+					<div class="TT_tweetdis_ad">
+						<a target="_blank" href="http://jtmorris.timsoulo.hop.clickbank.net">
+							<img id="TT_tweetdis_square" src="<?php echo TT_ROOT_URL; ?>/assets/images/tweetdis-square.jpg" />
+							<img id="TT_tweetdis_wide" src="<?php echo TT_ROOT_URL; ?>/assets/images/tweetdis-wide.jpg" />
+						</a>
+					</div>
+				</div>
+
+				<div class='TT_sidebar_box'>
 					<h3>Tutorials, Tips, &amp; Ideas</h3>
 					<p>
 						If you're having any problems making Tweet This work,
@@ -813,17 +842,6 @@ if ( !class_exists( 'TT_Settings' ) ) {
 							: Gives a few tips for including graphics inside Tweet This content.
 						</li>
 					</ul>
-				</div>
-				<div class='TT_sidebar_box'>
-					<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-					<!-- Tweet This Dashboard -->
-					<ins class="adsbygoogle"
-					     style="display:inline-block;width:336px;height:280px"
-					     data-ad-client="ca-pub-4623469134243566"
-					     data-ad-slot="9769490937"></ins>
-					<script>
-					(adsbygoogle = window.adsbygoogle || []).push({});
-					</script>
 				</div>
 				<div class='TT_sidebar_box'>
 					<h3>Get Help / Report a Bug</h3>

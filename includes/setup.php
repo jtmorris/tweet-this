@@ -187,8 +187,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 							var scDialog = jQuery('#TT-shortcode-creator-dialog').dialog({
 								autoOpen: false,
 								modal: true,
-								minHeight: 600,
-								maxHeight: 900,
+								maxHeight: 950,
 								resizable: false,
 								width: 650,
 								open: function() {
@@ -219,7 +218,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				if ( is_admin() && ($type == 'post' || $type == 'page') ) {
 					include( TT_ROOT_PATH . '/includes/tinymce-dialog.html' );
 				}
-			}			
+			}
 			public static function hooks_helper_tinymce_plugin( $plugin_array ) {
 				//	We need to be in the admin, editing a post or page to include
 				//	this plugin.  So are we?
@@ -386,7 +385,8 @@ if ( !class_exists( 'TT_Setup' ) ) {
 					'icon_alt_text' => '',
 					'button_location' => 'row1',
 					'insert_shortcode_behavior' => 'auto',
-					'display_mode' => 'box'
+					'display_mode' => 'box',
+					'template' => '{{{text}}}{{ {hidden_hashtags}}}{{ {hidden_urls}}}{{ {post_url}}}{{ via {twitter_handles}}}'
 				);
 
 
