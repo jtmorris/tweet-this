@@ -47,7 +47,8 @@ div.TT_wrapper {
 
 			margin-right: 2px;
 			margin-bottom: -4px;
-
+		}
+		.TT_wrapper a.TT_tweet_link img {
 			display: inline;  /* In case themes override default img display */
 		}
 
