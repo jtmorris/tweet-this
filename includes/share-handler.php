@@ -162,7 +162,7 @@ if ( !class_exists( 'TT_Share_Handler' ) ) {
 
 			//	Now, generate the URL
 			$url = 'http://twitter.com/intent/tweet?text=';
-			$url .= urlencode(
+			$url .= rawurlencode(
 				trim(	//	There's a chance there's a trailing space if no URL or Twitter
 						//	handles are input.  Remove that.
 					html_entity_decode(	//	WordPress encodes special characters in posts. Undo that.
