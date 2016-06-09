@@ -247,7 +247,7 @@ if ( !class_exists( 'TT_Setup' ) ) {
 				?>
 				<a href="#" id="tt-dialog-launcher" class="button">
 					<img src="<?php echo TT_ROOT_URL; ?>assets/images/tinymce-button.png" alt="Launch Tweet This Shortcode Creator" style="height: 18px;" />
-					Add Tweet This Shotcode
+					Add Tweet This Shortcode
 				</a>
 				<?php
 			}
