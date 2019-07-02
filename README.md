@@ -1,3 +1,5 @@
+*This plugin has been discontinued and is no longer supported.*
+
 Tweet This - WordPress Plugin
 ==============================
 All the pros agree. Sharing your content on Twitter is an immensely powerful, and
